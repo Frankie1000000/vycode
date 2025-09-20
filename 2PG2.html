@@ -1,0 +1,2492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRAVICO TECH CENTRE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #0a0e17;
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .tech-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(66, 153, 225, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 20%),
+                linear-gradient(45deg, rgba(0, 0, 0, 0.2) 50%, transparent 50%);
+            z-index: -2;
+        }
+        
+        .binary-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(10, 14, 23, 0.9), rgba(10, 14, 23, 0.9)),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="0" y="10" font-family="monospace" font-size="8" fill="rgba(66,153,225,0.05)">10101010</text><text x="0" y="25" font-family="monospace" font-size="8" fill="rgba(66,153,225,0.05)">01010101</text><text x="0" y="40" font-family="monospace" font-size="8" fill="rgba(66,153,225,0.05)">10101010</text><text x="0" y="55" font-family="monospace" font-size="8" fill="rgba(66,153,225,0.05)">01010101</text><text x="0" y="70" font-family="monospace" font-size="8" fill="rgba(66,153,225,0.05)">10101010</text><text x="0" y="85" font-family="monospace" font-size="8" fill="rgba(66,153,225,0.05)">01010101</text></svg>');
+            background-size: 300px;
+            z-index: -1;
+            filter: blur(0.5px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-open .container {
+            transform: translateX(250px);
+        }
+
+        /* Header with profile and balance */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(26, 32, 44, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(66, 153, 225, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .custom-logo {
+            width: 60px;
+            height: 60px;
+            background: #0d1b2a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(66, 153, 225, 0.3);
+            border: 2px solid #4299e1;
+        }
+
+        .logo-image {
+            width: 50px;
+            height: 50px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50%" y="50%" font-family="monospace" font-size="12" fill="%234299e1" text-anchor="middle" dominant-baseline="middle">FTC</text></svg>') no-repeat center;
+            background-size: contain;
+        }
+
+        .logo-letters {
+            position: absolute;
+            bottom: 5px;
+            font-weight: bold;
+            color: #4299e1;
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            color: white;
+            font-size: 1.8rem;
+            line-height: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .logo-text span {
+            color: #4299e1;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: white;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(66, 153, 225, 0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile:hover {
+            background: rgba(66, 153, 225, 0.3);
+        }
+
+        .profile-icon {
+            font-size: 1.5rem;
+            color: #4299e1;
+        }
+
+        .balance {
+            background: linear-gradient(135deg, #2b6cb0, #4299e1);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .balance i {
+            font-size: 1.2rem;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: rgba(26, 32, 44, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border: 1px solid rgba(66, 153, 225, 0.2);
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-tab {
+            padding: 12px 25px;
+            background: rgba(66, 153, 225, 0.2);
+            color: #e2e8f0;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .nav-tab:hover, .nav-tab.active {
+            background: #4299e1;
+            color: #0a0e17;
+        }
+
+        /* Website Introduction - Dark with binary graphics */
+        .intro-section {
+            background: rgba(26, 32, 44, 0.8);
+            border-radius: 15px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(66, 153, 225, 0.2);
+        }
+
+        .intro-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(26, 32, 44, 0.9), rgba(26, 32, 44, 0.9)),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="0" y="10" font-family="monospace" font-size="6" fill="rgba(66,153,225,0.05)">1010</text><text x="0" y="25" font-family="monospace" font-size="6" fill="rgba(66,153,225,0.05)">0101</text><text x="0" y="40" font-family="monospace" font-size="6" fill="rgba(66,153,225,0.05)">1010</text><text x="0" y="55" font-family="monospace" font-size="6" fill="rgba(66,153,225,0.05)">0101</text><text x="0" y="70" font-family="monospace" font-size="6" fill="rgba(66,153,225,0.05)">1010</text><text x="0" y="85" font-family="monospace" font-size="6" fill="rgba(66,153,225,0.05)">0101</text></svg>');
+            background-size: 200px;
+            z-index: -1;
+        }
+
+        .intro-section h2 {
+            color: #e2e8f0;
+            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+        }
+
+        .intro-section p {
+            color: #cbd5e0;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .intro-features {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .intro-feature {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 1.5rem;
+            border-radius: 10px;
+            width: 200px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(66, 153, 225, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .intro-feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(220, 38, 38, 0.2));
+        }
+
+        .intro-feature i {
+            font-size: 2.5rem;
+            color: #4299e1;
+            margin-bottom: 1rem;
+        }
+
+        .intro-feature h3 {
+            color: #e2e8f0;
+            margin-bottom: 0.5rem;
+        }
+
+        .intro-feature p {
+            color: #cbd5e0;
+            margin: 0;
+        }
+
+        /* Language Logos */
+        .language-logos {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .language-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 15px;
+            border-radius: 15px;
+            background: rgba(66, 153, 225, 0.1);
+            border: 1px solid rgba(66, 153, 225, 0.2);
+        }
+
+        .language-logo:hover {
+            transform: translateY(-5px);
+            background: rgba(66, 153, 225, 0.2);
+            box-shadow: 0 10px 20px rgba(66, 153, 225, 0.2);
+        }
+
+        .language-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .html-icon { color: #e34f26; }
+        .css-icon { color: #264de4; }
+        .js-icon { color: #f7df1e; }
+        .python-icon { color: #306998; }
+        .java-icon { color: #007396; }
+        .cpp-icon { color: #00599c; }
+
+        .language-name {
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        /* Content Area */
+        .content-area {
+            background: rgba(26, 32, 44, 0.8);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(66, 153, 225, 0.2);
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid #4299e1;
+        }
+
+        .content-header h2 {
+            color: #e2e8f0;
+            font-size: 2rem;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-box {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(66, 153, 225, 0.2);
+        }
+
+        .stat-box h3 {
+            color: #e2e8f0;
+            margin-bottom: 5px;
+        }
+
+        .stat-box p {
+            color: #48bb78;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .course-card {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(66, 153, 225, 0.2);
+            cursor: pointer;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(66, 153, 225, 0.2);
+        }
+
+        .course-header {
+            padding: 1.5rem;
+            text-align: center;
+            color: white;
+        }
+
+        .html-header { background: #e34f26; }
+        .css-header { background: #264de4; }
+        .js-header { background: #f7df1e; color: #2c3e50; }
+        .python-header { background: #306998; }
+        .java-header { background: #007396; }
+        .cpp-header { background: #00599c; }
+
+        .course-header h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-content {
+            padding: 1.5rem;
+        }
+
+        .course-content p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: #cbd5e0;
+        }
+
+        .course-stats {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(66, 153, 225, 0.2);
+        }
+
+        .course-stat {
+            text-align: center;
+        }
+
+        .course-stat h4 {
+            color: #e2e8f0;
+            margin-bottom: 5px;
+        }
+
+        .course-stat p {
+            color: #48bb78;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #2b6cb0, #4299e1);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #4299e1;
+            color: #4299e1;
+        }
+
+        .btn-outline:hover {
+            background: #4299e1;
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: #cbd5e0;
+        }
+
+        .footer-links {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #4299e1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Certificate Styles */
+        .certificate-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .certificate-card {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            text-align: center;
+            padding: 20px;
+            border: 1px solid rgba(66, 153, 225, 0.2);
+        }
+
+        .certificate-header {
+            color: #e2e8f0;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4299e1;
+        }
+
+        .certificate-score {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #48bb78;
+            margin: 15px 0;
+        }
+
+        .certificate-progress {
+            height: 10px;
+            background: #2d3748;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .certificate-progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #2b6cb0, #4299e1);
+        }
+
+        .certificate-status {
+            font-weight: bold;
+            margin: 10px 0;
+            padding: 8px;
+            border-radius: 20px;
+        }
+
+        .status-passed {
+            background: rgba(72, 187, 120, 0.2);
+            color: #48bb78;
+        }
+
+        .status-failed {
+            background: rgba(245, 101, 101, 0.2);
+            color: #f56565;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: rgba(26, 32, 44, 0.95);
+            padding: 2.5rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+            border: 1px solid rgba(66, 153, 225, 0.3);
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #cbd5e0;
+        }
+
+        .close:hover {
+            color: #e2e8f0;
+        }
+
+        .modal h2 {
+            color: #4299e1;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #2d3748;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            background: rgba(15, 23, 42, 0.8);
+            color: #e2e8f0;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #4299e1;
+            outline: none;
+        }
+
+        /* Survey styles */
+        .question {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            text-align: left;
+            border: 1px solid rgba(66, 153, 225, 0.2);
+        }
+
+        .question h3 {
+            color: #e2e8f0;
+            margin-bottom: 1rem;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid #2d3748;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option:hover {
+            border-color: #4299e1;
+            background: rgba(66, 153, 225, 0.1);
+        }
+
+        .option input {
+            margin-right: 10px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #2d3748;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #2b6cb0, #4299e1);
+            transition: width 0.3s ease;
+        }
+
+        .survey-result {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .survey-result h3 {
+            color: #4299e1;
+            margin-bottom: 1rem;
+        }
+
+        /* Tutorial content */
+        .tutorial-content {
+            text-align: left;
+            padding: 1rem;
+            cursor: pointer;
+        }
+
+        .tutorial-content h3 {
+            color: #e2e8f0;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #4299e1;
+            padding-bottom: 0.5rem;
+        }
+
+        .tutorial-content p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            color: #cbd5e0;
+        }
+
+        /* Exercise styles */
+        .exercise-container {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(66, 153, 225, 0.2);
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .exercise-title {
+            color: #e2e8f0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .exercise-points {
+            background: #4299e1;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        /* Project Card Styles */
+        .project-card {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(66, 153, 225, 0.2);
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(66, 153, 225, 0.2);
+        }
+
+        .project-header {
+            padding: 1.5rem;
+            text-align: center;
+            color: white;
+            background: linear-gradient(135deg, #2b6cb0, #4299e1);
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-content p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: #cbd5e0;
+        }
+
+        .project-stats {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(26, 32, 44, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(66, 153, 225, 0.2);
+        }
+
+        .project-stat {
+            text-align: center;
+        }
+
+        .project-stat h4 {
+            color: #e2e8f0;
+            margin-bottom: 5px;
+        }
+
+        .project-stat p {
+            color: #48bb78;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            background: linear-gradient(135deg, #1a202c, #2d3748);
+            color: white;
+            transition: all 0.3s ease;
+            z-index: 2000;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+        }
+
+        .sidebar-open .sidebar {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            margin-bottom: 10px;
+            color: #4299e1;
+        }
+
+        .sidebar-header p {
+            color: #cbd5e0;
+            font-size: 0.9rem;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .menu-item:hover {
+            background: rgba(66, 153, 225, 0.1);
+            border-left: 4px solid #4299e1;
+        }
+
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-item active {
+            background: rgba(66, 153, 225, 0.2);
+            border-left: 4px solid #4299e1;
+        }
+
+        .sidebar-content {
+            padding: 20px;
+            display: none;
+        }
+
+        .sidebar-content.active {
+            display: block;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1999;
+            display: none;
+        }
+
+        .sidebar-open .sidebar-overlay {
+            display: block;
+        }
+
+        /* Textarea for open-ended questions */
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #2d3748;
+            border-radius: 8px;
+            font-size: 1rem;
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+            background: rgba(15, 23, 42, 0.8);
+            color: #e2e8f0;
+        }
+
+        textarea:focus {
+            border-color: #4299e1;
+            outline: none;
+        }
+
+        /* Withdrawal styles */
+        .conversion-box {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            border: 1px solid rgba(66, 153, 225, 0.2);
+        }
+
+        .conversion-rate {
+            font-size: 1.2rem;
+            color: #4299e1;
+            font-weight: bold;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(66, 153, 225, 0.2);
+        }
+
+        .quiz-question {
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-question h4 {
+            color: #e2e8f0;
+            margin-bottom: 0.5rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background: rgba(26, 32, 44, 0.8);
+            border: 2px solid #2d3748;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            border-color: #4299e1;
+            background: rgba(66, 153, 225, 0.1);
+        }
+
+        .quiz-option input {
+            margin-right: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .top-bar {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .course-grid, .certificate-grid, .project-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .content-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .language-logos {
+                gap: 15px;
+            }
+            
+            .language-logo {
+                padding: 10px;
+            }
+            
+            .language-icon {
+                font-size: 2rem;
+            }
+            
+            .intro-features {
+                gap: 15px;
+            }
+            
+            .intro-feature {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .sidebar {
+                width: 250px;
+                left: -250px;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background elements -->
+    <div class="tech-bg"></div>
+    <div class="binary-bg"></div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2 id="sidebarUsername">User</h2>
+            <p>Account Balance: $<span id="sidebarBalance">0.00</span></p>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-item active" onclick="showSidebarContent('profile')">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </div>
+            <div class="menu-item" onclick="showSidebarContent('balance')">
+                <i class="fas fa-wallet"></i>
+                <span>Balance & Withdraw</span>
+            </div>
+            <div class="menu-item" onclick="showSidebarContent('settings')">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-content active" id="profileContent">
+            <h3 style="margin-bottom: 15px; color: #4299e1;">Profile Information</h3>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="profileUsername" placeholder="Username" value="User">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="profileEmail" placeholder="Email" value="user@example.com">
+            </div>
+            <button class="btn" onclick="updateProfile()">Update Profile</button>
+        </div>
+        
+        <div class="sidebar-content" id="balanceContent">
+            <h3 style="margin-bottom: 15px; color: #4299e1;">Balance & Withdrawal</h3>
+            <div class="conversion-box">
+                <p>Current Balance: $<span id="withdrawBalance">0.00</span></p>
+                <p class="conversion-rate">1 USD = 130 KES</p>
+                <p>Transaction Fee: 5%</p>
+                <p>Available: <strong id="kesBalance">0 KES</strong></p>
+            </div>
+            
+            <div class="form-group">
+                <label>Withdrawal Amount (USD)</label>
+                <input type="number" id="withdrawAmount" placeholder="Amount to withdraw" min="1" step="0.01">
+                <p style="font-size: 0.8rem; margin-top: 5px;">KES: <span id="withdrawKES">0</span> (After 5% fee)</p>
+            </div>
+            
+            <div class="form-group">
+                <label>M-Pesa Phone Number</label>
+                <input type="tel" id="mpesaNumber" placeholder="e.g., 07XX XXX XXX">
+            </div>
+            
+            <button class="btn" onclick="processWithdrawal()">Withdraw to M-Pesa</button>
+        </div>
+        
+        <div class="sidebar-content" id="settingsContent">
+            <h3 style="margin-bottom: 15px; color: #4299e1;">Account Settings</h3>
+            <div class="form-group">
+                <label>Change Password</label>
+                <input type="password" id="currentPassword" placeholder="Current password">
+                <input type="password" id="newPassword" placeholder="New password" style="margin-top: 10px;">
+                <input type="password" id="confirmPassword" placeholder="Confirm new password" style="margin-top: 10px;">
+            </div>
+            
+            <div class="form-group">
+                <label>Notification Preferences</label>
+                <div style="display: flex; align-items: center; margin-top: 10px;">
+                    <input type="checkbox" id="emailNotifications" checked>
+                    <label for="emailNotifications" style="margin: 0 0 0 10px;">Email Notifications</label>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="updateSettings()">Save Settings</button>
+            <button class="btn btn-outline" onclick="logout()" style="margin-top: 15px;">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Top Bar with Logo and User Info -->
+        <div class="top-bar">
+            <div class="logo">
+                <div class="custom-logo">
+                    <div class="logo-image"></div>
+                    <div class="logo-letters">FTC</div>
+                </div>
+                <div class="logo-text">
+                    <h1>FRAVICO TECH CENTRE</h1>
+                    <span>LEARN • PRACTICE • EARN</span>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="profile" onclick="toggleSidebar()">
+                    <i class="fas fa-user-circle profile-icon"></i>
+                    <span id="username">User</span>
+                </div>
+                <div class="balance">
+                    <i class="fas fa-coins"></i>
+                    $<span id="userBalance">0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Website Introduction -->
+        <div class="intro-section">
+            <h2>Welcome to FRAVICO TECH CENTRE</h2>
+            <p>FRAVICO TECH CENTRE is your premier destination for learning programming languages and earning money through educational surveys. Our platform offers comprehensive tutorials, hands-on exercises, and the opportunity to earn while you learn.</p>
+            <p>Whether you're a beginner looking to start your coding journey or an experienced developer wanting to expand your skills, FRAVICO TECH CENTRE has something for everyone.</p>
+            
+            <div class="intro-features">
+                <div class="intro-feature">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h3>Learn</h3>
+                    <p>Comprehensive courses</p>
+                </div>
+                <div class="intro-feature">
+                    <i class="fas fa-code"></i>
+                    <h3>Practice</h3>
+                    <p>Hands-on exercises</p>
+                </div>
+                <div class="intro-feature">
+                    <i class="fas fa-project-diagram"></i>
+                    <h3>Projects</h3>
+                    <p>Real-world projects</p>
+                </div>
+                <div class="intro-feature">
+                    <i class="fas fa-certificate"></i>
+                    <h3>Certify</h3>
+                    <p>Earn certificates</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Language Logos -->
+        <div class="language-logos">
+            <div class="language-logo" onclick="showLanguageCourses('html')">
+               <i class="fab fa-html5 language-icon html-icon"></i>
+                <span class="language-name">HTML</span>
+            </div>
+            <div class="language-logo" onclick="showLanguageCourses('css')">
+                <i class="fab fa-css3-alt language-icon css-icon"></i>
+                <span class="language-name">CSS</span>
+            </div>
+            <div class="language-logo" onclick="showLanguageCourses('javascript')">
+                <i class="fab fa-js language-icon js-icon"></i>
+                <span class="language-name">JavaScript</span>
+            </div>
+            <div class="language-logo" onclick="showLanguageCourses('python')">
+                <i class="fab fa-python language-icon python-icon"></i>
+                <span class="language-name">Python</span>
+            </div>
+            <div class="language-logo" onclick="showLanguageCourses('java')">
+                <i class="fab fa-java language-icon java-icon"></i>
+                <span class="language-name">Java</span>
+            </div>
+            <div class="language-logo" onclick="showLanguageCourses('cpp')">
+                <i class="fab fa-cuttlefish language-icon cpp-icon"></i>
+                <span class="language-name">C++</span>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-container">
+            <div class="nav-tabs">
+                <div class="nav-tab active" onclick="showHome()">Home</div>
+                <div class="nav-tab" onclick="showExercises()">Exercises</div>
+                <div class="nav-tab" onclick="showProjects()">Projects</div>
+                <div class="nav-tab" onclick="showCertificates()">Certificates</div>
+                <div class="nav-tab" onclick="showDonation()">Donation</div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <div class="content-header">
+                <h2 id="contentTitle">Available Courses</h2>
+                <div class="stats">
+                    <div class="stat-box">
+                        <h3>Completed</h3>
+                        <p id="completedCourses">0</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>Earnings</h3>
+                        <p>$<span id="totalEarnings">0.00</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="course-grid" id="contentGrid">
+                <!-- Courses will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 FRAVICO TECH CENTRE. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://facebook.com/FravicoTech" target="_blank">
+                    <i class="fab fa-facebook"></i> Developer: Fravico Tech
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2>Login to Your Account</h2>
+            <div class="form-group">
+                <label for="loginEmail">Email</label>
+                <input type="email" id="loginEmail" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your password">
+            </div>
+            <button class="btn" onclick="login()">Login</button>
+            <p style="margin-top: 1.5rem;">Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('signupModal')">&times;</span>
+            <h2>Create an Account</h2>
+            <div class="form-group">
+                <label for="signupUsername">Username</label>
+                <input type="text" id="signupUsername" placeholder="Choose a username">
+            </div>
+            <div class="form-group">
+                <label for="signupEmail">Email</label>
+                <input type="email" id="signupEmail" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="signupPassword">Password</label>
+                <input type="password" id="signupPassword" placeholder="Create a password">
+            </div>
+            <button class="btn" onclick="signup()">Sign Up</button>
+            <p style="margin-top: 1.5rem;">Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quizModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('quizModal')">&times;</span>
+            <h2 id="quizTitle">Course Quiz</h2>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="quizProgressFill" style="width: 0%"></div>
+            </div>
+            
+            <div id="quizContainer">
+                <!-- Quiz questions will be inserted here -->
+            </div>
+            
+            <button class="btn" id="submitQuizButton" onclick="submitQuiz()" style="margin: 0 auto; display: none;">Submit Quiz</button>
+            
+            <div id="quizResult" class="survey-result" style="display: none;">
+                <h3>Quiz Complete!</h3>
+                <p>You scored <strong id="quizScore">0</strong> out of <span id="quizTotal">0</span></p>
+                <p id="quizEarningsInfo">You've earned <strong>$0.00</strong>!</p>
+                <button class="btn" onclick="closeModal('quizModal')">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutorial Modal -->
+    <div id="tutorialModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('tutorialModal')">&times;</span>
+            <div id="tutorialContent">
+                <!-- Tutorial content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Exercise Modal -->
+    <div id="exerciseModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('exerciseModal')">&times;</span>
+            <div id="exerciseContent">
+                <!-- Exercise content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('projectModal')">&times;</span>
+            <div id="projectContent">
+                <!-- Project content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Donation Modal -->
+    <div id="donationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('donationModal')">&times;</span>
+            <h2>Support FRAVICO TECH CENTRE</h2>
+            <p>Your donation helps us continue providing quality programming education.</p>
+            
+            <div class="conversion-box">
+                <p class="conversion-rate">1 USD = 130 KES</p>
+            </div>
+            
+            <div class="form-group">
+                <label>Donation Amount (USD)</label>
+                <input type="number" id="donationAmount" placeholder="Amount to donate" min="1" step="0.01">
+                <p style="font-size: 0.8rem; margin-top: 5px;">KES: <span id="donationKES">0</span></p>
+            </div>
+            
+            <div class="form-group">
+                <label>M-Pesa Phone Number</label>
+                <input type="tel" id="donationMpesa" placeholder="e.g., 07XX XXX XXX">
+            </div>
+            
+            <button class="btn" onclick="processDonation()">Donate via M-Pesa</button>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">You will receive a prompt on your phone to confirm the donation.</p>
+        </div>
+    </div>
+
+    <script>
+        // User data and earnings tracking
+        let userData = {
+            username: "User",
+            email: "",
+            balance: 0.00,
+            completedCourses: 0,
+            totalEarnings: 0.00,
+            isLoggedIn: false,
+            lastLanguage: null,
+            quizAnswers: {},
+            certificates: {},
+            courseProgress: {}
+        };
+
+        // Current language and quiz tracking
+        let currentLanguage = null;
+        let currentQuiz = null;
+        let currentQuestionIndex = 0;
+        let userScore = 0;
+        let currentCourse = null;
+
+        // Course data with external links
+        const courses = {
+            html: [
+                {
+                    title: "HTML COURSE",
+                    description: "Learn the basics of HTML structure and elements",
+                    lessons: 12,
+                    earnings: 0.15,
+                    externalLink: "html001.html" // Add your external link here
+                },
+            ],
+            css: [
+                {
+                    title: "CSS COURSE",
+                    description: "Learn CSS selectors, properties and values",
+                    lessons: 10,
+                    earnings: 0.15,
+                    externalLink: "3css.html" // Add your external link here
+                },
+            ],
+            javascript: [
+                {
+                    title: "JAVASCRIPT COURSE",
+                    description: "Learn variables, functions, and control flow",
+                    lessons: 12,
+                    earnings: 0.15,
+                    externalLink: "page1.html" // Add your external link here
+                },
+            ],
+            python: [
+                {
+                    title: "Python COURSE",
+                    description: "Learn Python syntax and basic programming concepts",
+                    lessons: 14,
+                    earnings: 0.15,
+                    externalLink: "Pylearn.html" // Add your external link here
+                },
+            ],
+            java: [
+                {
+                    title: "JAVA COURSE",
+                    description: "Learn Java syntax and object-oriented programming basics",
+                    lessons: 16,
+                    earnings: 0.15,
+                    externalLink: "https://example.com/java-course" // Add your external link here
+                },
+            ],
+            cpp: [
+                {
+                    title: "C++ COURSE",
+                    description: "Learn C++ syntax and basic programming concepts",
+                    lessons: 14,
+                    earnings: 0.15,
+                    externalLink: "https://example.com/cpp-course" // Add your external link here
+                },
+            ]
+        };
+
+        // Quiz data
+        const quizzes = {
+            html: [
+                {
+                    question: "What does HTML stand for?",
+                    options: [
+                        "Hyper Text Markup Language",
+                        "High Tech Modern Language",
+                        "Hyper Transfer Markup Language",
+                        "Home Tool Markup Language"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which tag is used for creating a hyperlink?",
+                    options: [
+                        "<link>",
+                        "<a>",
+                        "<href>",
+                        "<hyperlink>"
+                    ],
+                    correct: 1
+                }
+            ],
+            css: [
+                {
+                    question: "What does CSS stand for?",
+                    options: [
+                        "Computer Style Sheets",
+                        "Creative Style System",
+                        "Cascading Style Sheets",
+                        "Colorful Style Sheets"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which property is used to change the background color?",
+                    options: [
+                        "color",
+                        "bgcolor",
+                        "background-color",
+                        "background"
+                    ],
+                    correct: 2
+                }
+            ],
+            javascript: [
+                {
+                    question: "Which of the following is a JavaScript data type?",
+                    options: [
+                        "style",
+                        "boolean",
+                        "div",
+                        "class"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "How do you create a function in JavaScript?",
+                    options: [
+                        "function = myFunction()",
+                        "function myFunction()",
+                        "function:myFunction()",
+                        "create myFunction()"
+                    ],
+                    correct: 1
+                }
+            ],
+            python: [
+                {
+                    question: "Which of the following is the correct extension for Python files?",
+                    options: [
+                        ".pyt",
+                        ".pt",
+                        ".py",
+                        ".python"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "How do you create a variable with the numeric value 5 in Python?",
+                    options: [
+                        "x = int(5)",
+                        "x = 5",
+                        "int x = 5",
+                        "Both 1 and 2"
+                    ],
+                    correct: 3
+                }
+            ],
+            java: [
+                {
+                    question: "Which of the following is not a Java keyword?",
+                    options: [
+                        "class",
+                        "interface",
+                        "object",
+                        "extends"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "What is the default value of a boolean variable in Java?",
+                    options: [
+                        "true",
+                        "false",
+                        "null",
+                        "0"
+                    ],
+                    correct: 1
+                }
+            ],
+            cpp: [
+                {
+                    question: "Which of the following is the correct syntax to output 'Hello World' in C++?",
+                    options: [
+                        "System.out.println('Hello World');",
+                        "cout << 'Hello World';",
+                        "print('Hello World');",
+                        "Console.WriteLine('Hello World');"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which operator is used to allocate memory in C++?",
+                    options: [
+                        "new",
+                        "malloc",
+                        "create",
+                        "allocate"
+                    ],
+                    correct: 0
+                }
+            ]
+        };
+
+        // Exercise data with external links
+        const exercises = {
+            html: {
+                title: "HTML Exercises",
+                description: "Practice your HTML skills with these exercises",
+                externalLink: "Hq1.html" // Add your external link here
+            },
+            css: {
+                title: "CSS Exercises",
+                description: "Practice your CSS skills with these exercises",
+                externalLink: "cccccc.html" // Add your external link here
+            },
+            javascript: {
+                title: "JavaScript Exercises",
+                description: "Practice your JavaScript skills with these exercises",
+                externalLink: "xxx.html" // Add your external link here
+            },
+            python: {
+                title: "Python Exercises",
+                description: "Practice your Python skills with these exercises",
+                externalLink: "https://example.com/python-exercises" // Add your external link here
+            },
+            java: {
+                title: "Java Exercises",
+                description: "Practice your Java skills with these exercises",
+                externalLink: "https://example.com/java-exercises" // Add your external link here
+            },
+            cpp: {
+                title: "C++ Exercises",
+                description: "Practice your C++ skills with these exercises",
+                externalLink: "https://example.com/cpp-exercises" // Add your external link here
+            }
+        };
+
+        // Project data
+        const projects = {
+            html: [
+                {
+                    title: "Personal Portfolio Website",
+                    description: "Build your own professional portfolio website using HTML, CSS, and JavaScript.",
+                    difficulty: "Beginner",
+                    earnings: 0.25
+                }
+            ],
+            css: [
+                {
+                    title: "CSS Grid Layout Gallery",
+                    description: "Design an image gallery using CSS Grid with responsive layout.",
+                    difficulty: "Intermediate",
+                    earnings: 0.25
+                }
+            ],
+            javascript: [
+                {
+                    title: "Weather App",
+                    description: "Build a weather application that fetches data from a weather API.",
+                    difficulty: "Intermediate",
+                    earnings: 0.25
+                }
+            ],
+            python: [
+                {
+                    title: "Data Analysis Dashboard",
+                    description: "Build a dashboard for data analysis using Python and visualization libraries.",
+                    difficulty: "Advanced",
+                    earnings: 0.25
+                }
+            ],
+            java: [
+                {
+                    title: "Inventory Management System",
+                    description: "Develop an inventory management system with Java and MySQL.",
+                    difficulty: "Advanced",
+                    earnings: 0.25
+                }
+            ],
+            cpp: [
+                {
+                    title: "Student Record System",
+                    description: "Create a console-based student record management system using C++.",
+                    difficulty: "Intermediate",
+                    earnings: 0.25
+                }
+            ]
+        };
+
+        // Initialize the page with user data
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedUser = localStorage.getItem('fravicoTechUser');
+            if (savedUser) {
+                userData = JSON.parse(savedUser);
+            }
+            updateUI();
+            showAllCourses();
+            
+            // Add event listener for withdrawal amount calculation
+            document.getElementById('withdrawAmount').addEventListener('input', function() {
+                const amount = parseFloat(this.value) || 0;
+                const kesAmount = amount * 130;
+                const afterFee = kesAmount * 0.95; // 5% transaction fee
+                document.getElementById('withdrawKES').textContent = Math.round(afterFee);
+            });
+            
+            // Add event listener for donation amount calculation
+            document.getElementById('donationAmount').addEventListener('input', function() {
+                const amount = parseFloat(this.value) || 0;
+                document.getElementById('donationKES').textContent = Math.round(amount * 130);
+            });
+        });
+
+        // Update UI with user data
+        function updateUI() {
+            document.getElementById('username').textContent = userData.username;
+            document.getElementById('userBalance').textContent = userData.balance.toFixed(2);
+            document.getElementById('completedCourses').textContent = userData.completedCourses;
+            document.getElementById('totalEarnings').textContent = userData.totalEarnings.toFixed(2);
+            
+            // Update sidebar
+            document.getElementById('sidebarUsername').textContent = userData.username;
+            document.getElementById('sidebarBalance').textContent = userData.balance.toFixed(2);
+            document.getElementById('withdrawBalance').textContent = userData.balance.toFixed(2);
+            document.getElementById('kesBalance').textContent = Math.round(userData.balance * 130 * 0.95); // Including 5% fee
+            
+            // Update profile form
+            document.getElementById('profileUsername').value = userData.username;
+            document.getElementById('profileEmail').value = userData.email;
+        }
+
+        // Toggle sidebar
+        function toggleSidebar() {
+            document.body.classList.toggle('sidebar-open');
+        }
+
+        // Close sidebar
+        function closeSidebar() {
+            document.body.classList.remove('sidebar-open');
+        }
+
+        // Show sidebar content
+        function showSidebarContent(contentId) {
+            // Hide all content sections
+            document.querySelectorAll('.sidebar-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all menu items
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected content and activate menu item
+            document.getElementById(contentId + 'Content').classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Update profile
+        function updateProfile() {
+            const newUsername = document.getElementById('profileUsername').value;
+            const newEmail = document.getElementById('profileEmail').value;
+            
+            if (newUsername) {
+                userData.username = newUsername;
+            }
+            
+            if (newEmail) {
+                userData.email = newEmail;
+            }
+            
+            localStorage.setItem('fravicoTechUser', JSON.stringify(userData));
+            updateUI();
+            alert('Profile updated successfully!');
+        }
+
+        // Process withdrawal
+        function processWithdrawal() {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const mpesaNumber = document.getElementById('mpesaNumber').value;
+            
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid withdrawal amount');
+                return;
+            }
+            
+            if (amount > userData.balance) {
+                alert('Insufficient balance for this withdrawal');
+                return;
+            }
+            
+            if (!mpesaNumber || mpesaNumber.length !== 10 || !mpesaNumber.startsWith('07')) {
+                alert('Please enter a valid M-Pesa number (10 digits starting with 07)');
+                return;
+            }
+            
+            // Process withdrawal with 5% fee
+            const kesAmount = amount * 130;
+            const transactionFee = kesAmount * 0.05;
+            const finalAmount = kesAmount - transactionFee;
+            
+            userData.balance -= amount;
+            localStorage.setItem('fravicoTechUser', JSON.stringify(userData));
+            updateUI();
+            
+            alert(`Withdrawal successful! KES ${Math.round(finalAmount)} will be sent to ${mpesaNumber} within 24 hours. (5% transaction fee applied: KES ${Math.round(transactionFee)})`);
+            
+            // Reset form
+            document.getElementById('withdrawAmount').value = '';
+            document.getElementById('mpesaNumber').value = '';
+            document.getElementById('withdrawKES').textContent = '0';
+        }
+
+        // Process donation
+        function processDonation() {
+            const amount = parseFloat(document.getElementById('donationAmount').value);
+            const mpesaNumber = document.getElementById('donationMpesa').value;
+            
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid donation amount');
+                return;
+            }
+            
+            if (!mpesaNumber || mpesaNumber.length !== 10 || !mpesaNumber.startsWith('07')) {
+                alert('Please enter a valid M-Pesa number (10 digits starting with 07)');
+                return;
+            }
+            
+            const kesAmount = Math.round(amount * 130);
+            alert(`Thank you for your donation! You will receive a prompt on ${mpesaNumber} to confirm your donation of KES ${kesAmount}.`);
+            
+            // Reset form
+            document.getElementById('donationAmount').value = '';
+            document.getElementById('donationMpesa').value = '';
+            document.getElementById('donationKES').textContent = '0';
+            
+            // Close modal
+            closeModal('donationModal');
+        }
+
+        // Update settings
+        function updateSettings() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword && newPassword === confirmPassword) {
+                alert('Password updated successfully!');
+            } else if (newPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            // Save other settings
+            const emailNotifications = document.getElementById('emailNotifications').checked;
+            
+            alert('Settings saved successfully!');
+        }
+
+        // Logout
+        function logout() {
+            userData = {
+                username: "User",
+                email: "",
+                balance: 0.00,
+                completedCourses: 0,
+                totalEarnings: 0.00,
+                isLoggedIn: false,
+                lastLanguage: null,
+                quizAnswers: {},
+                certificates: {},
+                courseProgress: {}
+            };
+            
+            localStorage.removeItem('fravicoTechUser');
+            updateUI();
+            closeSidebar();
+            alert('Logged out successfully!');
+        }
+
+        // Function to open external link for a course
+        function openCourseLink(language, courseTitle) {
+            const course = courses[language].find(c => c.title === courseTitle);
+            if (course && course.externalLink) {
+                window.open(course.externalLink, '_blank');
+            } else {
+                Course(language, courseTitle);
+            }
+        }
+
+        // Function to open external link for an exercise
+        function openExerciseLink(language) {
+            if (exercises[language] && exercises[language].externalLink) {
+                window.open(exercises[language].externalLink, '_blank');
+            } else {
+                startQuiz(language);
+            }
+        }
+
+        // Show all courses
+        function showAllCourses() {
+            const courseGrid = document.getElementById('contentGrid');
+            courseGrid.innerHTML = '';
+            document.getElementById('contentTitle').textContent = 'Available Courses';
+            
+            for (const language in courses) {
+                courses[language].forEach(course => {
+                    const courseCard = document.createElement('div');
+                    courseCard.className = 'course-card';
+                    courseCard.onclick = function() {
+                        openCourseLink(language, course.title);
+                    };
+                    courseCard.innerHTML = `
+                        <div class="course-header ${language}-header">
+                            <h3>${course.title}</h3>
+                            <p>${course.description}</p>
+                        </div>
+                        <div class="course-content">
+                            <p>Earn $${course.earnings.toFixed(2)} by completing this course!</p>
+                            <div class="course-stats">
+                                <div class="course-stat">
+                                    <h4>Lessons</h4>
+                                    <p>${course.lessons}</p>
+                                </div>
+                                <div class="course-stat">
+                                    <h4>Earnings</h4>
+                                    <p>$${course.earnings.toFixed(2)}</p>
+                                </div>
+                            </div>
+                            ${userData.courseProgress[`${language}_${course.title}`] === 'completed' ? 
+                                '<div class="certificate-status status-passed">COMPLETED</div>' :
+                                '<div class="btn">View Course</div>'
+                            }
+                        </div>
+                    `;
+                    courseGrid.appendChild(courseCard);
+                });
+            }
+        }
+
+        // Show courses for a specific language
+        function showLanguageCourses(language) {
+            currentLanguage = language;
+            userData.lastLanguage = language;
+            localStorage.setItem('fravicoTechUser', JSON.stringify(userData));
+            
+            if (!userData.isLoggedIn) {
+                showLoginModal();
+                return;
+            }
+            
+            const courseGrid = document.getElementById('contentGrid');
+            courseGrid.innerHTML = '';
+            document.getElementById('contentTitle').textContent = `${language.toUpperCase()} Courses`;
+            
+            courses[language].forEach(course => {
+                const isCompleted = userData.courseProgress[`${language}_${course.title}`] === 'completed';
+                const courseCard = document.createElement('div');
+                courseCard.className = 'course-card';
+                courseCard.onclick = function() {
+                    openCourseLink(language, course.title);
+                };
+                courseCard.innerHTML = `
+                    <div class="course-header ${language}-header">
+                        <h3>${course.title}</h3>
+                        <p>${course.description}</p>
+                    </div>
+                    <div class="course-content">
+                        <p>Earn $${course.earnings.toFixed(2)} by completing this course!</p>
+                        <div class="course-stats">
+                            <div class="course-stat">
+                                <h4>Lessons</h4>
+                                <p>${course.lessons}</p>
+                            </div>
+                            <div class="course-stat">
+                                <h4>Earnings</h4>
+                                <p>$${course.earnings.toFixed(2)}</p>
+                            </div>
+                        </div>
+                        ${isCompleted ? 
+                            '<div class="certificate-status status-passed">COMPLETED</div>' :
+                            '<div class="btn">View Course</div>'
+                        }
+                    </div>
+                `;
+                courseGrid.appendChild(courseCard);
+            });
+        }
+
+        // Show projects for a specific language
+        function showProjectsForLanguage(language) {
+            currentLanguage = language;
+            const courseGrid = document.getElementById('contentGrid');
+            courseGrid.innerHTML = '';
+            document.getElementById('contentTitle').textContent = `${language.toUpperCase()} Projects`;
+            
+            if (projects[language]) {
+                projects[language].forEach(project => {
+                    const isCompleted = userData.courseProgress[`${language}_${project.title}`] === 'completed';
+                    const projectCard = document.createElement('div');
+                    projectCard.className = 'project-card';
+                    projectCard.onclick = function() {
+                        startProject(language, project.title);
+                    };
+                    projectCard.innerHTML = `
+                        <div class="project-header">
+                            <h3>${project.title}</h3>
+                        </div>
+                        <div class="project-content">
+                            <p>${project.description}</p>
+                            <div class="project-stats">
+                                <div class="project-stat">
+                                    <h4>Difficulty</h4>
+                                    <p>${project.difficulty}</p>
+                                </div>
+                                <div class="project-stat">
+                                    <h4>Earnings</h4>
+                                    <p>$${project.earnings.toFixed(2)}</p>
+                                </div>
+                            </div>
+                            ${isCompleted ? 
+                                '<div class="certificate-status status-passed">COMPLETED</div>' :
+                                '<div class="btn">View Project</div>'
+                            }
+                        </div>
+                    `;
+                    courseGrid.appendChild(projectCard);
+                });
+            }
+        }
+
+        // Show certificates
+        function showCertificates() {
+            const courseGrid = document.getElementById('contentGrid');
+            courseGrid.innerHTML = '';
+            document.getElementById('contentTitle').textContent = 'Your Certificates';
+            
+            // Calculate completion percentage
+            let totalCourses = 0;
+            let completedCourses = 0;
+            
+            for (const language in courses) {
+                totalCourses += courses[language].length;
+                courses[language].forEach(course => {
+                    if (userData.courseProgress[`${language}_${course.title}`] === 'completed') {
+                        completedCourses++;
+                    }
+                });
+            }
+            
+            for (const language in projects) {
+                totalCourses += projects[language].length;
+                projects[language].forEach(project => {
+                    if (userData.courseProgress[`${language}_${project.title}`] === 'completed') {
+                        completedCourses++;
+                    }
+                });
+            }
+            
+            const completionPercentage = totalCourses > 0 ? Math.round((completedCourses / totalCourses) * 100) : 0;
+            
+            if (Object.keys(userData.certificates).length === 0) {
+                courseGrid.innerHTML = `
+                    <div style="text-align: center; padding: 2rem;">
+                        <i class="fas fa-certificate" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                        <h3>No certificates yet</h3>
+                        <p>Complete courses and projects to earn certificates!</p>
+                        <div class="certificate-progress">
+                            <div class="certificate-progress-fill" style="width: ${completionPercentage}%"></div>
+                        </div>
+                        <p>Overall Completion: ${completionPercentage}%</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Show completion percentage
+            courseGrid.innerHTML = `
+                <div style="text-align: center; padding: 1rem; margin-bottom: 2rem; width: 100%;">
+                    <h3>Overall Progress</h3>
+                    <div class="certificate-progress">
+                        <div class="certificate-progress-fill" style="width: ${completionPercentage}%"></div>
+                    </div>
+                    <p>Completed: ${completedCourses}/${totalCourses} (${completionPercentage}%)</p>
+                </div>
+            `;
+            
+            for (const language in userData.certificates) {
+                const certificate = userData.certificates[language];
+                const percentage = (certificate.score / 5) * 100;
+                const passed = percentage >= 80;
+                
+                const certificateCard = document.createElement('div');
+                certificateCard.className = 'certificate-card';
+                certificateCard.innerHTML = `
+                    <div class="certificate-header">
+                        <h3>${language.toUpperCase()} Proficiency</h3>
+                    </div>
+                    <div class="certificate-score">${percentage}%</div>
+                    <div class="certificate-progress">
+                        <div class="certificate-progress-fill" style="width: ${percentage}%"></div>
+                    </div>
+                    <div class="certificate-status ${passed ? 'status-passed' : 'status-failed'}">
+                        ${passed ? 'PASSED' : 'NEEDS IMPROVEMENT'}
+                    </div>
+                    <p>Score: ${certificate.score}/5</p>
+                    <p>Earned: $${certificate.earnings.toFixed(2)}</p>
+                    <p>Date: ${new Date(certificate.date).toLocaleDateString()}</p>
+                `;
+                courseGrid.appendChild(certificateCard);
+            }
+        }
+
+        // Show projects page
+        function showProjects() {
+            if (userData.lastLanguage) {
+                showProjectsForLanguage(userData.lastLanguage);
+            } else {
+                // Default to HTML if no language selected yet
+                showProjectsForLanguage('html');
+            }
+        }
+
+        // Show home page
+        function showHome() {
+            if (userData.lastLanguage) {
+                showLanguageCourses(userData.lastLanguage);
+            } else {
+                showAllCourses();
+            }
+        }
+
+        // Show exercises page
+        function showExercises() {
+            const courseGrid = document.getElementById('contentGrid');
+            courseGrid.innerHTML = '';
+            document.getElementById('contentTitle').textContent = 'Language Exercises';
+            
+            // Show exercises for all languages
+            for (const language in exercises) {
+                const exerciseCard = document.createElement('div');
+                exerciseCard.className = 'course-card';
+                exerciseCard.onclick = function() {
+                    openExerciseLink(language);
+                };
+                exerciseCard.innerHTML = `
+                    <div class="course-header ${language}-header">
+                        <h3>${exercises[language].title}</h3>
+                        <p>${exercises[language].description}</p>
+                    </div>
+                    <div class="course-content">
+                        <p>Take this quiz to test your knowledge of ${language.toUpperCase()} and earn $0.15!</p>
+                        <div class="course-stats">
+                            <div class="course-stat">
+                                <h4>Questions</h4>
+                                <p>${quizzes[language].length}</p>
+                            </div>
+                            <div class="course-stat">
+                                <h4>Earnings</h4>
+                                <p>$0.15</p>
+                            </div>
+                        </div>
+                        <div class="btn">Start Exercise</div>
+                    </div>
+                `;
+                courseGrid.appendChild(exerciseCard);
+            }
+        }
+
+        // Show donation page
+        function showDonation() {
+            document.getElementById('donationModal').style.display = 'flex';
+        }
+
+        // Start course
+        function startCourse(language, courseTitle) {
+            if (!userData.isLoggedIn) {
+                showLoginModal();
+                return;
+            }
+            
+            currentLanguage = language;
+            currentCourse = courseTitle;
+            
+            // Show course content
+            document.getElementById('tutorialContent').innerHTML = `
+                <h2>${courseTitle}</h2>
+                <div class="tutorial-content">
+                    <p>This course will teach you the fundamentals of ${language.toUpperCase()}.</p>
+                    <p>Complete all lessons and pass the final quiz to earn $${courses[language].find(c => c.title === courseTitle).earnings.toFixed(2)}!</p>
+                    
+                    <div class="exercise-container">
+                        <div class="exercise-header">
+                            <span class="exercise-title">Final Quiz</span>
+                            <span class="exercise-points">+$${courses[language].find(c => c.title === courseTitle).earnings.toFixed(2)}</span>
+                        </div>
+                        <p>Take the final quiz to complete this course and earn your reward!</p>
+                        <button class="btn" onclick="startCourseQuiz('${language}', '${courseTitle}')">Take Final Quiz</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('tutorialModal').style.display = 'flex';
+        }
+
+        // Start course quiz
+        function startCourseQuiz(language, courseTitle) {
+            closeModal('tutorialModal');
+            currentLanguage = language;
+            currentCourse = courseTitle;
+            startQuiz(language, true);
+        }
+
+        // Start quiz
+        function startQuiz(language, isCourseQuiz = false) {
+            if (!userData.isLoggedIn) {
+                showLoginModal();
+                return;
+            }
+            
+            currentLanguage = language;
+            currentQuiz = quizzes[language];
+            currentQuestionIndex = 0;
+            userScore = 0;
+            
+            document.getElementById('quizTitle').textContent = `${language.toUpperCase()} ${isCourseQuiz ? 'Course' : 'Knowledge'} Quiz`;
+            document.getElementById('quizModal').style.display = 'flex';
+            showQuizQuestion();
+        }
+
+        // Show quiz question
+        function showQuizQuestion() {
+            if (currentQuestionIndex >= currentQuiz.length) {
+                // Quiz completed
+                document.getElementById('quizContainer').innerHTML = '';
+                document.getElementById('submitQuizButton').style.display = 'none';
+                document.getElementById('quizResult').style.display = 'block';
+                
+                const percentage = (userScore / currentQuiz.length) * 100;
+                const passed = percentage >= 80;
+                const earnings = passed ? (currentCourse ? courses[currentLanguage].find(c => c.title === currentCourse).earnings : 0.15) : 0;
+                
+                if (passed) {
+                    userData.balance += earnings;
+                    userData.totalEarnings += earnings;
+                    
+                    if (currentCourse) {
+                        userData.courseProgress[`${currentLanguage}_${currentCourse}`] = 'completed';
+                        userData.completedCourses++;
+                    }
+                    
+                    // Record certificate if it's a language proficiency quiz
+                    if (!currentCourse) {
+                        userData.certificates[currentLanguage] = {
+                            score: userScore,
+                            earnings: earnings,
+                            date: new Date().toISOString()
+                        };
+                    }
+                    
+                    localStorage.setItem('fravicoTechUser', JSON.stringify(userData));
+                    updateUI();
+                }
+                
+                document.getElementById('quizScore').textContent = userScore;
+                document.getElementById('quizTotal').textContent = currentQuiz.length;
+                document.getElementById('quizEarningsInfo').innerHTML = passed ? 
+                    `You've earned <strong>$${earnings.toFixed(2)}</strong>!` : 
+                    'You need a score of 80% or higher to earn rewards.';
+                
+                return;
+            }
+            
+            const question = currentQuiz[currentQuestionIndex];
+            const optionsHTML = question.options.map((option, index) => `
+                <div class="quiz-option" onclick="selectQuizOption(${index})">
+                    <input type="radio" name="quizAnswer" id="option${index}" value="${index}">
+                    <label for="option${index}">${option}</label>
+                </div>
+            `).join('');
+            
+            document.getElementById('quizProgressFill').style.width = `${(currentQuestionIndex / currentQuiz.length) * 100}%`;
+            document.getElementById('quizContainer').innerHTML = `
+                <div class="quiz-question">
+                    <h4>${currentQuestionIndex + 1}. ${question.question}</h4>
+                    <div class="quiz-options">
+                        ${optionsHTML}
+                    </div>
+                </div>
+                <button class="btn" onclick="nextQuizQuestion()">Next Question</button>
+            `;
+            
+            document.getElementById('submitQuizButton').style.display = currentQuestionIndex === currentQuiz.length - 1 ? 'block' : 'none';
+            document.getElementById('quizResult').style.display = 'none';
+        }
+
+        // Select quiz option
+        function selectQuizOption(optionIndex) {
+            document.querySelectorAll('.quiz-option').forEach((option, index) => {
+                option.style.borderColor = index === optionIndex ? '#4299e1' : '#2d3748';
+                option.style.background = index === optionIndex ? 'rgba(66, 153, 225, 0.1)' : 'rgba(26, 32, 44, 0.8)';
+            });
+            
+            userData.quizAnswers[currentQuestionIndex] = optionIndex;
+        }
+
+        // Next quiz question
+        function nextQuizQuestion() {
+            const selectedOption = userData.quizAnswers[currentQuestionIndex];
+            
+            if (selectedOption === undefined) {
+                alert('Please select an answer before continuing.');
+                return;
+            }
+            
+            // Check if answer is correct
+            if (selectedOption === currentQuiz[currentQuestionIndex].correct) {
+                userScore++;
+            }
+            
+            currentQuestionIndex++;
+            showQuizQuestion();
+        }
+
+        // Submit quiz
+        function submitQuiz() {
+            const selectedOption = userData.quizAnswers[currentQuestionIndex];
+            
+            if (selectedOption === undefined) {
+                alert('Please select an answer before submitting.');
+                return;
+            }
+            
+            // Check if answer is correct
+            if (selectedOption === currentQuiz[currentQuestionIndex].correct) {
+                userScore++;
+            }
+            
+            currentQuestionIndex++;
+            showQuizQuestion();
+        }
+
+        // Start project
+        function startProject(language, title) {
+            if (!userData.isLoggedIn) {
+                showLoginModal();
+                return;
+            }
+            
+            const project = projects[language].find(p => p.title === title);
+            if (project) {
+                document.getElementById('projectContent').innerHTML = `
+                    <h2>${project.title}</h2>
+                    <div class="tutorial-content">
+                        <p>${project.description}</p>
+                        <div class="project-stats">
+                            <div class="project-stat">
+                                <h4>Difficulty</h4>
+                                <p>${project.difficulty}</p>
+                            </div>
+                            <div class="project-stat">
+                                <h4>Earnings</h4>
+                                <p>$${project.earnings.toFixed(2)}</p>
+                            </div>
+                        </div>
+                        <p>Complete this project to earn $${project.earnings.toFixed(2)}!</p>
+                        <button class="btn" onclick="completeProject('${language}', '${title}')">Mark as Complete</button>
+                    </div>
+                `;
+                document.getElementById('projectModal').style.display = 'flex';
+            }
+        }
+
+        // Complete project
+        function completeProject(language, title) {
+            const project = projects[language].find(p => p.title === title);
+            if (project) {
+                userData.balance += project.earnings;
+                userData.totalEarnings += project.earnings;
+                userData.courseProgress[`${language}_${title}`] = 'completed';
+                localStorage.setItem('fravicoTechUser', JSON.stringify(userData));
+                updateUI();
+                
+                alert(`Congratulations! You've completed the project and earned $${project.earnings.toFixed(2)}.`);
+                closeModal('projectModal');
+            }
+        }
+
+        // Close modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            // Reset quiz state if closing quiz modal
+            if (modalId === 'quizModal') {
+                currentQuiz = null;
+                currentQuestionIndex = 0;
+                userScore = 0;
+                currentCourse = null;
+            }
+        }
+
+        // Show login modal
+        function showLoginModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        // Show signup modal
+        function showSignupModal() {
+            document.getElementById('signupModal').style.display = 'flex';
+        }
+
+        // Switch to signup
+        function showSignup() {
+            closeModal('loginModal');
+            showSignupModal();
+        }
+
+        // Switch to login
+        function showLogin() {
+            closeModal('signupModal');
+            showLoginModal();
+        }
+
+        // Login function
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert('Please enter both email and password');
+                return;
+            }
+            
+            // For demo purposes, we'll just set a default user
+            userData = {
+                username: "User",
+                email: email,
+                balance: 5.00,
+                completedCourses: 2,
+                totalEarnings: 10.00,
+                isLoggedIn: true,
+                lastLanguage: userData.lastLanguage || null,
+                quizAnswers: userData.quizAnswers || {},
+                certificates: userData.certificates || {},
+                courseProgress: userData.courseProgress || {}
+            };
+            
+            localStorage.setItem('fravicoTechUser', JSON.stringify(userData));
+            updateUI();
+            closeModal('loginModal');
+            alert('Login successful!');
+        }
+
+        // Signup function
+        function signup() {
+            const username = document.getElementById('signupUsername').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            
+            if (!username || !email || !password) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            userData = {
+                username: username,
+                email: email,
+                balance: 0.00,
+                completedCourses: 0,
+                totalEarnings: 0.00,
+                isLoggedIn: true,
+                lastLanguage: null,
+                quizAnswers: {},
+                certificates: {},
+                courseProgress: {}
+            };
+            
+            localStorage.setItem('fravicoTechUser', JSON.stringify(userData));
+            updateUI();
+            closeModal('signupModal');
+            alert('Account created successfully!');
+        }
+
+        // Navigation tab functionality
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

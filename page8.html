@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern JavaScript (ES6+) Explorer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --dark-green: #1a4b3a;
+            --pale-blue: #a8d0e6;
+            --light-green: #2c6e49;
+            --cream: #f8f9fa;
+            --dark-text: #2d3436;
+            --light-text: #dfe6e9;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --header-bg: rgba(0, 0, 0, 0.3);
+            --code-bg: #2d2d2d;
+            --output-bg: #f5f5f5;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark-green) 0%, var(--pale-blue) 100%);
+            background-attachment: fixed;
+            color: var(--light-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            transition: background 0.5s ease;
+        }
+        
+        body.dark-blue {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        }
+        
+        body.pale-green {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+            --light-text: #2d3436;
+            --header-bg: rgba(255, 255, 255, 0.2);
+            --card-bg: rgba(255, 255, 255, 0.15);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .left-panel {
+            flex: 1;
+            max-width: 400px;
+        }
+        
+        .right-panel {
+            flex: 2;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            color: #333;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px;
+            background: var(--header-bg);
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--pale-blue);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .categories {
+            margin-bottom: 40px;
+        }
+        
+        .category {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .category h2 {
+            color: var(--pale-blue);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--pale-blue);
+        }
+        
+        .topics-list {
+            list-style: none;
+        }
+        
+        .topics-list li {
+            padding: 12px 10px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .topics-list li:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .topics-list li:before {
+            content: "•";
+            color: var(--pale-blue);
+            font-weight: bold;
+            display: inline-block;
+            width: 20px;
+            font-size: 20px;
+        }
+        
+        .topics-list li.active {
+            background: rgba(255, 255, 255, 0.2);
+            font-weight: bold;
+        }
+        
+        .topics-list li.completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        
+        .search-box {
+            margin: 30px auto;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 50px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .search-box i {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            color: var(--dark-green);
+            font-size: 1.2rem;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        
+        .nav-btn {
+            background: var(--light-green);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .nav-btn:hover {
+            background: var(--dark-green);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .nav-btn.prev {
+            background: #3a506b;
+        }
+        
+        .theme-toggle {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+        }
+        
+        .topic-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .topic-content h2 {
+            color: var(--dark-green);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--dark-green);
+        }
+        
+        .topic-content p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .code-container {
+            background: var(--code-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .code-header {
+            background: #1a1a1a;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .run-btn {
+            background: var(--light-green);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.3s;
+        }
+        
+        .run-btn:hover {
+            background: var(--dark-green);
+        }
+        
+        pre {
+            margin: 0;
+            padding: 15px;
+            overflow-x: auto;
+            color: #f8f8f2;
+            background: var(--code-bg);
+            font-family: 'Fira Code', monospace;
+            line-height: 1.5;
+        }
+        
+        code {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .output-container {
+            background: var(--output-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            min-height: 100px;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .output-container h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .highlight {
+            background-color: yellow;
+            color: black;
+        }
+        
+        /* NEW STYLES FOR THE MODIFIED LAYOUT */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        
+        .topic-header {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--header-bg);
+            border-radius: 10px;
+            width: 100%;
+        }
+        
+        .topic-header h2 {
+            color: white;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .light-mode .topic-header h2 {
+            color: var(--dark-text);
+        }
+        
+        .page-title {
+            text-align: center;
+            margin: 0 20px;
+            flex: 1;
+        }
+        
+        .page-title h1 {
+            font-size: 2rem;
+            margin: 0;
+            color: white;
+        }
+        
+        .page-title p {
+            margin: 5px 0 0;
+            color: var(--pale-blue);
+            font-size: 1rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .left-panel {
+                max-width: 100%;
+            }
+            
+            .top-nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .page-title {
+                order: -1;
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .nav-btn, .theme-toggle {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .page-title h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-nav">
+        <a href="page7.html" class="nav-btn prev">
+            <i class="fas fa-arrow-left"></i> Previous
+        </a>
+        
+        <div class="page-title">
+            <h1>Modern JavaScript (ES6+)</h1>
+            <p>Explore the modern features introduced in ECMAScript 2015 (ES6) and beyond</p>
+        </div>
+        
+        <a href="page9.html" class="nav-btn next">
+            Next <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+
+    <div class="container">
+        <div class="left-panel">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search for JavaScript topics...">
+                <i class="fas fa-search"></i>
+            </div>
+            
+            <div class="categories">
+                <div class="category">
+                    <h2>Modern JavaScript (ES6+)</h2>
+                    <ul class="topics-list">
+                        <li data-topic="let-const">Let and Const</li>
+                        <li data-topic="arrow-functions">Arrow Functions</li>
+                        <li data-topic="template-literals">Template Literals</li>
+                        <li data-topic="enhanced-objects">Enhanced Object Literals</li>
+                        <li data-topic="destructuring">Destructuring Assignment</li>
+                        <li data-topic="default-params">Default Parameters</li>
+                        <li data-topic="rest-spread">Rest & Spread Operators</li>
+                        <li data-topic="symbol-type">Symbol Type</li>
+                        <li data-topic="iterators-generators">Iterators & Generators</li>
+                        <li data-topic="maps-sets">Maps & Sets</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="right-panel">
+            <div class="topic-content">
+                <h2 id="topic-title">Select a Topic</h2>
+                <p id="topic-description">Click on any topic from the list to view details and code examples.</p>
+                
+                <div class="code-container">
+                    <div class="code-header">
+                        <span>JavaScript Code Example</span>
+                        <button class="run-btn" id="run-code">
+                            <i class="fas fa-play"></i> Run Code
+                        </button>
+                    </div>
+                    <pre><code id="code-example">// Code will appear here</code></pre>
+                </div>
+                
+                <div class="output-container">
+                    <h3>Output:</h3>
+                    <div id="code-output">// Output will appear here after running the code</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const topics = document.querySelectorAll('.topics-list li');
+            const searchInput = document.getElementById('searchInput');
+            const themeToggle = document.querySelector('.theme-toggle');
+            const runButton = document.getElementById('run-code');
+            const topicTitle = document.getElementById('topic-title');
+            const topicDescription = document.getElementById('topic-description');
+            const codeExample = document.getElementById('code-example');
+            const codeOutput = document.getElementById('code-output');
+            
+            // Topic data with explanations and code examples
+            const topicData = {
+                'let-const': {
+                    title: 'Let and Const',
+                    description: 'The let and const keywords were introduced in ES6 for block-scoped variable declarations. let allows you to declare variables that are limited in scope to the block, statement, or expression in which they are used. const is similar to let, but the value of a constant cannot change through reassignment.',
+                    code: `// let example
+let count = 5;
+if (true) {
+    let count = 10; // Different variable
+    console.log("Inside block:", count); // Output: 10
+}
+console.log("Outside block:", count); // Output: 5
+
+// const example
+const PI = 3.14159;
+// PI = 3.14; // This would throw an error
+
+const person = { name: "John" };
+person.name = "Jane"; // This is allowed
+console.log(person.name); // Output: Jane
+
+// person = { name: "Bob" }; // This would throw an error
+
+// Temporal dead zone example
+console.log(x); // undefined (var is hoisted)
+// console.log(y); // ReferenceError: Cannot access 'y' before initialization
+var x = 5;
+let y = 10;
+
+// Block scoping with loops
+for (let i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 100); // Outputs 0, 1, 2
+}
+
+for (var j = 0; j < 3; j++) {
+    setTimeout(() => console.log(j), 100); // Outputs 3, 3, 3
+}`
+                },
+                'arrow-functions': {
+                    title: 'Arrow Functions',
+                    description: 'Arrow functions provide a concise syntax for writing function expressions. They don\'t have their own this, arguments, super, or new.target. These function expressions are best suited for non-method functions, and they cannot be used as constructors.',
+                    code: `// Traditional function
+function add(a, b) {
+    return a + b;
+}
+
+// Arrow function equivalent
+const addArrow = (a, b) => a + b;
+
+console.log(add(2, 3)); // Output: 5
+console.log(addArrow(2, 3)); // Output: 5
+
+// Arrow functions with one parameter
+const square = x => x * x;
+console.log(square(4)); // Output: 16
+
+// Arrow functions with no parameters
+const greet = () => "Hello World!";
+console.log(greet()); // Output: Hello World!
+
+// Arrow functions and 'this'
+function Timer() {
+    this.seconds = 0;
+    setInterval(() => {
+        this.seconds++;
+        console.log(this.seconds);
+    }, 1000);
+}
+
+// const timer = new Timer(); // Uncomment to see the timer in action
+
+// Returning objects
+const createUser = (name, age) => ({ name, age });
+console.log(createUser("John", 30));
+
+// No arguments object
+const traditional = function() {
+    console.log(arguments);
+};
+
+const arrow = () => {
+    // console.log(arguments); // ReferenceError: arguments is not defined
+};
+
+traditional(1, 2, 3); // Outputs Arguments(3) [1, 2, 3, ...]`
+                },
+                'template-literals': {
+                    title: 'Template Literals',
+                    description: 'Template literals are string literals allowing embedded expressions. You can use multi-line strings and string interpolation features with them. They are enclosed by backtick (` `) characters instead of double or single quotes.',
+                    code: `// Basic template literal
+const name = "John";
+const greeting = \`Hello, \${name}!\`;
+console.log(greeting); // Output: Hello, John!
+
+// Multi-line string
+const multiLine = \`This is a string
+that spans across
+multiple lines\`;
+console.log(multiLine);
+
+// Expression evaluation
+const a = 5;
+const b = 10;
+console.log(\`The sum of \${a} and \${b} is \${a + b}\`); // Output: The sum of 5 and 10 is 15
+
+// Tagged templates
+function tag(strings, ...values) {
+    console.log(strings); // Array of string literals
+    console.log(values);  // Array of expression values
+    return "Processed string";
+}
+
+const result = tag\`The number \${a} and \${b} are values\`;
+console.log(result); // Output: Processed string
+
+// Advanced tagged template
+function highlight(strings, ...values) {
+    return strings.reduce((result, str, i) => {
+        const value = values[i] ? \`<mark>\${values[i]}</mark>\` : '';
+        return result + str + value;
+    }, '');
+}
+
+const name2 = "John";
+const age = 30;
+const highlighted = highlight\`Hello, my name is \${name2} and I am \${age} years old.\`;
+console.log(highlighted);
+
+// Nested template literals
+const isError = false;
+const message = \`Status: \${isError ? \`❌ Error\` : \`✅ OK\`}\`;
+console.log(message);`
+                },
+                'enhanced-objects': {
+                    title: 'Enhanced Object Literals',
+                    description: 'ES6 introduced several enhancements to object literals, including property value shorthand, computed property names, and method definition shorthand. These features make object creation more concise and readable.',
+                    code: `// Property value shorthand
+const name = "John";
+const age = 30;
+
+// ES5 way
+const personOld = {
+    name: name,
+    age: age,
+    greet: function() {
+        return "Hello!";
+    }
+};
+
+// ES6 enhanced object literal
+const personNew = {
+    name,    // shorthand for name: name
+    age,     // shorthand for age: age
+    greet() { // method shorthand
+        return "Hello!";
+    }
+};
+
+console.log(personNew.name); // Output: John
+console.log(personNew.greet()); // Output: Hello!
+
+// Computed property names
+const propName = "status";
+const id = 123;
+
+const obj = {
+    [propName]: "active", // computed property name
+    ["user_" + id]: "John Doe",
+    [\`temp_\${Date.now()}\`]: "temporary value"
+};
+
+console.log(obj.status); // Output: active
+console.log(obj.user_123); // Output: John Doe
+
+// Method properties
+const app = {
+    _data: [],
+    get data() {
+        return this._data;
+    },
+    set data(value) {
+        this._data = value;
+    },
+    add(item) {
+        this._data.push(item);
+    },
+    remove() {
+        this._data.pop();
+    }
+};
+
+app.data = [1, 2, 3];
+app.add(4);
+console.log(app.data); // Output: [1, 2, 3, 4]
+
+// Object method super
+const parent = {
+    greet() {
+        return "Hello from parent";
+    }
+};
+
+const child = {
+    __proto__: parent,
+    greet() {
+        return super.greet() + " and child";
+    }
+};
+
+console.log(child.greet()); // Output: Hello from parent and child`
+                },
+                'destructuring': {
+                    title: 'Destructuring Assignment',
+                    description: 'The destructuring assignment syntax is a JavaScript expression that makes it possible to unpack values from arrays, or properties from objects, into distinct variables.',
+                    code: `// Array destructuring
+const numbers = [1, 2, 3, 4, 5];
+const [first, second, , fourth] = numbers;
+console.log(first, second, fourth); // Output: 1 2 4
+
+// Swapping variables
+let x = 10;
+let y = 20;
+[x, y] = [y, x];
+console.log(x, y); // Output: 20 10
+
+// Object destructuring
+const person = {
+    name: "John",
+    age: 30,
+    city: "New York"
+};
+
+const { name, age, country = "USA" } = person;
+console.log(name, age, country); // Output: John 30 USA
+
+// Function parameter destructuring
+function printPerson({ name, age }) {
+    console.log(\`\${name} is \${age} years old\`);
+}
+
+printPerson(person); // Output: John is 30 years old
+
+// Nested destructuring
+const complexObj = {
+    title: "JavaScript",
+    author: {
+        firstName: "John",
+        lastName: "Doe"
+    },
+    tags: ["js", "es6", "destructuring"]
+};
+
+const { title, author: { firstName }, tags: [firstTag] } = complexObj;
+console.log(title, firstName, firstTag); // Output: JavaScript John js
+
+// Rest element in destructuring
+const [head, ...tail] = numbers;
+console.log(head, tail); // Output: 1 [2, 3, 4, 5]
+
+const { name: personName, ...rest } = person;
+console.log(personName, rest); // Output: John {age: 30, city: "New York"}
+
+// Destructuring function parameters with defaults
+function connect({ host = "localhost", port = 80, user = "guest" } = {}) {
+    console.log(\`Connecting to \${user}@\${host}:\${port}\`);
+}
+
+connect({ host: "example.com", port: 443 }); // Output: Connecting to guest@example.com:443
+connect(); // Output: Connecting to guest@localhost:80`
+                },
+                'default-params': {
+                    title: 'Default Parameters',
+                    description: 'Default function parameters allow named parameters to be initialized with default values if no value or undefined is passed. This makes functions more robust and easier to use.',
+                    code: `// Basic default parameters
+function greet(name = "Guest") {
+    return \`Hello, \${name}!\`;
+}
+
+console.log(greet()); // Output: Hello, Guest!
+console.log(greet("John")); // Output: Hello, John!
+
+// Multiple default parameters
+function createUser(name, age = 18, isActive = true) {
+    return { name, age, isActive };
+}
+
+console.log(createUser("Alice")); // Output: {name: "Alice", age: 18, isActive: true}
+console.log(createUser("Bob", 25)); // Output: {name: "Bob", age: 25, isActive: true}
+console.log(createUser("Charlie", 30, false)); // Output: {name: "Charlie", age: 30, isActive: false}
+
+// Default parameters with expressions
+function getDefaultAge() {
+    return 18;
+}
+
+function createPerson(name, age = getDefaultAge()) {
+    return { name, age };
+}
+
+console.log(createPerson("David")); // Output: {name: "David", age: 18}
+
+// Default parameters can use previous parameters
+function createElement(type, height = 100, width = height * 2) {
+    return { type, height, width };
+}
+
+console.log(createElement("div")); // Output: {type: "div", height: 100, width: 200}
+console.log(createElement("img", 50)); // Output: {type: "img", height: 50, width: 100}
+
+// Default parameters with destructuring
+function drawChart({ size = 'big', coords = { x: 0, y: 0 }, radius = 25 } = {}) {
+    console.log(size, coords, radius);
+}
+
+drawChart(); // Output: big {x: 0, y: 0} 25
+drawChart({ coords: { x: 18, y: 30 }, radius: 30 }); // Output: big {x: 18, y: 30} 30
+
+// Default parameters and the arguments object
+function example(a = 1, b = 2) {
+    console.log(arguments.length);
+    console.log(a, b);
+}
+
+example(); // Output: 0, 1, 2
+example(5); // Output: 1, 5, 2
+example(5, 10); // Output: 2, 5, 10
+
+// Default parameters with null values
+function withNull(value = 10) {
+    console.log(value);
+}
+
+withNull(null); // Output: null (null is considered a valid value)
+withNull(undefined); // Output: 10 (undefined triggers the default)`
+                },
+                'rest-spread': {
+                    title: 'Rest & Spread Operators',
+                    description: 'The rest and spread operators both use the same triple-dot syntax (...) but serve different purposes. The rest operator collects multiple elements into an array, while the spread operator expands an array into individual elements.',
+                    code: `// Spread operator with arrays
+const arr1 = [1, 2, 3];
+const arr2 = [4, 5, 6];
+const combined = [...arr1, ...arr2];
+console.log("Combined array:", combined);
+
+// Spread operator with objects
+const obj1 = { a: 1, b: 2 };
+const obj2 = { c: 3, d: 4 };
+const merged = { ...obj1, ...obj2 };
+console.log("Merged object:", merged);
+
+// Rest parameters in functions
+function sum(...numbers) {
+    return numbers.reduce((total, num) => total + num, 0);
+}
+console.log("Sum:", sum(1, 2, 3, 4, 5));
+
+// Rest with destructuring
+const [first, second, ...rest] = [1, 2, 3, 4, 5];
+console.log("First:", first);
+console.log("Second:", second);
+console.log("Rest:", rest);
+
+// Copying arrays and objects (shallow copy)
+const originalArray = [1, 2, 3];
+const copyArray = [...originalArray];
+console.log("Copied array:", copyArray);
+
+const originalObject = { name: "John", age: 30 };
+const copyObject = { ...originalObject };
+console.log("Copied object:", copyObject);
+
+// Spread with function calls
+const numbers = [1, 2, 3, 4, 5];
+console.log("Max:", Math.max(...numbers));
+
+// Rest in object destructuring
+const person = { name: "John", age: 30, city: "NY", country: "USA" };
+const { name, ...details } = person;
+console.log("Name:", name);
+console.log("Details:", details);
+
+// Spread with strings
+const greeting = "Hello";
+const chars = [...greeting];
+console.log("Chars:", chars);
+
+// Advanced example: merging with overrides
+const defaults = { theme: "light", fontSize: 12, notifications: true };
+const userSettings = { theme: "dark", fontSize: 14 };
+
+const finalSettings = { ...defaults, ...userSettings };
+console.log("Final settings:", finalSettings);`
+                },
+                'symbol-type': {
+                    title: 'Symbol Type',
+                    description: 'Symbols are a primitive data type introduced in ES6. They are unique and immutable, often used as unique identifiers for object properties. Symbols help avoid naming collisions in objects.',
+                    code: `// Creating symbols
+const sym1 = Symbol();
+const sym2 = Symbol('description'); // optional description
+const sym3 = Symbol('description');
+
+console.log(sym1.toString()); // Output: Symbol()
+console.log(sym2.toString()); // Output: Symbol(description)
+console.log(sym2 === sym3);   // Output: false (each symbol is unique)
+
+// Using symbols as object properties
+const user = {
+    name: "John",
+    age: 30,
+    [sym1]: "hidden value"
+};
+
+console.log("Object properties:", Object.keys(user)); // Doesn't include symbol
+console.log("Symbol value:", user[sym1]);
+
+// Getting symbol properties
+const symbolProperties = Object.getOwnPropertySymbols(user);
+console.log("Symbol properties:", symbolProperties);
+
+// Well-known symbols
+class MyArray {
+    constructor(...elements) {
+        this.elements = elements;
+    }
+    
+    [Symbol.iterator]() {
+        let index = 0;
+        return {
+            next: () => {
+                if (index < this.elements.length) {
+                    return { value: this.elements[index++], done: false };
+                } else {
+                    return { done: true };
+                }
+            }
+        };
+    }
+    
+    [Symbol.toStringTag] = 'MyArray';
+}
+
+const myArr = new MyArray(1, 2, 3);
+console.log("MyArray string tag:", Object.prototype.toString.call(myArr));
+
+// Using the custom iterator
+for (const item of myArr) {
+    console.log("Item:", item);
+}
+
+// Global symbol registry
+const globalSym = Symbol.for('global.key');
+const sameGlobalSym = Symbol.for('global.key');
+console.log("Global symbols equal:", globalSym === sameGlobalSym); // Output: true
+console.log("Symbol key:", Symbol.keyFor(globalSym)); // Output: global.key
+
+// Symbol usage for metadata
+const LOG_LEVEL = {
+    DEBUG: Symbol('debug'),
+    INFO: Symbol('info'),
+    WARN: Symbol('warn'),
+    ERROR: Symbol('error')
+};
+
+function log(message, level = LOG_LEVEL.INFO) {
+    console.log(\`\${level.toString()}: \${message}\`);
+}
+
+log("This is an info message");
+log("This is a debug message", LOG_LEVEL.DEBUG);`
+                },
+                'iterators-generators': {
+                    title: 'Iterators & Generators',
+                    description: 'Iterators and generators provide a mechanism to traverse data structures and define custom iteration behavior. Generators are special functions that can be paused and resumed, making them useful for handling asynchronous operations and creating iterators.',
+                    code: `// Custom iterator
+const myIterable = {
+    values: [10, 20, 30],
+    [Symbol.iterator]() {
+        let index = 0;
+        return {
+            next: () => {
+                if (index < this.values.length) {
+                    return { value: this.values[index++], done: false };
+                } else {
+                    return { done: true };
+                }
+            }
+        };
+    }
+};
+
+console.log("Custom iterator:");
+for (const value of myIterable) {
+    console.log(value);
+}
+
+// Generator function
+function* numberGenerator() {
+    yield 1;
+    yield 2;
+    yield 3;
+}
+
+console.log("Generator values:");
+const gen = numberGenerator();
+console.log(gen.next().value); // Output: 1
+console.log(gen.next().value); // Output: 2
+console.log(gen.next().value); // Output: 3
+console.log(gen.next().done);  // Output: true
+
+// Generator with parameter
+function* fibonacci() {
+    let a = 0, b = 1;
+    while (true) {
+        yield a;
+        [a, b] = [b, a + b];
+    }
+}
+
+console.log("Fibonacci sequence:");
+const fib = fibonacci();
+for (let i = 0; i < 10; i++) {
+    console.log(fib.next().value);
+}
+
+// Using generators for async operations
+function* asyncGenerator() {
+    const result1 = yield new Promise(resolve => 
+        setTimeout(() => resolve("First result"), 1000));
+    console.log(result1);
+    
+    const result2 = yield new Promise(resolve => 
+        setTimeout(() => resolve("Second result"), 1000));
+    console.log(result2);
+    
+    return "Done";
+}
+
+// Runner function for async generator
+function runAsyncGenerator(gen) {
+    const iterator = gen();
+    
+    function handle(result) {
+        if (result.done) return result.value;
+        return result.value.then(data => {
+            return handle(iterator.next(data));
+        });
+    }
+    
+    return handle(iterator.next());
+}
+
+// Uncomment to run async generator (will take 2 seconds)
+// runAsyncGenerator(asyncGenerator).then(console.log);
+
+// Generator return() and throw() methods
+function* exampleGenerator() {
+    try {
+        yield 1;
+        yield 2;
+        yield 3;
+    } catch (e) {
+        console.log("Error caught:", e);
+    }
+}
+
+const exGen = exampleGenerator();
+console.log(exGen.next()); // { value: 1, done: false }
+console.log(exGen.return("early return")); // { value: "early return", done: true }
+// console.log(exGen.next()); // { value: undefined, done: true }
+
+const exGen2 = exampleGenerator();
+console.log(exGen2.next()); // { value: 1, done: false }
+console.log(exGen2.throw(new Error("Something went wrong"))); // Error caught: Error: Something went wrong, then { value: undefined, done: true }`
+                },
+                'maps-sets': {
+                    title: 'Maps & Sets',
+                    description: 'Maps and Sets are new data structures introduced in ES6. Maps are collections of key-value pairs where keys can be of any type. Sets are collections of unique values. Both provide better performance for certain operations compared to regular objects and arrays.',
+                    code: `// Using Map
+const map = new Map();
+
+// Setting values with various key types
+map.set('name', 'John');
+map.set(1, 'number one');
+map.set(true, 'boolean true');
+
+const objKey = { id: 1 };
+map.set(objKey, 'object value');
+
+console.log("Map size:", map.size);
+console.log("Get values:", map.get('name'), map.get(objKey));
+
+// Iterating over Map
+console.log("Map entries:");
+for (const [key, value] of map) {
+    console.log(key, value);
+}
+
+// Converting Map to array
+console.log("Array from Map:", Array.from(map));
+
+// Using Set
+const set = new Set([1, 2, 3, 4, 4, 5, 5]); // Duplicates are removed
+console.log("Set values:", set);
+console.log("Set size:", set.size);
+
+// Set operations
+set.add(6);
+console.log("After adding 6:", set);
+console.log("Has 3:", set.has(3));
+set.delete(2);
+console.log("After deleting 2:", set);
+
+// Iterating over Set
+console.log("Set values:");
+for (const value of set) {
+    console.log(value);
+}
+
+// Set operations: union, intersection, difference
+const setA = new Set([1, 2, 3, 4]);
+const setB = new Set([3, 4, 5, 6]);
+
+// Union
+const union = new Set([...setA, ...setB]);
+console.log("Union:", union);
+
+// Intersection
+const intersection = new Set([...setA].filter(x => setB.has(x)));
+console.log("Intersection:", intersection);
+
+// Difference
+const difference = new Set([...setA].filter(x => !setB.has(x)));
+console.log("Difference:", difference);
+
+// WeakMap and WeakSet (for garbage collection)
+const weakMap = new WeakMap();
+const keyObj = {};
+weakMap.set(keyObj, 'some value');
+console.log("WeakMap value:", weakMap.get(keyObj));
+
+// Map from object
+const obj = { a: 1, b: 2, c: 3 };
+const mapFromObj = new Map(Object.entries(obj));
+console.log("Map from object:", mapFromObj);
+
+// Object from Map
+const objFromMap = Object.fromEntries(mapFromObj);
+console.log("Object from Map:", objFromMap);
+
+// Set from array
+const array = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4];
+const uniqueSet = new Set(array);
+console.log("Unique values:", uniqueSet);
+console.log("Back to array:", [...uniqueSet]);`
+                }
+            };
+            
+            // Set up the first topic as default
+            let currentTopic = 'let-const';
+            showTopic(currentTopic);
+            
+            // Theme switching functionality
+            const themes = ['default', 'dark-blue', 'pale-green'];
+            let currentThemeIndex = 0;
+            
+            // Create a theme toggle button if it doesn't exist
+            const themeToggleBtn = document.createElement('button');
+            themeToggleBtn.className = 'theme-toggle';
+            themeToggleBtn.innerHTML = '<i class="fas fa-palette"></i> Change Theme';
+            document.querySelector('.top-nav').appendChild(themeToggleBtn);
+            
+            themeToggleBtn.addEventListener('click', function() {
+                // Remove all theme classes
+                document.body.classList.remove('dark-blue', 'pale-green');
+                
+                // Cycle to next theme
+                currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+                
+                // Apply current theme
+                if (themes[currentThemeIndex] !== 'default') {
+                    document.body.classList.add(themes[currentThemeIndex]);
+                }
+                
+                // Update button text based on next theme
+                const nextThemeIndex = (currentThemeIndex + 1) % themes.length;
+                let nextThemeName = "Default";
+                
+                if (themes[nextThemeIndex] === 'dark-blue') {
+                    nextThemeName = "Dark Blue";
+                } else if (themes[nextThemeIndex] === 'pale-green') {
+                    nextThemeName = "Pale Green";
+                }
+                
+                themeToggleBtn.innerHTML = `<i class="fas fa-palette"></i> Theme: Switch to ${nextThemeName}`;
+            });
+            
+            // Topic selection functionality
+            topics.forEach(topic => {
+                topic.addEventListener('click', function() {
+                    const topicId = this.getAttribute('data-topic');
+                    
+                    // Remove active class from all topics
+                    topics.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked topic
+                    this.classList.add('active');
+                    
+                    // Show the selected topic
+                    showTopic(topicId);
+                });
+            });
+            
+            // Function to show topic content
+            function showTopic(topicId) {
+                if (topicData[topicId]) {
+                    currentTopic = topicId;
+                    const topic = topicData[topicId];
+                    
+                    topicTitle.textContent = topic.title;
+                    topicDescription.textContent = topic.description;
+                    codeExample.textContent = topic.code;
+                    
+                    // Clear output
+                    codeOutput.textContent = "// Output will appear here after running the code";
+                }
+            }
+            
+            // Run code functionality
+            runButton.addEventListener('click', function() {
+                try {
+                    // Capture console.log output
+                    const originalConsoleLog = console.log;
+                    let output = "";
+                    
+                    console.log = function() {
+                        output += Array.from(arguments).join(' ') + '\n';
+                        originalConsoleLog.apply(console, arguments);
+                    };
+                    
+                    // Execute the code
+                    eval(codeExample.textContent);
+                    
+                    // Restore original console.log
+                    console.log = originalConsoleLog;
+                    
+                    // Display the output
+                    codeOutput.textContent = output || "// Code executed (no output)";
+                } catch (error) {
+                    codeOutput.textContent = `Error: ${error.message}`;
+                }
+            });
+            
+            // Topic completion functionality
+            topics.forEach(topic => {
+                topic.addEventListener('dblclick', function() {
+                    this.classList.toggle('completed');
+                });
+            });
+            
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                topics.forEach(topic => {
+                    const topicText = topic.textContent.toLowerCase();
+                    
+                    // Remove previous highlights
+                    topic.innerHTML = topic.textContent;
+                    
+                    if (searchTerm && topicText.includes(searchTerm)) {
+                        // Highlight matching text
+                        const regex = new RegExp(searchTerm, 'gi');
+                        topic.innerHTML = topic.textContent.replace(regex, match => 
+                            `<span class="highlight">${match}</span>`
+                        );
+                        
+                        // Scroll to match
+                        topic.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

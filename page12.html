@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Advanced & Niche Topics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --dark-blue: #0d1b2a;
+            --navy-blue: #1b263b;
+            --slate-blue: #415a77;
+            --light-blue: #778da9;
+            --off-white: #e0e1dd;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --header-bg: rgba(0, 0, 0, 0.3);
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark-blue) 0%, var(--slate-blue) 100%);
+            background-attachment: fixed;
+            color: var(--off-white);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            display: flex;
+            flex: 1;
+        }
+        
+        .sidebar {
+            width: 300px;
+            background: var(--navy-blue);
+            padding: 20px;
+            overflow-y: auto;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .nav-btn {
+            padding: 10px 20px;
+            background: var(--header-bg);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px;
+            background: var(--header-bg);
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--light-blue);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .topic-item {
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .topic-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .topic-item.active {
+            background: var(--slate-blue);
+            font-weight: bold;
+        }
+        
+        .topic-content {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .topic-content h2 {
+            color: var(--light-blue);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-blue);
+        }
+        
+        .topic-content h3 {
+            color: var(--light-blue);
+            margin: 25px 0 15px;
+        }
+        
+        .topic-content p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+        
+        .code-container {
+            background: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .code-header {
+            background: #2d2d30;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .code-header span {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        .run-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .run-btn:hover {
+            background: #3e8e41;
+        }
+        
+        pre {
+            margin: 0;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        
+        code {
+            color: #d4d4d4;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+        }
+        
+        .output {
+            background: #2d2d30;
+            padding: 15px;
+            border-top: 1px solid #444;
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: 'Fira Code', monospace;
+            min-height: 50px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .keyword {
+            color: #569CD6;
+        }
+        
+        .function {
+            color: #DCDCAA;
+        }
+        
+        .string {
+            color: #CE9178;
+        }
+        
+        .comment {
+            color: #6A9955;
+        }
+        
+        .number {
+            color: #B5CEA8;
+        }
+        
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <header>
+                <h1>JS Advanced Topics</h1>
+                <p class="subtitle">Detailed explanations with runnable examples</p>
+            </header>
+            
+            <div class="topic-item active" data-topic="functional">Functional Programming</div>
+            <div class="topic-item" data-topic="reactive">Reactive Programming (RxJS)</div>
+            <div class="topic-item" data-topic="webassembly">WebAssembly with JavaScript</div>
+            <div class="topic-item" data-topic="machinelearning">Machine Learning (TensorFlow.js)</div>
+            <div class="topic-item" data-topic="webgl">WebGL & Three.js</div>
+            <div class="topic-item" data-topic="pwa">Progressive Web Apps</div>
+            <div class="topic-item" data-topic="webcomponents">Web Components</div>
+            <div class="topic-item" data-topic="websecurity">Web Security</div>
+            <div class="topic-item" data-topic="performance">Performance Optimization</div>
+            <div class="topic-item" data-topic="memory">Memory Management</div>
+        </div>
+        
+        <div class="content">
+            <div class="nav-buttons">
+                <a href="page11.html" class="nav-btn" target="_blank">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </a>
+                <a href="page1.html" class="nav-btn" target="_blank">
+                    Next <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
+            <div class="topic-content" id="functional">
+                <h2>Functional Programming</h2>
+                <p>Functional Programming (FP) is a programming paradigm that treats computation as the evaluation of mathematical functions and avoids changing state and mutable data. In JavaScript, FP principles include:</p>
+                
+                <ul>
+                    <li>First-class and higher-order functions</li>
+                    <li>Pure functions (no side effects)</li>
+                    <li>Immutability (avoiding data mutation)</li>
+                    <li>Function composition</li>
+                    <li>Recursion</li>
+                </ul>
+                
+                <h3>Example: Pure Function</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="run-btn"><i class="fas fa-play"></i> Run</button>
+                    </div>
+                    <pre><code>// A pure function - same input always gives same output, no side effects
+<span class="keyword">function</span> <span class="function">calculateTax</span>(amount, taxRate) {
+  <span class="keyword">return</span> amount * taxRate;
+}
+
+<span class="keyword">const</span> price = 100;
+<span class="keyword">const</span> taxRate = 0.08;
+
+<span class="comment">// This will always return the same result for the same inputs</span>
+<span class="keyword">const</span> tax = <span class="function">calculateTax</span>(price, taxRate);
+console.<span class="function">log</span>(<span class="string">`Tax on $</span><span class="number">${price}</span><span class="string"> is $</span><span class="number">${tax}</span><span class="string">`</span>);
+console.<span class="function">log</span>(<span class="string">`Total: $</span><span class="number">${price + tax}</span><span class="string">`</span>);</code></pre>
+                    <div class="output"></div>
+                </div>
+                
+                <h3>Example: Higher-Order Function</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="run-btn"><i class="fas fa-play"></i> Run</button>
+                    </div>
+                    <pre><code>// Higher-order function that returns a function
+<span class="keyword">function</span> <span class="function">multiplyBy</span>(factor) {
+  <span class="keyword">return</span> <span class="keyword">function</span>(number) {
+    <span class="keyword">return</span> number * factor;
+  };
+}
+
+<span class="keyword">const</span> double = <span class="function">multiplyBy</span>(2);
+<span class="keyword">const</span> triple = <span class="function">multiplyBy</span>(3);
+
+console.<span class="function">log</span>(<span class="string">'Double of 5:'</span>, <span class="function">double</span>(5)); <span class="comment">// 10</span>
+console.<span class="function">log</span>(<span class="string">'Triple of 5:'</span>, <span class="function">triple</span>(5)); <span class="comment">// 15</span>
+
+<span class="comment">// Using built-in higher-order functions (map, filter, reduce)</span>
+<span class="keyword">const</span> numbers = [1, 2, 3, 4, 5];
+<span class="keyword">const</span> squared = numbers.<span class="function">map</span>(x => x * x);
+console.<span class="function">log</span>(<span class="string">'Squared numbers:'</span>, squared);</code></pre>
+                    <div class="output"></div>
+                </div>
+            </div>
+            
+            <div class="topic-content" id="reactive" style="display: none;">
+                <h2>Reactive Programming (RxJS)</h2>
+                <p>Reactive Programming is a programming paradigm oriented around data streams and the propagation of change. RxJS (Reactive Extensions for JavaScript) is a library for reactive programming using Observables.</p>
+                
+                <h3>Example: Basic Observable</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="run-btn"><i class="fas fa-play"></i> Run</button>
+                    </div>
+                    <pre><code>// Simple Observable implementation (simplified version of RxJS)
+<span class="keyword">class</span> Observable {
+  <span class="function">constructor</span>(subscribe) {
+    this.subscribe = subscribe;
+  }
+  
+  <span class="function">pipe</span>(...operations) {
+    <span class="keyword">return</span> operations.<span class="function">reduce</span>((obs, op) => <span class="function">op</span>(obs), this);
+  }
+}
+
+<span class="keyword">function</span> <span class="function">map</span>(project) {
+  <span class="keyword">return</span> <span class="keyword">function</span>(observable) {
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="function">Observable</span>(observer => {
+      <span class="keyword">return</span> observable.<span class="function">subscribe</span>({
+        <span class="function">next</span>(value) { observer.<span class="function">next</span>(<span class="function">project</span>(value)); },
+        <span class="function">error</span>(err) { observer.<span class="function">error</span>(err); },
+        <span class="function">complete</span>() { observer.<span class="function">complete</span>(); }
+      });
+    });
+  };
+}
+
+<span class="comment">// Create an observable that emits numbers 1 to 5</span>
+<span class="keyword">const</span> numberObservable = <span class="keyword">new</span> <span class="function">Observable</span>(observer => {
+  [1, 2, 3, 4, 5].<span class="function">forEach</span>(num => observer.<span class="function">next</span>(num));
+  observer.<span class="function">complete</span>();
+});
+
+<span class="comment">// Subscribe to the observable with map operation</span>
+<span class="keyword">const</span> subscription = numberObservable
+  .<span class="function">pipe</span>(
+    <span class="function">map</span>(x => x * 2),
+    <span class="function">map</span>(x => x + 1)
+  )
+  .<span class="function">subscribe</span>({
+    <span class="function">next</span>(value) { console.<span class="function">log</span>(<span class="string">'Received value:'</span>, value); },
+    <span class="function">complete</span>() { console.<span class="function">log</span>(<span class="string">'Stream completed'</span>); }
+  });</code></pre>
+                    <div class="output"></div>
+                </div>
+            </div>
+            
+            <div class="topic-content" id="webassembly" style="display: none;">
+                <h2>WebAssembly with JavaScript</h2>
+                <p>WebAssembly (Wasm) is a binary instruction format that allows running code at near-native speed in web browsers. It's designed as a compilation target for languages like C, C++, and Rust.</p>
+                
+                <h3>Example: Loading and Using WebAssembly</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="run-btn"><i class="fas fa-play"></i> Run</button>
+                    </div>
+                    <pre><code><span class="comment">// Example of how to load and use a WebAssembly module</span>
+<span class="keyword">async</span> <span class="keyword">function</span> <span class="function">loadWasmModule</span>() {
+  <span class="keyword">try</span> {
+    <span class="comment">// In a real scenario, this would fetch a .wasm file</span>
+    <span class="comment">// const response = await fetch('module.wasm');</span>
+    <span class="comment">// const bytes = await response.arrayBuffer();</span>
+    <span class="comment">// const { instance } = await WebAssembly.instantiate(bytes);</span>
+    
+    <span class="comment">// For demonstration, we'll create a simple Wasm module manually</span>
+    <span class="keyword">const</span> wasmCode = <span class="keyword">new</span> <span class="function">Uint8Array</span>([
+      0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, <span class="comment">// WASM magic number and version</span>
+      <span class="comment">// ... more bytes would define the actual module</span>
+    ]);
+    
+    <span class="keyword">const</span> { instance } = await WebAssembly.<span class="function">instantiate</span>(wasmCode);
+    
+    <span class="comment">// Using the exported functions from the Wasm module</span>
+    <span class="keyword">if</span> (instance.exports &amp;&amp; instance.exports.add) {
+      <span class="keyword">const</span> result = instance.exports.<span class="function">add</span>(5, 3);
+      console.<span class="function">log</span>(<span class="string">'WebAssembly add result:'</span>, result);
+    } <span class="keyword">else</span> {
+      console.<span class="function">log</span>(<span class="string">'WebAssembly module loaded (simulated)'</span>);
+      console.<span class="function">log</span>(<span class="string">'In a real scenario, you would call exported functions from the module'</span>);
+    }
+  } <span class="keyword">catch</span> (error) {
+    console.<span class="function">error</span>(<span class="string">'Failed to load WebAssembly module:'</span>, error);
+  }
+}
+
+<span class="function">loadWasmModule</span>();</code></pre>
+                    <div class="output"></div>
+                </div>
+            </div>
+            
+            <div class="topic-content" id="machinelearning" style="display: none;">
+                <h2>Machine Learning (TensorFlow.js)</h2>
+                <p>TensorFlow.js is a library for machine learning in JavaScript. You can develop ML models in the browser or Node.js and use pre-trained models.</p>
+                
+                <h3>Example: Simple Tensor Operations</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="run-btn"><i class="fas fa-play"></i> Run</button>
+                    </div>
+                    <pre><code><span class="comment">// Simple tensor operations (without loading the full TensorFlow.js library)</span>
+<span class="keyword">class</span> MockTensor {
+  <span class="function">constructor</span>(data, shape) {
+    this.data = data;
+    this.shape = shape;
+  }
+  
+  <span class="function">add</span>(other) {
+    <span class="keyword">if</span> (this.data.length !== other.data.length) {
+      <span class="keyword">throw new</span> <span class="function">Error</span>(<span class="string">'Tensors must have the same shape'</span>);
+    }
+    
+    <span class="keyword">const</span> result = this.data.<span class="function">map</span>((val, idx) => val + other.data[idx]);
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="function">MockTensor</span>(result, this.shape);
+  }
+  
+  <span class="function">toString</span>() {
+    <span class="keyword">return</span> <span class="string">`Tensor: [${this.data.join(', ')}], Shape: [${this.shape.join(', ')}]`</span>;
+  }
+}
+
+<span class="comment">// Simulating tensor operations</span>
+<span class="keyword">const</span> tensor1 = <span class="keyword">new</span> <span class="function">MockTensor</span>([1, 2, 3, 4], [2, 2]);
+<span class="keyword">const</span> tensor2 = <span class="keyword">new</span> <span class="function">MockTensor</span>([5, 6, 7, 8], [2, 2]);
+
+console.<span class="function">log</span>(<span class="string">'Tensor 1:'</span>, tensor1.<span class="function">toString</span>());
+console.<span class="function">log</span>(<span class="string">'Tensor 2:'</span>, tensor2.<span class="function">toString</span>());
+
+<span class="keyword">const</span> resultTensor = tensor1.<span class="function">add</span>(tensor2);
+console.<span class="function">log</span>(<span class="string">'Addition result:'</span>, resultTensor.<span class="function">toString</span>());
+
+console.<span class="function">log</span>(<span class="string">'\nIn a real scenario, you would use TensorFlow.js:'</span>);
+console.<span class="function">log</span>(<span class="string">'// const a = tf.tensor2d([[1, 2], [3, 4]]);'</span>);
+console.<span class="function">log</span>(<span class="string">'// const b = tf.tensor2d([[5, 6], [7, 8]]);'</span>);
+console.<span class="function">log</span>(<span class="string">'// const result = a.add(b);'</span>);
+console.<span class="function">log</span>(<span class="string">'// result.print();'</span>);</code></pre>
+                    <div class="output"></div>
+                </div>
+            </div>
+            
+            <div class="topic-content" id="webgl" style="display: none;">
+                <h2>WebGL & Three.js</h2>
+                <p>WebGL (Web Graphics Library) is a JavaScript API for rendering high-performance interactive 3D and 2D graphics within a web browser. Three.js is a popular library that simplifies WebGL programming.</p>
+                
+                <h3>Example: Basic Three.js Scene Setup</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="run-btn"><i class="fas fa-play"></i> Run</button>
+                    </div>
+                    <pre><code><span class="comment">// Simplified Three.js example (without actual 3D rendering)</span>
+<span class="keyword">class</span> MockThreeJS {
+  <span class="function">constructor</span>() {
+    this.scene = { children: [] };
+    this.camera = { position: { x: 0, y: 0, z: 5 } };
+    this.renderer = { domElement: document.createElement('div') };
+  }
+  
+  <span class="function">createCube</span>() {
+    <span class="keyword">const</span> geometry = { type: 'BoxGeometry' };
+    <span class="keyword">const</span> material = { type: 'MeshBasicMaterial', color: 0x00ff00 };
+    <span class="keyword">return</span> { geometry, material, position: { x: 0, y: 0, z: 0 } };
+  }
+  
+  <span class="function">add</span>(object) {
+    this.scene.children.<span class="function">push</span>(object);
+    console.<span class="function">log</span>(<span class="string">'Added object to scene:'</span>, object);
+  }
+  
+  <span class="function">render</span>() {
+    console.<span class="function">log</span>(<span class="string">'Rendering scene with'</span>, this.scene.children.length, <span class="string">'objects'</span>);
+    console.<span class="function">log</span>(<span class="string">'Camera position:'</span>, this.camera.position);
+  }
+}
+
+<span class="comment">// Create a simple Three.js scene</span>
+<span class="keyword">const</span> threeJS = <span class="keyword">new</span> <span class="function">MockThreeJS</span>();
+<span class="keyword">const</span> cube = threeJS.<span class="function">createCube</span>();
+threeJS.<span class="function">add</span>(cube);
+threeJS.<span class="function">render</span>();
+
+console.<span class="function">log</span>(<span class="string">'\nIn a real scenario, you would use actual Three.js:'</span>);
+console.<span class="function">log</span>(<span class="string">'// const scene = new THREE.Scene();'</span>);
+console.<span class="function">log</span>(<span class="string">'// const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);'</span>);
+console.<span class="function">log</span>(<span class="string">'// const renderer = new THREE.WebGLRenderer();'</span>);
+console.<span class="function">log</span>(<span class="string">'// const geometry = new THREE.BoxGeometry();'</span>);
+console.<span class="function">log</span>(<span class="string">'// const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });'</span>);
+console.<span class="function">log</span>(<span class="string">'// const cube = new THREE.Mesh(geometry, material);'</span>);
+console.<span class="function">log</span>(<span class="string">'// scene.add(cube);'</span>);
+console.<span class="function">log</span>(<span class="string">'// renderer.render(scene, camera);'</span>);</code></pre>
+                    <div class="output"></div>
+                </div>
+            </div>
+            
+            <div class="topic-content" id="pwa" style="display: none;">
+                <h2>Progressive Web Apps</h2>
+                <p>Progressive Web Apps (PWAs) are web applications that use modern web capabilities to deliver an app-like experience to users. They work offline, can be installed on devices, and provide a native app-like interface.</p>
+                
+                <h3>Example: Service Worker Registration</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="run-btn"><i class="fas fa-play"></i> Run</button>
+                    </div>
+                    <pre><code><span class="comment">// Service Worker registration example</span>
+<span class="keyword">async</span> <span class="keyword">function</span> <span class="function">registerServiceWorker</span>() {
+  <span class="keyword">if</span> (<span class="string">'serviceWorker'</span> <span class="keyword">in</span> navigator) {
+    <span class="keyword">try</span> {
+      <span class="keyword">const</span> registration = <span class="keyword">await</span> navigator.serviceWorker.<span class="function">register</span>(<span class="string">'/sw.js'</span>);
+      console.<span class="function">log</span>(<span class="string">'ServiceWorker registration successful with scope: '</span>, registration.scope);
+      
+      <span class="comment">// Check if the app is already installed</span>
+      <span class="keyword">if</span> (window.matchMedia(<span class="string">'(display-mode: standalone)'</span>).matches) {
+        console.<span class="function">log</span>(<span class="string">'This is running as a standalone PWA'</span>);
+      }
+    } <span class="keyword">catch</span> (error) {
+      console.<span class="function">error</span>(<span class="string">'ServiceWorker registration failed: '</span>, error);
+    }
+  } <span class="keyword">else</span> {
+    console.<span class="function">log</span>(<span class="string">'Service workers are not supported in this browser'</span>);
+  }
+}
+
+<span class="comment">// Example of beforeinstallprompt event handling</span>
+<span class="keyword">let</span> deferredPrompt;
+
+window.<span class="function">addEventListener</span>(<span class="string">'beforeinstallprompt'</span>, (e) => {
+  <span class="comment">// Prevent the mini-infobar from appearing on mobile</span>
+  e.<span class="function">preventDefault</span>();
+  <span class="comment">// Stash the event so it can be triggered later</span>
+  deferredPrompt = e;
+  console.<span class="function">log</span>(<span class="string">'PWA installation prompt available'</span>);
+});
+
+<span class="comment">// Function to show install prompt</span>
+<span class="keyword">function</span> <span class="function">showInstallPrompt</span>() {
+  <span class="keyword">if</span> (deferredPrompt) {
+    deferredPrompt.<span class="function">prompt</span>();
+    deferredPrompt.userChoice.<span class="function">then</span>((choiceResult) => {
+      <span class="keyword">if</span> (choiceResult.outcome === <span class="string">'accepted'</span>) {
+        console.<span class="function">log</span>(<span class="string">'User accepted the install prompt'</span>);
+      } <span class="keyword">else</span> {
+        console.<span class="function">log</span>(<span class="string">'User dismissed the install prompt'</span>);
+      }
+      deferredPrompt = <span class="keyword">null</span>;
+    });
+  }
+}
+
+<span class="comment">// Simulate service worker registration</span>
+<span class="function">registerServiceWorker</span>();</code></pre>
+                    <div class="output"></div>
+                </div>
+            </div>
+            
+            <div class="topic-content" id="webcomponents" style="display: none;">
+                <h2>Web Components</h2>
+                <p>Web Components are a set of web platform APIs that allow you to create new custom, reusable, encapsulated HTML tags to use in web pages and web apps. They consist of three main technologies: Custom Elements, Shadow DOM, and HTML Templates.</p>
+                
+                <h3>Example: Creating a Custom Element</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="run-btn"><i class="fas fa-play"></i> Run</button>
+                    </div>
+                    <pre><code><span class="comment">// Define a custom element</span>
+<span class="keyword">class</span> CustomButton <span class="keyword">extends</span> HTMLElement {
+  <span class="function">constructor</span>() {
+    <span class="keyword">super</span>();
+    
+    <span class="comment">// Create a shadow root</span>
+    <span class="keyword">this</span>.attachShadow({ mode: <span class="string">'open'</span> });
+    
+    <span class="comment">// Create template</span>
+    <span class="keyword">const</span> template = document.<span class="function">createElement</span>(<span class="string">'template'</span>);
+    template.innerHTML = `
+      &lt;style&gt;
+        button {
+          background-color: #4CAF50;
+          border: none;
+          color: white;
+          padding: 15px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          margin: 4px 2px;
+          cursor: pointer;
+          border-radius: 4px;
+        }
+        
+        button:hover {
+          background-color: #45a049;
+        }
+      &lt;/style&gt;
+      &lt;button&gt;&lt;slot&gt;Default Button&lt;/slot&gt;&lt;/button&gt;
+    `;
+    
+    <span class="comment">// Attach template to shadow DOM</span>
+    <span class="keyword">this</span>.shadowRoot.<span class="function">appendChild</span>(template.content.cloneNode(<span class="keyword">true</span>));
+  }
+  
+  <span class="comment">// Called when element is added to the DOM</span>
+  <span class="function">connectedCallback</span>() {
+    <span class="keyword">this</span>.shadowRoot.querySelector(<span class="string">'button'</span>).<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+      <span class="keyword">this</span>.<span class="function">dispatchEvent</span>(<span class="keyword">new</span> <span class="function">CustomEvent</span>(<span class="string">'custom-click'</span>, {
+        detail: { message: <span class="string">'Button was clicked!'</span> },
+        bubbles: <span class="keyword">true</span>
+      }));
+    });
+  }
+  
+  <span class="comment">// Called when element is removed from the DOM</span>
+  <span class="function">disconnectedCallback</span>() {
+    console.<span class="function">log</span>(<span class="string">'Custom element removed from page'</span>);
+  }
+}
+
+<span class="comment">// Register the custom element</span>
+customElements.<span class="function">define</span>(<span class="string">'custom-button'</span>, CustomButton);
+
+<span class="comment">// Create and add a custom button to the page</span>
+<span class="keyword">const</span> button = document.<span class="function">createElement</span>(<span class="string">'custom-button'</span>);
+button.innerHTML = <span class="string">'Click Me!'</span>;
+button.<span class="function">addEventListener</span>(<span class="string">'custom-click'</span>, (e) => {
+  console.<span class="function">log</span>(<span class="string">'Custom event received:'</span>, e.detail.message);
+});
+
+<span class="comment">// For demonstration, we'll just log instead of adding to DOM</span>
+console.<span class="function">log</span>(<span class="string">'Custom button element created successfully'</span>);
+console.<span class="function">log</span>(<span class="string">'In a real scenario, you would add it to the DOM with document.body.appendChild(button)'</span>);</code></pre>
+                    <div class="output"></div>
+                </div>
+            </div>
+            
+            <div class="topic-content" id="websecurity" style="display: none;">
+                <h2>Web Security</h2>
+                <p>Web security involves protecting websites, web applications, and web services from security threats that exploit vulnerabilities in code. Common security concerns include Cross-Site Scripting (XSS), Cross-Site Request Forgery (CSRF), and data injection attacks.</p>
+                
+                <h3>Example: Preventing XSS with Content Security Policy</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="run-btn"><i class="fas fa-play"></i> Run</button>
+                    </div>
+                    <pre><code><span class="comment">// Example of sanitizing user input to prevent XSS</span>
+<span class="keyword">function</span> <span class="function">sanitizeInput</span>(input) {
+  <span class="keyword">const</span> div = document.<span class="function">createElement</span>(<span class="string">'div'</span>);
+  div.textContent = input;
+  <span class="keyword">return</span> div.innerHTML;
+}
+
+<span class="comment">// Example of safe HTML rendering</span>
+<span class="keyword">function</span> <span class="function">safeRenderHTML</span>(htmlString) {
+  <span class="keyword">const</span> parser = <span class="keyword">new</span> <span class="function">DOMParser</span>();
+  <span class="keyword">const</span> doc = parser.<span class="function">parseFromString</span>(htmlString, <span class="string">'text/html'</span>);
+  <span class="keyword">return</span> doc.body.textContent || <span class="string">""</span>;
+}
+
+<span class="comment">// Test the sanitization functions</span>
+<span class="keyword">const</span> userInput = <span class="string">'&lt;script&gt;alert("XSS Attack!")&lt;/script&gt;&lt;img src="x" onerror="alert(\'XSS\')"&gt;'</span>;
+<span class="keyword">const</span> sanitized = <span class="function">sanitizeInput</span>(userInput);
+<span class="keyword">const</span> safeRendered = <span class="function">safeRenderHTML</span>(userInput);
+
+console.<span class="function">log</span>(<span class="string">'Original user input:'</span>, userInput);
+console.<span class="function">log</span>(<span class="string">'After sanitization:'</span>, sanitized);
+console.<span class="function">log</span>(<span class="string">'After safe rendering:'</span>, safeRendered);
+
+<span class="comment">// Example of setting Content Security Policy headers</span>
+<span class="keyword">function</span> <span class="function">setCSPHeaders</span>() {
+  <span class="comment">// In a real scenario, this would be set on the server</span>
+  <span class="keyword">const</span> csp = [
+    <span class="string">"default-src 'self'"</span>,
+    <span class="string">"script-src 'self' 'unsafe-inline' https://trusted.cdn.com"</span>,
+    <span class="string">"style-src 'self' 'unsafe-inline'"</span>,
+    <span class="string">"img-src 'self' data: https:"</span>,
+    <span class="string">"object-src 'none'"</span>,
+    <span class="string">"base-uri 'self'"</span>,
+    <span class="string">"form-action 'self'"</span>
+  ].<span class="function">join</span>(<span class="string">"; "</span>);
+  
+  console.<span class="function">log</span>(<span class="string">'Content Security Policy would be set to:'</span>, csp);
+  <span class="keyword">return</span> csp;
+}
+
+<span class="function">setCSPHeaders</span>();</code></pre>
+                    <div class="output"></div>
+                </div>
+            </div>
+            
+            <div class="topic-content" id="performance" style="display: none;">
+                <h2>Performance Optimization</h2>
+                <p>Performance optimization in JavaScript involves techniques to make web applications faster and more responsive. This includes optimizing code execution, reducing bundle sizes, efficient memory usage, and leveraging browser capabilities.</p>
+                
+                <h3>Example: Debouncing and Throttling</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="run-btn"><i class="fas fa-play"></i> Run</button>
+                    </div>
+                    <pre><code><span class="comment">// Debounce function to limit how often a function can be called</span>
+<span class="keyword">function</span> <span class="function">debounce</span>(func, delay) {
+  <span class="keyword">let</span> timeoutId;
+  <span class="keyword">return</span> <span class="keyword">function</span>(...args) {
+    <span class="function">clearTimeout</span>(timeoutId);
+    timeoutId = <span class="function">setTimeout</span>(() => <span class="function">func</span>.<span class="function">apply</span>(<span class="keyword">this</span>, args), delay);
+  };
+}
+
+<span class="comment">// Throttle function to ensure a function is only called at most once in a specified period</span>
+<span class="keyword">function</span> <span class="function">throttle</span>(func, limit) {
+  <span class="keyword">let</span> inThrottle;
+  <span class="keyword">return</span> <span class="keyword">function</span>(...args) {
+    <span class="keyword">if</span> (!inThrottle) {
+      <span class="function">func</span>.<span class="function">apply</span>(<span class="keyword">this</span>, args);
+      inThrottle = <span class="keyword">true</span>;
+      <span class="function">setTimeout</span>(() => inThrottle = <span class="keyword">false</span>, limit);
+    }
+  };
+}
+
+<span class="comment">// Example usage</span>
+<span class="keyword">function</span> <span class="function">handleInput</span>(event) {
+  console.<span class="function">log</span>(<span class="string">'Processing input:'</span>, event.target.value);
+}
+
+<span class="keyword">function</span> <span class="function">handleScroll</span>() {
+  console.<span class="function">log</span>(<span class="string">'Handling scroll event'</span>);
+}
+
+<span class="comment">// Create debounced and throttled versions</span>
+<span class="keyword">const</span> debouncedInputHandler = <span class="function">debounce</span>(handleInput, 300);
+<span class="keyword">const</span> throttledScrollHandler = <span class="function">throttle</span>(handleScroll, 200);
+
+<span class="comment">// Simulate multiple rapid events</span>
+console.<span class="function">log</span>(<span class="string">'Simulating rapid input events...'</span>);
+<span class="keyword">const</span> mockEvent = { target: { value: <span class="string">'test'</span> } };
+<span class="keyword">for</span> (<span class="keyword">let</span> i = 0; i &lt; 5; i++) {
+  <span class="function">debouncedInputHandler</span>(mockEvent);
+}
+
+console.<span class="function">log</span>(<span class="string">'Simulating rapid scroll events...'</span>);
+<span class="keyword">for</span> (<span class="keyword">let</span> i = 0; i &lt; 10; i++) {
+  <span class="function">throttledScrollHandler</span>();
+}
+
+<span class="comment">// Example of efficient DOM manipulation with DocumentFragment</span>
+<span class="keyword">function</span> <span class="function">efficientDOMUpdate</span>() {
+  <span class="comment">// Create a document fragment to batch DOM changes</span>
+  <span class="keyword">const</span> fragment = document.<span class="function">createDocumentFragment</span>();
+  
+  <span class="comment">// Add multiple elements to the fragment</span>
+  <span class="keyword">for</span> (<span class="keyword">let</span> i = 0; i &lt; 100; i++) {
+    <span class="keyword">const</span> li = document.<span class="function">createElement</span>(<span class="string">'li'</span>);
+    li.textContent = <span class="string">`Item </span><span class="number">${i + 1}</span><span class="string">`</span>;
+    fragment.<span class="function">appendChild</span>(li);
+  }
+  
+  console.<span class="function">log</span>(<span class="string">'Created fragment with 100 elements. In a real scenario, you would append it to the DOM in one operation.'</span>);
+  <span class="keyword">return</span> fragment;
+}
+
+<span class="function">efficientDOMUpdate</span>();</code></pre>
+                    <div class="output"></div>
+                </div>
+            </div>
+            
+            <div class="topic-content" id="memory" style="display: none;">
+                <h2>Memory Management</h2>
+                <p>Memory management in JavaScript is mostly handled automatically through garbage collection, but developers still need to be aware of memory leaks and how to avoid them. Understanding how memory is allocated and released is crucial for building efficient applications.</p>
+                
+                <h3>Example: Identifying and Preventing Memory Leaks</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="run-btn"><i class="fas fa-play"></i> Run</button>
+                    </div>
+                    <pre><code><span class="comment">// Example of a potential memory leak</span>
+<span class="keyword">function</span> <span class="function">createPotentialLeak</span>() {
+  <span class="keyword">const</span> largeObject = <span class="keyword">new</span> <span class="function">Array</span>(1000000).<span class="function">fill</span>(<span class="string">'test'</span>);
+  <span class="keyword">const</span> elements = [];
+  
+  <span class="comment">// This would create a memory leak in some scenarios</span>
+  <span class="keyword">return</span> <span class="keyword">function</span>() {
+    elements.<span class="function">push</span>(largeObject);
+    console.<span class="function">log</span>(<span class="string">'Elements count:'</span>, elements.length);
+  };
+}
+
+<span class="comment">// Example of proper cleanup</span>
+<span class="keyword">class</span> ResourceHandler {
+  <span class="function">constructor</span>() {
+    <span class="keyword">this</span>.resources = [];
+    <span class="keyword">this</span>.intervalId = <span class="keyword">null</span>;
+  }
+  
+  <span class="function">addResource</span>(resource) {
+    <span class="keyword">this</span>.resources.<span class="function">push</span>(resource);
+  }
+  
+  <span class="function">start</span>() {
+    <span class="keyword">this</span>.intervalId = <span class="function">setInterval</span>(() => {
+      console.<span class="function">log</span>(<span class="string">'Processing resources, count:'</span>, <span class="keyword">this</span>.resources.length);
+    }, 1000);
+  }
+  
+  <span class="function">cleanup</span>() {
+    <span class="comment">// Clear interval to prevent memory leak</span>
+    <span class="keyword">if</span> (<span class="keyword">this</span>.intervalId) {
+      <span class="function">clearInterval</span>(<span class="keyword">this</span>.intervalId);
+      <span class="keyword">this</span>.intervalId = <span class="keyword">null</span>;
+    }
+    
+    <span class="comment">// Clear references to allow garbage collection</span>
+    <span class="keyword">this</span>.resources = [];
+    
+    console.<span class="function">log</span>(<span class="string">'Resources cleaned up'</span>);
+  }
+}
+
+<span class="comment">// Using WeakMap for memory-efficient caching</span>
+<span class="keyword">function</span> <span class="function">createWeakMapCache</span>() {
+  <span class="keyword">const</span> cache = <span class="keyword">new</span> <span class="function">WeakMap</span>();
+  
+  <span class="keyword">return</span> {
+    <span class="function">set</span>(key, value) {
+      <span class="comment">// Only objects can be used as keys in WeakMap</span>
+      <span class="keyword">if</span> (<span class="keyword">typeof</span> key === <span class="string">'object'</span> &amp;&amp; key !== <span class="keyword">null</span>) {
+        cache.<span class="function">set</span>(key, value);
+        <span class="keyword">return</span> <span class="keyword">true</span>;
+      }
+      <span class="keyword">return</span> <span class="keyword">false</span>;
+    },
+    
+    <span class="function">get</span>(key) {
+      <span class="keyword">return</span> cache.<span class="function">get</span>(key);
+    }
+  };
+}
+
+<span class="comment">// Demonstrate memory management techniques</span>
+<span class="keyword">const</span> handler = <span class="keyword">new</span> <span class="function">ResourceHandler</span>();
+handler.<span class="function">addResource</span>({ data: <span class="string">'test1'</span> });
+handler.<span class="function">addResource</span>({ data: <span class="string">'test2'</span> });
+handler.<span class="function">start</span>();
+
+<span class="comment">// Simulate cleanup after some time</span>
+<span class="function">setTimeout</span>(() => {
+  handler.<span class="function">cleanup</span>();
+}, 2000);
+
+<span class="comment">// Demonstrate WeakMap usage</span>
+<span class="keyword">const</span> cache = <span class="function">createWeakMapCache</span>();
+<span class="keyword">const</span> objKey = { id: 1 };
+cache.<span class="function">set</span>(objKey, <span class="string">'cached value'</span>);
+console.<span class="function">log</span>(<span class="string">'Cached value:'</span>, cache.<span class="function">get</span>(objKey));</code></pre>
+                    <div class="output"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Topic navigation
+            const topicItems = document.querySelectorAll('.topic-item');
+            const topicContents = document.querySelectorAll('.topic-content');
+            
+            topicItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const topicId = this.getAttribute('data-topic');
+                    
+                    // Update active state
+                    topicItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    topicContents.forEach(content => content.style.display = 'none');
+                    document.getElementById(topicId).style.display = 'block';
+                });
+            });
+            
+            // Run button functionality
+            const runButtons = document.querySelectorAll('.run-btn');
+            
+            runButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const codeContainer = this.closest('.code-container');
+                    const codeElement = codeContainer.querySelector('code');
+                    const outputElement = codeContainer.querySelector('.output');
+                    
+                    try {
+                        // Capture console.log output
+                        const originalLog = console.log;
+                        let output = '';
+                        
+                        console.log = function() {
+                            output += Array.from(arguments).join(' ') + '\n';
+                            originalLog.apply(console, arguments);
+                        };
+                        
+                        // Execute the code
+                        eval(codeElement.textContent);
+                        
+                        // Restore console.log
+                        console.log = originalLog;
+                        
+                        // Display output
+                        outputElement.textContent = output || 'Code executed (no output)';
+                    } catch (error) {
+                        outputElement.textContent = 'Error: ' + error.message;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

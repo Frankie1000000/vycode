@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete JavaScript Browser APIs Explorer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --dark-blue: #1a4b6b;
+            --pale-green: #c2e59c;
+            --light-blue: #2c6e89;
+            --cream: #f8f9fa;
+            --dark-text: #2d3436;
+            --light-text: #dfe6e9;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --bg-gradient: linear-gradient(135deg, var(--dark-blue) 0%, #64b3f4 100%);
+        }
+        
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--light-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: background 0.5s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        body.light-mode {
+            --bg-gradient: linear-gradient(135deg, var(--pale-green) 0%, #64b3f4 100%);
+            --dark-blue: #3a6b8b;
+            --light-blue: #4a8ca8;
+            --dark-text: #2d3436;
+            --light-text: #2d3436;
+            --card-bg: rgba(255, 255, 255, 0.3);
+        }
+        
+        .container {
+            display: flex;
+            flex: 1;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-btn {
+            padding: 12px 25px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .nav-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .theme-btn {
+            padding: 12px 25px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .theme-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: #a8d0e6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .topics-panel {
+            width: 35%;
+            padding: 20px;
+            overflow-y: auto;
+            height: calc(100vh - 180px);
+        }
+        
+        .content-panel {
+            width: 65%;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            height: calc(100vh - 180px);
+            overflow-y: auto;
+        }
+        
+        .topic-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .topic-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+        
+        .topic-item.active {
+            border-left: 4px solid #a8d0e6;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .topic-content {
+            display: none;
+        }
+        
+        .topic-content.active {
+            display: block;
+        }
+        
+        .topic-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #a8d0e6;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #a8d0e6;
+        }
+        
+        .topic-description {
+            margin-bottom: 25px;
+            line-height: 1.8;
+        }
+        
+        .code-example {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+        }
+        
+        .code-example pre {
+            white-space: pre-wrap;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        
+        .run-btn {
+            padding: 10px 20px;
+            background: #4a8ca8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+        
+        .run-btn:hover {
+            background: #3a7a96;
+            transform: translateY(-2px);
+        }
+        
+        .output {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            min-height: 100px;
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 50px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            color: #2d3436;
+        }
+        
+        .search-box i {
+            position: absolute;
+            right: 20px;
+            top: 12px;
+            color: var(--dark-blue);
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .topics-panel, .content-panel {
+                width: 100%;
+                height: auto;
+            }
+            
+            .content-panel {
+                border-left: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-btn, .theme-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        .highlight {
+            background-color: yellow;
+            color: black;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .code-comment {
+            color: #8cc;
+            font-style: italic;
+        }
+        
+        .code-keyword {
+            color: #f9a;
+        }
+        
+        .code-string {
+            color: #9f9;
+        }
+        
+        .code-function {
+            color: #6cf;
+        }
+        
+        .double-tap-hint {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+        
+        @media (max-width: 768px) {
+            .double-tap-hint {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="double-tap-hint">
+        <i class="fas fa-hand-point-up"></i> Double tap on topics to view details
+    </div>
+
+    <div class="navigation">
+        <a href="page6.html" class="nav-btn prev-btn">
+            <i class="fas fa-arrow-left"></i> Previous</a>
+        
+        
+        <button class="theme-btn">
+            <i class="fas fa-moon"></i> Toggle Theme
+        </button>
+        
+         <a href=page8.html class="nav-btn next-btn">
+            Next <i class="fas fa-arrow-right"></i></a>
+       
+    </div>
+    
+    <header>
+        <h1>JavaScript Browser APIs Explorer</h1>
+        <p class="subtitle">Learn about Browser APIs with interactive examples</p>
+    </header>
+
+    <div class="container">
+        <div class="topics-panel">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search Browser APIs...">
+                <i class="fas fa-search"></i>
+            </div>
+            
+            <div class="topic-list">
+                <div class="topic-item active" data-topic="window">
+                    <h3>Window Object</h3>
+                    <p>The global object in browser JavaScript</p>
+                </div>
+                <div class="topic-item" data-topic="document">
+                    <h3>Document Object</h3>
+                    <p>Represents the web page and its content</p>
+                </div>
+                <div class="topic-item" data-topic="timers">
+                    <h3>Timers API</h3>
+                    <p>setTimeout, setInterval and related functions</p>
+                </div>
+                <div class="topic-item" data-topic="localstorage">
+                    <h3>LocalStorage & SessionStorage</h3>
+                    <p>Client-side key-value storage</p>
+                </div>
+                <div class="topic-item" data-topic="geolocation">
+                    <h3>Geolocation API</h3>
+                    <p>Access to user's geographical location</p>
+                </div>
+                <div class="topic-item" data-topic="canvas">
+                    <h3>Canvas API</h3>
+                    <p>Dynamic, scriptable rendering of 2D shapes</p>
+                </div>
+                <div class="topic-item" data-topic="history">
+                    <h3>History API</h3>
+                    <p>Manipulation of the browser session history</p>
+                </div>
+                <div class="topic-item" data-topic="dragdrop">
+                    <h3>Drag and Drop API</h3>
+                    <p>Native drag and drop functionality</p>
+                </div>
+                <div class="topic-item" data-topic="notifications">
+                    <h3>Notifications API</h3>
+                    <p>Display notifications to the user</p>
+                </div>
+                <div class="topic-item" data-topic="fetch">
+                    <h3>Fetch API</h3>
+                    <p>Modern interface for HTTP requests</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-panel">
+            <!-- Window Object Content -->
+            <div class="topic-content active" id="window-content">
+                <h2 class="topic-title">Window Object</h2>
+                <div class="topic-description">
+                    <p>The Window object represents a window containing a DOM document. It is the global object in browser JavaScript and provides methods to control the browser window, access the document, and handle events.</p>
+                    <p>The Window interface is home to a variety of functions, namespaces, objects, and constructors which are not necessarily directly associated with the concept of a user interface window.</p>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Example: Get Window Dimensions</h3>
+                    <pre><span class="code-comment">// Get viewport dimensions</span>
+<span class="code-keyword">const</span> width = window.innerWidth;
+<span class="code-keyword">const</span> height = window.innerHeight;
+
+<span class="code-comment">// Get screen dimensions</span>
+<span class="code-keyword">const</span> screenWidth = window.screen.width;
+<span class="code-keyword">const</span> screenHeight = window.screen.height;
+
+<span class="code-comment">// Display the information</span>
+console.log(<span class="code-string">`Viewport: ${width}x${height}`</span>);
+console.log(<span class="code-string">`Screen: ${screenWidth}x${screenHeight}`</span>);
+
+<span class="code-comment">// Open a new window</span>
+<span class="code-keyword">const</span> newWindow = window.open(<span class="code-string">''</span>, <span class="code-string">'_blank'</span>, <span class="code-string">'width=400,height=300'</span>);
+newWindow.document.write(<span class="code-string">'&lt;h1&gt;Hello from a new window!&lt;/h1&gt;'</span>);</pre>
+                    <button class="run-btn" onclick="runWindowExample()"><i class="fas fa-play"></i> Run Example</button>
+                    <div class="output" id="window-output"></div>
+                </div>
+            </div>
+            
+            <!-- Document Object Content -->
+            <div class="topic-content" id="document-content">
+                <h2 class="topic-title">Document Object</h2>
+                <div class="topic-description">
+                    <p>The Document interface represents any web page loaded in the browser and serves as an entry point into the web page's content, which is the DOM tree.</p>
+                    <p>The DOM tree includes elements such as &lt;body&gt; and &lt;table&gt;, among many others. It provides functionality to manipulate the document structure, style, and content.</p>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Example: Document Manipulation</h3>
+                    <pre><span class="code-comment">// Create a new element</span>
+<span class="code-keyword">const</span> newDiv = document.createElement(<span class="code-string">'div'</span>);
+newDiv.textContent = <span class="code-string">'This is a new div element'</span>;
+newDiv.classList.add(<span class="code-string">'highlight'</span>);
+
+<span class="code-comment">// Append to body</span>
+document.body.appendChild(newDiv);
+
+<span class="code-comment">// Select elements</span>
+<span class="code-keyword">const</span> firstParagraph = document.querySelector(<span class="code-string">'p'</span>);
+<span class="code-keyword">const</span> allDivs = document.querySelectorAll(<span class="code-string">'div'</span>);
+
+<span class="code-comment">// Modify element style</span>
+firstParagraph.style.color = <span class="code-string">'blue'</span>;
+firstParagraph.style.fontSize = <span class="code-string">'20px'</span>;
+
+console.log(<span class="code-string">`Number of div elements: ${allDivs.length}`</span>);</pre>
+                    <button class="run-btn" onclick="runDocumentExample()"><i class="fas fa-play"></i> Run Example</button>
+                    <div class="output" id="document-output"></div>
+                </div>
+            </div>
+            
+            <!-- Timers API Content -->
+            <div class="topic-content" id="timers-content">
+                <h2 class="topic-title">Timers API</h2>
+                <div class="topic-description">
+                    <p>The WindowOrWorkerGlobalScope mixin provides the setTimeout() and setInterval() methods, which can be used to schedule code execution after a delay or at repeated intervals.</p>
+                    <p>These methods return an ID that can be used to cancel the scheduled execution using clearTimeout() or clearInterval().</p>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Example: Using Timers</h3>
+                    <pre><span class="code-comment">// Set a timeout to execute after 2 seconds</span>
+<span class="code-keyword">const</span> timeoutId = setTimeout(<span class="code-function">()</span> <span class="code-keyword">=&gt;</span> {
+    console.log(<span class="code-string">'This message appears after 2 seconds'</span>);
+}, 2000);
+
+<span class="code-comment">// Set an interval to execute every second</span>
+<span class="code-keyword">let</span> counter = 0;
+<span class="code-keyword">const</span> intervalId = setInterval(<span class="code-function">()</span> <span class="code-keyword">=&gt;</span> {
+    counter++;
+    console.log(<span class="code-string">`Interval count: ${counter}`</span>);
+    
+    <span class="code-comment">// Stop after 5 counts</span>
+    <span class="code-keyword">if</span> (counter >= 5) {
+        clearInterval(intervalId);
+        console.log(<span class="code-string">'Interval stopped'</span>);
+    }
+}, 1000);
+
+<span class="code-comment">// Clear a timeout (uncomment to test)</span>
+<span class="code-comment">// clearTimeout(timeoutId);</span></pre>
+                    <button class="run-btn" onclick="runTimersExample()"><i class="fas fa-play"></i> Run Example</button>
+                    <div class="output" id="timers-output"></div>
+                </div>
+            </div>
+            
+            <!-- LocalStorage Content -->
+            <div class="topic-content" id="localstorage-content">
+                <h2 class="topic-title">LocalStorage & SessionStorage</h2>
+                <div class="topic-description">
+                    <p>The Web Storage API provides mechanisms for browsers to store key-value pairs in a much more intuitive fashion than using cookies.</p>
+                    <p><strong>localStorage</strong> persists data beyond the current session, even when the browser is closed and reopened.</p>
+                    <p><strong>sessionStorage</strong> maintains data only for the current session (until the browser is closed).</p>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Example: Using localStorage</h3>
+                    <pre><span class="code-comment">// Store data</span>
+localStorage.setItem(<span class="code-string">'username'</span>, <span class="code-string">'JohnDoe'</span>);
+localStorage.setItem(<span class="code-string">'theme'</span>, <span class="code-string">'dark'</span>);
+
+<span class="code-comment">// Retrieve data</span>
+<span class="code-keyword">const</span> username = localStorage.getItem(<span class="code-string">'username'</span>);
+<span class="code-keyword">const</span> theme = localStorage.getItem(<span class="code-string">'theme'</span>);
+
+<span class="code-comment">// Remove item</span>
+<span class="code-comment">// localStorage.removeItem('theme');</span>
+
+<span class="code-comment">// Clear all</span>
+<span class="code-comment">// localStorage.clear();</span>
+
+console.log(<span class="code-string">`Username: ${username}, Theme: ${theme}`</span>);
+
+<span class="code-comment">// Using sessionStorage (same API)</span>
+sessionStorage.setItem(<span class="code-string">'sessionData'</span>, <span class="code-string">'This will be lost when the session ends'</span>);</pre>
+                    <button class="run-btn" onclick="runLocalStorageExample()"><i class="fas fa-play"></i> Run Example</button>
+                    <div class="output" id="localstorage-output"></div>
+                </div>
+            </div>
+            
+            <!-- Geolocation Content -->
+            <div class="topic-content" id="geolocation-content">
+                <h2 class="topic-title">Geolocation API</h2>
+                <div class="topic-description">
+                    <p>The Geolocation API allows the user to provide their location to web applications if they so desire. For privacy reasons, the user is asked for permission to report location information.</p>
+                    <p>This API is available through the navigator.geolocation object and provides methods to get the current position, watch for position changes, and clear watches.</p>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Example: Get Current Location</h3>
+                    <pre><span class="code-keyword">function</span> getLocation() {
+  <span class="code-keyword">if</span> (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      <span class="code-function">(position)</span> <span class="code-keyword">=&gt;</span> {
+        <span class="code-keyword">const</span> latitude = position.coords.latitude;
+        <span class="code-keyword">const</span> longitude = position.coords.longitude;
+        <span class="code-keyword">const</span> accuracy = position.coords.accuracy;
+        
+        console.log(<span class="code-string">`Latitude: ${latitude}, Longitude: ${longitude}`</span>);
+        console.log(<span class="code-string">`Accuracy: ${accuracy} meters`</span>);
+      },
+      <span class="code-function">(error)</span> <span class="code-keyword">=&gt;</span> {
+        console.error(<span class="code-string">`Error getting location: ${error.message}`</span>);
+      },
+      {
+        enableHighAccuracy: <span class="code-keyword">true</span>,
+        timeout: 5000,
+        maximumAge: 0
+      }
+    );
+  } <span class="code-keyword">else</span> {
+    console.error(<span class="code-string">"Geolocation is not supported by this browser."</span>);
+  }
+}</pre>
+                    <button class="run-btn" onclick="runGeolocationExample()"><i class="fas fa-play"></i> Run Example</button>
+                    <div class="output" id="geolocation-output"></div>
+                </div>
+            </div>
+            
+            <!-- Canvas Content -->
+            <div class="topic-content" id="canvas-content">
+                <h2 class="topic-title">Canvas API</h2>
+                <div class="topic-description">
+                    <p>The Canvas API provides a means for drawing graphics via JavaScript and the HTML &lt;canvas&gt; element. It can be used for animation, game graphics, data visualization, photo manipulation, and real-time video processing.</p>
+                    <p>The Canvas API largely focuses on 2D graphics. The WebGL API, which also uses the &lt;canvas&gt; element, draws hardware-accelerated 2D and 3D graphics.</p>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Example: Basic Canvas Drawing</h3>
+                    <pre><span class="code-keyword">const</span> canvas = document.createElement(<span class="code-string">'canvas'</span>);
+canvas.width = 300;
+canvas.height = 200;
+canvas.style.border = <span class="code-string">'1px solid black'</span>;
+
+<span class="code-keyword">const</span> ctx = canvas.getContext(<span class="code-string">'2d'</span>);
+
+<span class="code-comment">// Draw rectangle</span>
+ctx.fillStyle = <span class="code-string">'rgb(200, 0, 0)'</span>;
+ctx.fillRect(10, 10, 50, 50);
+
+<span class="code-comment">// Draw circle</span>
+ctx.fillStyle = <span class="code-string">'rgba(0, 0, 200, 0.5)'</span>;
+ctx.beginPath();
+ctx.arc(100, 35, 25, 0, Math.PI * 2, <span class="code-keyword">true</span>);
+ctx.fill();
+
+<span class="code-comment">// Draw text</span>
+ctx.font = <span class="code-string">'20px Arial'</span>;
+ctx.fillStyle = <span class="code-string">'black'</span>;
+ctx.fillText(<span class="code-string">'Hello Canvas'</span>, 70, 100);
+
+<span class="code-comment">// Output the canvas</span>
+document.getElementById(<span class="code-string">'canvas-output'</span>).appendChild(canvas);</pre>
+                    <button class="run-btn" onclick="runCanvasExample()"><i class="fas fa-play"></i> Run Example</button>
+                    <div class="output" id="canvas-output"></div>
+                </div>
+            </div>
+            
+            <!-- History Content -->
+            <div class="topic-content" id="history-content">
+                <h2 class="topic-title">History API</h2>
+                <div class="topic-description">
+                    <p>The History API provides access to the browser's session history through the history object. It lets you manipulate the browser session history, that is the pages visited in the tab or frame that the current page is loaded in.</p>
+                    <p>This is especially useful for single-page applications (SPAs) that need to manage navigation state without full page reloads.</p>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Example: History Manipulation</h3>
+                    <pre><span class="code-comment">// Get number of history entries</span>
+<span class="code-keyword">const</span> historyLength = history.length;
+console.log(<span class="code-string">`History length: ${historyLength}`</span>);
+
+<span class="code-comment">// Navigate forward and backward</span>
+<span class="code-comment">// history.back();    // Go to the previous page in history</span>
+<span class="code-comment">// history.forward(); // Go to the next page in history</span>
+<span class="code-comment">// history.go(-2);    // Go back two pages</span>
+
+<span class="code-comment">// Add a new state to history</span>
+<span class="code-keyword">const</span> state = { page: <span class="code-string">"settings"</span>, user: <span class="code-string">"john"</span> };
+history.pushState(state, <span class="code-string">"Settings"</span>, <span class="code-string">"/settings"</span>);
+
+<span class="code-comment">// Replace current state</span>
+<span class="code-comment">// history.replaceState(state, "Settings", "/settings");</span>
+
+<span class="code-comment">// Listen for popstate events (when user navigates through history)</span>
+window.addEventListener(<span class="code-string">'popstate'</span>, <span class="code-function">(event)</span> <span class="code-keyword">=&gt;</span> {
+  console.log(<span class="code-string">'Location changed to: '</span> + document.location.href);
+  console.log(<span class="code-string">'State: '</span>, event.state);
+});</pre>
+                    <button class="run-btn" onclick="runHistoryExample()"><i class="fas fa-play"></i> Run Example</button>
+                    <div class="output" id="history-output"></div>
+                </div>
+            </div>
+            
+            <!-- Drag and Drop Content -->
+            <div class="topic-content" id="dragdrop-content">
+                <h2 class="topic-title">Drag and Drop API</h2>
+                <div class="topic-description">
+                    <p>The HTML Drag and Drop API enables applications to use drag-and-drop features in browsers. It allows users to click and hold the mouse button down over an element, drag it to another location, and release the mouse button to drop the element there.</p>
+                    <p>The API defines events for drag and drop operations, data transfer mechanisms, and provides a way to customize the drag image and feedback.</p>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Example: Basic Drag and Drop</h3>
+                    <pre><span class="code-comment">// Make an element draggable</span>
+<span class="code-keyword">function</span> makeDraggable(element) {
+    element.draggable = <span class="code-keyword">true</span>;
+    
+    element.addEventListener(<span class="code-string">'dragstart'</span>, <span class="code-function">(e)</span> <span class="code-keyword">=&gt;</span> {
+        e.dataTransfer.setData(<span class="code-string">'text/plain'</span>, element.id);
+        element.classList.add(<span class="code-string">'dragging'</span>);
+    });
+    
+    element.addEventListener(<span class="code-string">'dragend'</span>, <span class="code-function">()</span> <span class="code-keyword">=&gt;</span> {
+        element.classList.remove(<span class="code-string">'dragging'</span>);
+    });
+}
+
+<span class="code-comment">// Make an element a drop target</span>
+<span class="code-keyword">function</span> makeDropTarget(element) {
+    element.addEventListener(<span class="code-string">'dragover'</span>, <span class="code-function">(e)</span> <span class="code-keyword">=&gt;</span> {
+        e.preventDefault(); <span class="code-comment">// Necessary to allow dropping</span>
+        element.classList.add(<span class="code-string">'drag-over'</span>);
+    });
+    
+    element.addEventListener(<span class="code-string">'dragleave'</span>, <span class="code-function">()</span> <span class="code-keyword">=&gt;</span> {
+        element.classList.remove(<span class="code-string">'drag-over'</span>);
+    });
+    
+    element.addEventListener(<span class="code-string">'drop'</span>, <span class="code-function">(e)</span> <span class="code-keyword">=&gt;</span> {
+        e.preventDefault();
+        element.classList.remove(<span class="code-string">'drag-over'</span>);
+        
+        <span class="code-keyword">const</span> id = e.dataTransfer.getData(<span class="code-string">'text/plain'</span>);
+        <span class="code-keyword">const</span> draggable = document.getElementById(id);
+        
+        <span class="code-comment">// Move the element to the drop target</span>
+        element.appendChild(draggable);
+        
+        console.log(<span class="code-string">`Dropped <span class="code-highlight">${id}</span> into drop zone`</span>);
+    });
+}
+
+<span class="code-comment">// Initialize drag and drop functionality</span>
+document.addEventListener(<span class="code-string">'DOMContentLoaded'</span>, <span class="code-function">()</span> <span class="code-keyword">=&gt;</span> {
+    <span class="code-keyword">const</span> draggableElements = document.querySelectorAll(<span class="code-string">'.draggable'</span>);
+    <span class="code-keyword">const</span> dropTargets = document.querySelectorAll(<span class="code-string">'.drop-target'</span>);
+    
+    draggableElements.forEach(makeDraggable);
+    dropTargets.forEach(makeDropTarget);
+});</pre>
+                    <button class="run-btn" onclick="runDragDropExample()"><i class="fas fa-play"></i> Run Example</button>
+                    <div class="output" id="dragdrop-output"></div>
+                </div>
+            </div>
+            
+            <!-- Notifications Content -->
+            <div class="topic-content" id="notifications-content">
+                <h2 class="topic-title">Notifications API</h2>
+                <div class="topic-description">
+                    <p>The Notifications API allows web pages to display system notifications to the user. These appear outside the browser context, making them visible even when the user is not actively using the web page.</p>
+                    <p>Notifications require user permission, which should be requested in response to a user gesture to ensure good user experience.</p>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Example: Displaying a Notification</h3>
+                    <pre><span class="code-comment">// Request permission for notifications</span>
+<span class="code-keyword">async</span> <span class="code-keyword">function</span> requestNotificationPermission() {
+    <span class="code-keyword">if</span> (!(<span class="code-string">'Notification'</span> <span class="code-keyword">in</span> window)) {
+        console.error(<span class="code-string">'This browser does not support notifications'</span>);
+        <span class="code-keyword">return</span> <span class="code-keyword">false</span>;
+    }
+    
+    <span class="code-keyword">if</span> (Notification.permission === <span class="code-string">'granted'</span>) {
+        <span class="code-keyword">return</span> <span class="code-keyword">true</span>;
+    }
+    
+    <span class="code-keyword">const</span> permission = <span class="code-keyword">await</span> Notification.requestPermission();
+    <span class="code-keyword">return</span> permission === <span class="code-string">'granted'</span>;
+}
+
+<span class="code-comment">// Display a notification</span>
+<span class="code-keyword">function</span> showNotification(title, options) {
+    <span class="code-keyword">if</span> (Notification.permission !== <span class="code-string">'granted'</span>) {
+        console.error(<span class="code-string">'Notification permission not granted'</span>);
+        <span class="code-keyword">return</span>;
+    }
+    
+    <span class="code-keyword">const</span> notification = <span class="code-keyword">new</span> Notification(title, options);
+    
+    <span class="code-comment">// Handle notification click</span>
+    notification.onclick = <span class="code-function">()</span> <span class="code-keyword">=&gt;</span> {
+        console.log(<span class="code-string">'Notification clicked'</span>);
+        window.focus();
+        notification.close();
+    };
+    
+    <span class="code-comment">// Automatically close after 5 seconds</span>
+    setTimeout(<span class="code-function">()</span> <span class="code-keyword">=&gt;</span> {
+        notification.close();
+    }, 5000);
+    
+    <span class="code-keyword">return</span> notification;
+}
+
+<span class="code-comment">// Example usage</span>
+<span class="code-keyword">async</span> <span class="code-keyword">function</span> demoNotification() {
+    <span class="code-keyword">const</span> hasPermission = <span class="code-keyword">await</span> requestNotificationPermission();
+    
+    <span class="code-keyword">if</span> (hasPermission) {
+        showNotification(<span class="code-string">'Hello!'</span>, {
+            body: <span class="code-string">'This is a sample notification from the Browser APIs Explorer.'</span>,
+            icon: <span class="code-string">'https://example.com/icon.png'</span>, <span class="code-comment">// Replace with actual icon URL</span>
+            tag: <span class="code-string">'sample-notification'</span>
+        });
+    }
+}</pre>
+                    <button class="run-btn" onclick="runNotificationsExample()"><i class="fas fa-play"></i> Run Example</button>
+                    <div class="output" id="notifications-output"></div>
+                </div>
+            </div>
+            
+            <!-- Fetch API Content -->
+            <div class="topic-content" id="fetch-content">
+                <h2 class="topic-title">Fetch API</h2>
+                <div class="topic-description">
+                    <p>The Fetch API provides a modern interface for making HTTP requests. It is more powerful and flexible than the older XMLHttpRequest and uses Promises for better async handling.</p>
+                    <p>The fetch() method takes a URL and returns a Promise that resolves to the Response object representing the response to the request.</p>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Example: Making HTTP Requests with Fetch</h3>
+                    <pre><span class="code-comment">// Basic GET request</span>
+<span class="code-keyword">async</span> <span class="code-keyword">function</span> fetchData(url) {
+    <span class="code-keyword">try</span> {
+        <span class="code-keyword">const</span> response = <span class="code-keyword">await</span> fetch(url);
+        
+        <span class="code-keyword">if</span> (!response.ok) {
+            <span class="code-keyword">throw</span> <span class="code-keyword">new</span> Error(<span class="code-string">`HTTP error! status: ${response.status}`</span>);
+        }
+        
+        <span class="code-keyword">const</span> data = <span class="code-keyword">await</span> response.json();
+        <span class="code-keyword">return</span> data;
+    } <span class="code-keyword">catch</span> (error) {
+        console.error(<span class="code-string">'Error fetching data:'</span>, error);
+    }
+}
+
+<span class="code-comment">// POST request with JSON data</span>
+<span class="code-keyword">async</span> <span class="code-keyword">function</span> postData(url, data) {
+    <span class="code-keyword">try</span> {
+        <span class="code-keyword">const</span> response = <span class="code-keyword">await</span> fetch(url, {
+            method: <span class="code-string">'POST'</span>,
+            headers: {
+                <span class="code-string">'Content-Type'</span>: <span class="code-string">'application/json'</span>,
+            },
+            body: JSON.stringify(data),
+        });
+        
+        <span class="code-keyword">if</span> (!response.ok) {
+            <span class="code-keyword">throw</span> <span class="code-keyword">new</span> Error(<span class="code-string">`HTTP error! status: ${response.status}`</span>);
+        }
+        
+        <span class="code-keyword">const</span> responseData = <span class="code-keyword">await</span> response.json();
+        <span class="code-keyword">return</span> responseData;
+    } <span class="code-keyword">catch</span> (error) {
+        console.error(<span class="code-string">'Error posting data:'</span>, error);
+    }
+}
+
+<span class="code-comment">// Example usage</span>
+<span class="code-keyword">async</span> <span class="code-keyword">function</span> demonstrateFetch() {
+    <span class="code-comment">// Fetch data from a public API</span>
+    <span class="code-keyword">const</span> userData = <span class="code-keyword">await</span> fetchData(<span class="code-string">'https://jsonplaceholder.typicode.com/users/1'</span>);
+    console.log(<span class="code-string">'User data:'</span>, userData);
+    
+    <span class="code-comment">// Post data to a test API</span>
+    <span class="code-keyword">const</span> postResult = <span class="code-keyword">await</span> postData(<span class="code-string">'https://jsonplaceholder.typicode.com/posts'</span>, {
+        title: <span class="code-string">'Test Post'</span>,
+        body: <span class="code-string">'This is a test post using fetch()'</span>,
+        userId: 1,
+    });
+    console.log(<span class="code-string">'Post result:'</span>, postResult);
+}</pre>
+                    <button class="run-btn" onclick="runFetchExample()"><i class="fas fa-play"></i> Run Example</button>
+                    <div class="output" id="fetch-output"></div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <footer>
+        <p>JavaScript Browser APIs Explorer &copy; 2023</p>
+    </footer>
+
+    <script>
+        // Theme toggle functionality
+        document.querySelector('.theme-btn').addEventListener('click', function() {
+            document.body.classList.toggle('light-mode');
+            
+            if (document.body.classList.contains('light-mode')) {
+                this.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+            } else {
+                this.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+            }
+        });
+        
+        // Double-tap functionality for topic selection
+        let lastTap = 0;
+        document.querySelectorAll('.topic-item').forEach(item => {
+            item.addEventListener('click', function(event) {
+                const currentTime = new Date().getTime();
+                const tapLength = currentTime - lastTap;
+                
+                if (tapLength < 500 && tapLength > 0) {
+                    // Double-tap detected
+                    // Remove active class from all items
+                    document.querySelectorAll('.topic-item').forEach(i => i.classList.remove('active'));
+                    document.querySelectorAll('.topic-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    const topicId = this.getAttribute('data-topic');
+                    document.getElementById(`${topicId}-content`).classList.add('active');
+                }
+                
+                lastTap = currentTime;
+            });
+        });
+        
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            document.querySelectorAll('.topic-item').forEach(item => {
+                const topicText = item.textContent.toLowerCase();
+                
+                if (topicText.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+        
+        // Navigation buttons
+        document.querySelector('.prev-btn').addEventListener('click', function() {
+            alert('Previous topic: Asynchronous JavaScript');
+        });
+        
+        document.querySelector('.next-btn').addEventListener('click', function() {
+            alert('Next topic: Modern JavaScript (ES6+)');
+        });
+        
+        // Example functions
+        function runWindowExample() {
+            const output = document.getElementById('window-output');
+            output.innerHTML = `
+                <p>Viewport: ${window.innerWidth}x${window.innerHeight}</p>
+                <p>Screen: ${screen.width}x${screen.height}</p>
+                <p>Try resizing your browser window and run again to see changes.</p>
+            `;
+        }
+        
+        function runDocumentExample() {
+            const output = document.getElementById('document-output');
+            
+            // Create a new element
+            const newDiv = document.createElement('div');
+            newDiv.textContent = 'This is a new div element created by the Document API example';
+            newDiv.classList.add('highlight');
+            newDiv.style.padding = '10px';
+            newDiv.style.margin = '10px 0';
+            newDiv.style.backgroundColor = 'rgba(255,255,0,0.2)';
+            
+            // Append to output
+            output.innerHTML = '';
+            output.appendChild(newDiv);
+            
+            // Select elements
+            const allDivs = document.querySelectorAll('div');
+            
+            output.innerHTML += `<p>Number of div elements on page: ${allDivs.length}</p>`;
+        }
+        
+        function runTimersExample() {
+            const output = document.getElementById('timers-output');
+            output.innerHTML = '<p>Timers started. Check console for output.</p>';
+            
+            // Set a timeout to execute after 2 seconds
+            const timeoutId = setTimeout(() => {
+                console.log('This message appears after 2 seconds');
+                output.innerHTML += '<p>Timeout executed after 2 seconds</p>';
+            }, 2000);
+            
+            // Set an interval to execute every second
+            let counter = 0;
+            const intervalId = setInterval(() => {
+                counter++;
+                console.log(`Interval count: ${counter}`);
+                output.innerHTML += `<p>Interval count: ${counter}</p>`;
+                
+                // Stop after 5 counts
+                if (counter >= 5) {
+                    clearInterval(intervalId);
+                    console.log('Interval stopped');
+                    output.innerHTML += '<p>Interval stopped</p>';
+                }
+            }, 1000);
+        }
+        
+        function runLocalStorageExample() {
+            // Store data
+            localStorage.setItem('username', 'JohnDoe');
+            localStorage.setItem('theme', 'dark');
+            
+            // Retrieve data
+            const username = localStorage.getItem('username');
+            const theme = localStorage.getItem('theme');
+            
+            const output = document.getElementById('localstorage-output');
+            output.innerHTML = `
+                <p>Username: ${username}</p>
+                <p>Theme: ${theme}</p>
+                <p>Check your browser's Application/Storage tab in DevTools to see the stored values.</p>
+            `;
+        }
+        
+        function runGeolocationExample() {
+            const output = document.getElementById('geolocation-output');
+            
+            if (!navigator.geolocation) {
+                output.innerHTML = '<p>Geolocation is not supported by your browser.</p>';
+                return;
+            }
+            
+            output.innerHTML = '<p>Requesting location... Please allow permission if prompted.</p>';
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const latitude = position.coords.latitude.toFixed(6);
+                    const longitude = position.coords.longitude.toFixed(6);
+                    const accuracy = position.coords.accuracy;
+                    
+                    output.innerHTML = `
+                        <p>Latitude: ${latitude}</p>
+                        <p>Longitude: ${longitude}</p>
+                        <p>Accuracy: ${accuracy} meters</p>
+                        <p><a href="https://www.google.com/maps?q=${latitude},${longitude}" target="_blank">View on Google Maps</a></p>
+                    `;
+                },
+                (error) => {
+                    let errorMessage;
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = "User denied the request for Geolocation.";
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = "Location information is unavailable.";
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = "The request to get user location timed out.";
+                            break;
+                        case error.UNKNOWN_ERROR:
+                            errorMessage = "An unknown error occurred.";
+                            break;
+                    }
+                    output.innerHTML = `<p>Error: ${errorMessage}</p>`;
+                }
+            );
+        }
+        
+        function runCanvasExample() {
+            const output = document.getElementById('canvas-output');
+            output.innerHTML = ''; // Clear previous output
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = 300;
+            canvas.height = 200;
+            canvas.style.border = '1px solid black';
+            
+            const ctx = canvas.getContext('2d');
+            
+            // Draw rectangle
+            ctx.fillStyle = 'rgb(200, 0, 0)';
+            ctx.fillRect(10, 10, 50, 50);
+            
+            // Draw circle
+            ctx.fillStyle = 'rgba(0, 0, 200, 0.5)';
+            ctx.beginPath();
+            ctx.arc(100, 35, 25, 0, Math.PI * 2, true);
+            ctx.fill();
+            
+            // Draw text
+            ctx.font = '20px Arial';
+            ctx.fillStyle = 'black';
+            ctx.fillText('Hello Canvas', 70, 100);
+            
+            // Draw a simple smiley face
+            ctx.beginPath();
+            ctx.arc(200, 50, 30, 0, Math.PI * 2, true); // Face
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(190, 40, 5, 0, Math.PI * 2, true);  // Left eye
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(210, 40, 5, 0, Math.PI * 2, true);  // Right eye
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(200, 55, 10, 0, Math.PI, false);    // Smile
+            ctx.stroke();
+            
+            output.appendChild(canvas);
+        }
+        
+        function runHistoryExample() {
+            const output = document.getElementById('history-output');
+            output.innerHTML = `
+                <p>Current history length: ${history.length}</p>
+                <p>Try using the browser's back and forward buttons after adding some history states.</p>
+                <p>Check the console for popstate events when navigating through history.</p>
+            `;
+            
+            // Add a demo state to history
+            const state = { 
+                page: "demo", 
+                timestamp: new Date().toLocaleTimeString(),
+                randomId: Math.floor(Math.random() * 1000)
+            };
+            history.pushState(state, "Demo", `#demo-${state.randomId}`);
+            
+            // Update the history length display
+            setTimeout(() => {
+                output.innerHTML = `
+                    <p>Current history length: ${history.length}</p>
+                    <p>Added a demo state to history with random ID: ${state.randomId}</p>
+                    <p>Try using the browser's back and forward buttons to navigate.</p>
+                `;
+            }, 0);
+        }
+        
+        function runDragDropExample() {
+            const output = document.getElementById('dragdrop-output');
+            output.innerHTML = `
+                <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                    <div id="drag-source" class="draggable" style="padding: 20px; background: rgba(255,255,255,0.2); border-radius: 5px; cursor: move;">
+                        Drag me!
+                    </div>
+                    <div id="drop-target" class="drop-target" style="padding: 40px; background: rgba(0,255,0,0.2); border: 2px dashed #aaa; border-radius: 5px;">
+                        Drop here
+                    </div>
+                </div>
+                <p>Try dragging the element on the left and dropping it in the area on the right.</p>
+            `;
+            
+            // Make an element draggable
+            function makeDraggable(element) {
+                element.draggable = true;
+                
+                element.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', element.id);
+                    element.style.opacity = '0.5';
+                });
+                
+                element.addEventListener('dragend', () => {
+                    element.style.opacity = '1';
+                });
+            }
+
+            // Make an element a drop target
+            function makeDropTarget(element) {
+                element.addEventListener('dragover', (e) => {
+                    e.preventDefault(); // Necessary to allow dropping
+                    element.style.background = 'rgba(0,255,0,0.3)';
+                });
+                
+                element.addEventListener('dragleave', () => {
+                    element.style.background = 'rgba(0,255,0,0.2)';
+                });
+                
+                element.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    element.style.background = 'rgba(0,255,0,0.2)';
+                    
+                    const id = e.dataTransfer.getData('text/plain');
+                    const draggable = document.getElementById(id);
+                    
+                    // Move the element to the drop target
+                    element.appendChild(draggable);
+                    output.innerHTML += `<p>Dropped ${id} into drop zone</p>`;
+                });
+            }
+
+            // Initialize drag and drop functionality
+            const draggable = document.getElementById('drag-source');
+            const dropTarget = document.getElementById('drop-target');
+            
+            makeDraggable(draggable);
+            makeDropTarget(dropTarget);
+        }
+        
+        function runNotificationsExample() {
+            const output = document.getElementById('notifications-output');
+            
+            // Request permission for notifications
+            async function requestNotificationPermission() {
+                if (!('Notification' in window)) {
+                    output.innerHTML = '<p>This browser does not support notifications</p>';
+                    return false;
+                }
+                
+                if (Notification.permission === 'granted') {
+                    return true;
+                }
+                
+                const permission = await Notification.requestPermission();
+                return permission === 'granted';
+            }
+
+            // Display a notification
+            function showNotification(title, options) {
+                if (Notification.permission !== 'granted') {
+                    output.innerHTML = '<p>Notification permission not granted</p>';
+                    return;
+                }
+                
+                const notification = new Notification(title, options);
+                
+                // Handle notification click
+                notification.onclick = () => {
+                    output.innerHTML += '<p>Notification clicked</p>';
+                    window.focus();
+                    notification.close();
+                };
+                
+                // Automatically close after 5 seconds
+                setTimeout(() => {
+                    notification.close();
+                }, 5000);
+                
+                return notification;
+            }
+
+            // Example usage
+            async function demoNotification() {
+                output.innerHTML = '<p>Requesting notification permission...</p>';
+                
+                const hasPermission = await requestNotificationPermission();
+                
+                if (hasPermission) {
+                    output.innerHTML += '<p>Permission granted. Showing notification...</p>';
+                    showNotification('Hello from Browser APIs Explorer!', {
+                        body: 'This is a sample notification from the Browser APIs Explorer.',
+                        icon: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xMCAyMGg0Ii8+PHBhdGggZD0iTTEyIDJ2NiIvPjxwYXRoIGQ9Ik0xMi4zNCAxNy4zNGE5IDkgMCAxIDEtNC41OC00LjU4Ii8+PC9zdmc+',
+                        tag: 'sample-notification'
+                    });
+                } else {
+                    output.innerHTML += '<p>Notification permission denied</p>';
+                }
+            }
+            
+            demoNotification();
+        }
+        
+        function runFetchExample() {
+            const output = document.getElementById('fetch-output');
+            output.innerHTML = '<p>Making API requests with Fetch API...</p>';
+            
+            // Basic GET request
+            async function fetchData(url) {
+                try {
+                    const response = await fetch(url);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                    output.innerHTML += `<p>Error: ${error.message}</p>`;
+                }
+            }
+
+            // POST request with JSON data
+            async function postData(url, data) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const responseData = await response.json();
+                    return responseData;
+                } catch (error) {
+                    console.error('Error posting data:', error);
+                    output.innerHTML += `<p>Error: ${error.message}</p>`;
+                }
+            }
+
+            // Example usage
+            async function demonstrateFetch() {
+                // Fetch data from a public API
+                output.innerHTML += '<p>Fetching user data from JSONPlaceholder API...</p>';
+                const userData = await fetchData('https://jsonplaceholder.typicode.com/users/1');
+                
+                if (userData) {
+                    output.innerHTML += `<p>User data received: ${userData.name} (${userData.email})</p>`;
+                }
+                
+                // Post data to a test API
+                output.innerHTML += '<p>Posting data to JSONPlaceholder API...</p>';
+                const postResult = await postData('https://jsonplaceholder.typicode.com/posts', {
+                    title: 'Test Post from Browser APIs Explorer',
+                    body: 'This is a test post using fetch() API',
+                    userId: 1,
+                });
+                
+                if (postResult) {
+                    output.innerHTML += `<p>Post created with ID: ${postResult.id}</p>`;
+                }
+            }
+            
+            demonstrateFetch();
+        }
+    </script>
+</body>
+</html>

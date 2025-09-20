@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Objects & Arrays</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --dark-purple3: #1a4b3a;
+            --pale-blue: #a8d0e6;
+            --light-purple3: #2c6e49;
+            --cream: #f8f9fa;
+            --dark-text: #2d3436;
+            --light-text: #dfe6e9;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --bg-gradient: linear-gradient(135deg, var(--dark-purple3) 0%, var(--pale-blue) 100%);
+            --dark-blue-gradient: linear-gradient(135deg, #0f2b46 0%, #1e3c5c 50%, #2c3e50 100%);
+            --pale-purple-gradient: linear-gradient(135deg, #6a3093 0%, #a044ff 50%, #24243e 100%);
+        }
+        
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--light-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            transition: background 0.5s ease;
+        }
+        
+        body.dark-blue {
+            background: var(--dark-blue-gradient);
+        }
+        
+        body.pale-purple {
+            background: var(--pale-purple-gradient);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--pale-blue);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .category {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .category h2 {
+            color: var(--pale-blue);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--pale-blue);
+        }
+        
+        .topics-list {
+            list-style: none;
+        }
+        
+        .topics-list li {
+            padding: 8px 5px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .topics-list li:hover {
+            background-color: rgba(26, 75, 58, 0.3);
+            transform: translateX(5px);
+        }
+        
+        .topics-list li:before {
+            content: "•";
+            color: var(--pale-blue);
+            font-weight: bold;
+            display: inline-block;
+            width: 20px;
+            font-size: 20px;
+        }
+        
+        .topics-list li.completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        
+        .search-box {
+            margin: 30px auto;
+            max-width: 600px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 50px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .search-box i {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            color: var(--dark-purple3);
+            font-size: 1.2rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 10px;
+            position: relative;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-btn {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+            text-decoration: none;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .theme-toggle {
+            background: rgba(0, 0, 0, 0.3);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .next-btn-container {
+            margin-left: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .categories {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .theme-toggle {
+                position: static;
+                transform: none;
+                order: 3;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .next-btn-container {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .next-btn-container .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        .highlight {
+            background-color: yellow;
+            color: black;
+        }
+        
+        /* Explanation Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, var(--dark-purple3) 0%, var(--pale-blue) 100%);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        
+        body.dark-blue .modal-content {
+            background: linear-gradient(135deg, #1e3c5c 0%, #2c3e50 100%);
+        }
+        
+        body.pale-purple .modal-content {
+            background: linear-gradient(135deg, #6a3093 0%, #a044ff 100%);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .explanation-content h2 {
+            color: white;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--pale-blue);
+            padding-bottom: 10px;
+        }
+        
+        .explanation-text {
+            margin-bottom: 25px;
+            line-height: 1.8;
+        }
+        
+        .code-example {
+            background-color: #1a4b3a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow-x: auto;
+        }
+        
+        body.dark-blue .code-example {
+            background-color: #0f2b46;
+        }
+        
+        body.pale-purple .code-example {
+            background-color: #2d1b69;
+        }
+        
+        .code-example pre {
+            color: #f8f9fa;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        
+        .run-btn {
+            background-color: var(--pale-blue);
+            color: var(--dark-purple3);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .run-btn:hover {
+            background-color: #8fc1e0;
+        }
+        
+        .output-container {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .output-container h3 {
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        #code-output {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            min-height: 100px;
+            color: white;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="controls">
+            <div class="nav-buttons">
+                <a href="page1.html" class="nav-btn">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+            
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-palette"></i> Change Background
+            </button>
+            
+            <div class="next-btn-container">
+                <a href="page3.html" class="nav-btn">
+                    Next <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <header>
+            <h1>JavaScript Objects & Arrays</h1>
+            <p class="subtitle">Master the core concepts of working with objects and arrays in JavaScript</p>
+        </header>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search for JavaScript topics...">
+            <i class="fas fa-search"></i>
+        </div>
+        
+        <div class="categories">
+            <div class="category">
+                <h2>Objects & Arrays</h2>
+                <ul class="topics-list">
+                    <li data-topic="object-creation">Object Creation & Properties</li>
+                    <li data-topic="property-descriptors">Property Flags & Descriptors</li>
+                    <li data-topic="getters-setters">Getters & Setters</li>
+                    <li data-topic="object-methods">Object Methods</li>
+                    <li data-topic="this-keyword">this Keyword</li>
+                    <li data-topic="constructors">Constructor Functions</li>
+                    <li data-topic="array-methods">Array Methods (map, filter, reduce)</li>
+                    <li data-topic="iterables">Iterables & Array-likes</li>
+                    <li data-topic="destructuring">Destructuring Assignment</li>
+                    <li data-topic="json-methods">JSON Methods</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Explanation Modal -->
+    <div id="explanationModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="explanation-content">
+                <h2 id="modal-title">Topic Title</h2>
+                <div class="explanation-text" id="modal-explanation">
+                    <!-- Explanation content will be inserted here -->
+                </div>
+                <div class="code-example">
+                    <pre id="modal-code"><code>// Example code will appear here</code></pre>
+                </div>
+                <button class="run-btn" id="run-code">Run Code</button>
+                <div class="output-container">
+                    <h3>Output:</h3>
+                    <div id="code-output"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const topics = document.querySelectorAll('.topics-list li');
+            const searchInput = document.getElementById('searchInput');
+            const themeToggle = document.getElementById('themeToggle');
+            
+            // Modal elements
+            const modal = document.getElementById('explanationModal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalExplanation = document.getElementById('modal-explanation');
+            const modalCode = document.getElementById('modal-code');
+            const runButton = document.getElementById('run-code');
+            const codeOutput = document.getElementById('code-output');
+            const closeBtn = document.querySelector('.close-btn');
+            
+            // Background themes
+            const themes = ['default', 'dark-blue'];
+            let currentThemeIndex = 0;
+            
+            // Theme toggle functionality
+            themeToggle.addEventListener('click', function() {
+                // Remove all theme classes
+                document.body.classList.remove('dark-blue', 'pale-purple3');
+                
+                // Cycle to next theme
+                currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+                
+                // Apply current theme
+                if (themes[currentThemeIndex] !== 'default') {
+                    document.body.classList.add(themes[currentThemeIndex]);
+                }
+                
+                // Update button text
+                const themeNames = {
+                    'default': 'purple3 & Blue',
+                    'dark-blue': 'Dark Blue',
+                    'pale-': 'Pale purple3'
+
+
+                };
+                
+                themeToggle.innerHTML = `<i class="fas fa-palette"></i> ${themeNames[themes[currentThemeIndex]]}`;
+                
+                // Save theme preference
+                localStorage.setItem('theme', themes[currentThemeIndex]);
+            });
+            
+            // Initialize theme from localStorage
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.body.classList.remove('dark-blue', 'pale-purple3');
+                if (savedTheme !== 'default') {
+                    document.body.classList.add(savedTheme);
+                }
+                
+                // Set current index and button text
+                currentThemeIndex = themes.indexOf(savedTheme);
+                const themeNames = {
+                    'default': 'purple3 & Blue',
+                    'dark-blue': 'Dark Blue',
+                    'pale-purple': 'Pale Purple'
+                };
+                
+                themeToggle.innerHTML = `<i class="fas fa-palette"></i> ${themeNames[savedTheme]}`;
+            }
+            
+            // Topic explanations and code examples
+            const topicData = {
+                'object-creation': {
+                    title: 'Object Creation & Properties',
+                    explanation: `<p>Objects in JavaScript are collections of key-value pairs. There are several ways to create objects:</p>
+                    <ul>
+                        <li><strong>Object literals:</strong> Using curly braces <code>{}</code></li>
+                        <li><strong>Constructor functions:</strong> Using the <code>new</code> keyword</li>
+                        <li><strong>Object.create():</strong> Creating objects with a specific prototype</li>
+                        <li><strong>ES6 classes:</strong> Using the class syntax</li>
+                    </ul>
+                    <p>Objects can have properties that contain values of any type, including other objects and functions (methods).</p>
+                    <p>Properties can be accessed using dot notation (<code>obj.property</code>) or bracket notation (<code>obj['property']</code>).</p>`,
+                    code: `// Object literal syntax (most common)
+const person = {
+    firstName: "John",
+    lastName: "Doe",
+    age: 30,
+    isEmployed: true,
+    address: {
+        street: "123 Main St",
+        city: "Anytown",
+        country: "USA"
+    },
+    // Method (function as property)
+    getFullName: function() {
+        return this.firstName + " " + this.lastName;
+    },
+    // ES6 method shorthand
+    greet() {
+        return "Hello, my name is " + this.firstName;
+    }
+};
+
+console.log("Person object:", person);
+console.log("Full name:", person.getFullName());
+console.log("Greeting:", person.greet());
+
+// Accessing properties
+console.log("Dot notation:", person.firstName); // "John"
+console.log("Bracket notation:", person["lastName"]); // "Doe"
+
+// Dynamic property access
+const propName = "age";
+console.log("Dynamic access:", person[propName]); // 30
+
+// Adding new properties
+person.email = "john.doe@example.com";
+person["phone"] = "555-1234";
+console.log("With new properties:", person);
+
+// Using constructor function
+function Car(make, model, year) {
+    this.make = make;
+    this.model = model;
+    this.year = year;
+    this.getInfo = function() {
+        return \`\${this.year} \${this.make} \${this.model}\`;
+    };
+}
+
+const myCar = new Car("Toyota", "Camry", 2020);
+console.log("Car info:", myCar.getInfo());
+
+// Using Object.create()
+const prototypeObject = {
+    greet() {
+        return "Hello from prototype!";
+    }
+};
+
+const newObj = Object.create(prototypeObject);
+newObj.name = "Object created with Object.create()";
+console.log("New object:", newObj);
+console.log("Inherited method:", newObj.greet());
+
+// Using ES6 classes
+class Animal {
+    constructor(name, species) {
+        this.name = name;
+        this.species = species;
+    }
+    
+    speak() {
+        return \`\${this.name} makes a sound\`;
+    }
+}
+
+const dog = new Animal("Rex", "Dog");
+console.log("Animal:", dog);
+console.log("Animal speaks:", dog.speak());`
+                },
+                'property-descriptors': {
+                    title: 'Property Flags & Descriptors',
+                    explanation: `<p>JavaScript object properties have internal attributes called "flags" that control how properties behave:</p>
+                    <ul>
+                        <li><strong>value:</strong> The value of the property</li>
+                        <li><strong>writable:</strong> If <code>true</code>, the value can be changed</li>
+                        <li><strong>enumerable:</strong> If <code>true</code>, the property shows up in <code>for...in</code> loops</li>
+                        <li><strong>configurable:</strong> If <code>true</code>, the property can be deleted and its attributes can be modified</li>
+                    </ul>
+                    <p>You can use <code>Object.getOwnPropertyDescriptor()</code> to get these flags and <code>Object.defineProperty()</code> to set them.</p>`,
+                    code: `const obj = {
+    regularProp: "I'm a regular property"
+};
+
+// Get property descriptor
+const descriptor = Object.getOwnPropertyDescriptor(obj, 'regularProp');
+console.log("Property descriptor:", descriptor);
+
+// Define a new property with specific flags
+Object.defineProperty(obj, 'readOnlyProp', {
+    value: "I can't be changed",
+    writable: false,
+    enumerable: true,
+    configurable: true
+});
+
+console.log("Read-only property:", obj.readOnlyProp);
+
+// Try to change it (will fail silently in non-strict mode)
+obj.readOnlyProp = "Try to change me";
+console.log("After trying to change:", obj.readOnlyProp); // Still original value
+
+// Define a non-enumerable property
+Object.defineProperty(obj, 'hiddenProp', {
+    value: "I'm hidden from loops",
+    enumerable: false
+});
+
+console.log("Direct access:", obj.hiddenProp); // Works
+
+// Check if it appears in for...in loop
+console.log("Properties in for...in loop:");
+for (let key in obj) {
+    console.log(" -", key); // hiddenProp won't appear
+}
+
+// Define multiple properties at once
+Object.defineProperties(obj, {
+    propA: {
+        value: "Value A",
+        writable: true
+    },
+    propB: {
+        value: "Value B",
+        writable: false
+    }
+});
+
+console.log("Multiple properties defined:", obj.propA, obj.propB);`
+                },
+                'getters-setters': {
+                    title: 'Getters & Setters',
+                    explanation: `<p>Getters and setters are special methods that allow you to define object properties with custom behavior when they are accessed or modified.</p>
+                    <ul>
+                        <li><strong>Getters:</strong> Functions that are called when a property is accessed</li>
+                        <li><strong>Setters:</strong> Functions that are called when a property is assigned a value</li>
+                    </ul>
+                    <p>They are useful for validation, computed properties, and creating interfaces that behave like regular properties but have custom logic.</p>`,
+                    code: `const person = {
+    firstName: "John",
+    lastName: "Doe",
+    
+    // Getter for full name
+    get fullName() {
+        return \`\${this.firstName} \${this.lastName}\`;
+    },
+    
+    // Setter for full name
+    set fullName(name) {
+    const parts = name.split(' ');
+    this.firstName = parts[0];
+    this.lastName = parts[1] || '';
+    },
+    
+    // Getter with validation
+    get age() {
+        return this._age;
+    },
+    
+    // Setter with validation
+    set age(value) {
+        if (value < 0 || value > 150) {
+            throw new Error("Invalid age");
+        }
+        this._age = value;
+    }
+};
+
+// Using the getter
+console.log("Full name:", person.fullName); // "John Doe"
+
+// Using the setter
+person.fullName = "Jane Smith";
+console.log("First name:", person.firstName); // "Jane"
+console.log("Last name:", person.lastName); // "Smith"
+
+// Using age with validation
+person.age = 30;
+console.log("Age:", person.age); // 30
+
+try {
+    person.age = 200; // This will throw an error
+} catch (e) {
+    console.log("Error:", e.message);
+}
+
+// Using Object.defineProperty to create getters/setters
+const circle = {
+    _radius: 5
+};
+
+Object.defineProperty(circle, 'radius', {
+    get: function() {
+        return this._radius;
+    },
+    set: function(value) {
+        if (value <= 0) {
+            throw new Error("Radius must be positive");
+        }
+        this._radius = value;
+    }
+});
+
+Object.defineProperty(circle, 'area', {
+    get: function() {
+        return Math.PI * this._radius * this._radius;
+    }
+    // No setter for area - it's read-only
+});
+
+console.log("Radius:", circle.radius); // 5
+console.log("Area:", circle.area.toFixed(2)); // 78.54
+
+circle.radius = 10;
+console.log("New radius:", circle.radius); // 10
+console.log("New area:", circle.area.toFixed(2)); // 314.16
+
+try {
+    circle.area = 100; // This will fail (no setter)
+} catch (e) {
+    console.log("Error setting area:", e.message);
+}`
+                },
+                'object-methods': {
+                    title: 'Object Methods',
+                    explanation: `<p>JavaScript provides several built-in methods for working with objects:</p>
+                    <ul>
+                        <li><strong>Object.keys():</strong> Returns an array of a object's own property names</li>
+                        <li><strong>Object.values():</strong> Returns an array of a object's own property values</li>
+                        <li><strong>Object.entries():</strong> Returns an array of a object's own key-value pairs</li>
+                        <li><strong>Object.assign():</strong> Copies properties from one or more source objects to a target object</li>
+                        <li><strong>Object.freeze():</strong> Freezes an object, preventing new properties from being added and existing properties from being changed</li>
+                        <li><strong>Object.seal():</strong> Seals an object, preventing new properties from being added but allowing existing properties to be changed</li>
+                    </ul>`,
+                    code: `const person = {
+    name: "John",
+    age: 30,
+    city: "New York"
+};
+
+// Object.keys()
+const keys = Object.keys(person);
+console.log("Keys:", keys); // ["name", "age", "city"]
+
+// Object.values()
+const values = Object.values(person);
+console.log("Values:", values); // ["John", 30, "New York"]
+
+// Object.entries()
+const entries = Object.entries(person);
+console.log("Entries:", entries); // [["name", "John"], ["age", 30], ["city", "New York"]]
+
+// Using entries with for...of
+console.log("Key-Value pairs:");
+for (const [key, value] of Object.entries(person)) {
+    console.log(\`\${key}: \${value}\`);
+}
+
+// Object.assign() - shallow copy
+const target = { a: 1, b: 2 };
+const source = { b: 4, c: 5 };
+const returnedTarget = Object.assign(target, source);
+
+console.log("Target after assign:", target); // { a: 1, b: 4, c: 5 }
+console.log("Returned target:", returnedTarget); // { a: 1, b: 4, c: 5 }
+
+// Object.assign() for cloning (shallow)
+const original = { x: 1, y: 2 };
+const clone = Object.assign({}, original);
+console.log("Clone:", clone); // { x: 1, y: 2 }
+console.log("Same object?", original === clone); // false
+
+// Object.freeze()
+const frozenObj = { prop: "value" };
+Object.freeze(frozenObj);
+
+frozenObj.prop = "new value"; // Fails silently in non-strict mode
+console.log("Frozen object prop:", frozenObj.prop); // "value"
+
+frozenObj.newProp = "new"; // Fails silently
+console.log("Frozen object newProp:", frozenObj.newProp); // undefined
+
+// Object.seal()
+const sealedObj = { prop: "value" };
+Object.seal(sealedObj);
+
+sealedObj.prop = "new value"; // This works
+console.log("Sealed object prop:", sealedObj.prop); // "new value"
+
+sealedObj.newProp = "new"; // Fails silently
+console.log("Sealed object newProp:", sealedObj.newProp); // undefined
+
+// Check if object is frozen or sealed
+console.log("Is frozen?", Object.isFrozen(frozenObj)); // true
+console.log("Is sealed?", Object.isSealed(sealedObj)); // true`
+                },
+                'this-keyword': {
+                    title: 'this Keyword',
+                    explanation: `<p>The <code>this</code> keyword in JavaScript refers to the object that is executing the current function. Its value depends on how a function is called:</p>
+                    <ul>
+                        <li><strong>Global context:</strong> In the global execution context, <code>this</code> refers to the global object (window in browsers)</li>
+                        <li><strong>Object method:</strong> When a function is called as a method of an object, <code>this</code> refers to the object</li>
+                        <li><strong>Constructor:</strong> When a function is used as a constructor (with the <code>new</code> keyword), <code>this</code> refers to the newly created object</li>
+                        <li><strong>Arrow functions:</strong> Arrow functions don't have their own <code>this</code> binding - they inherit <code>this</code> from the surrounding context</li>
+                        <li><strong>Event handlers:</strong> In DOM event handlers, <code>this</code> refers to the element that received the event</li>
+                    </ul>`,
+                    code: `// Global context
+console.log("Global this:", this); // Window in browsers
+
+// Object method
+const person = {
+    name: "John",
+    greet: function() {
+        return "Hello, my name is " + this.name;
+    }
+};
+
+console.log("Method call:", person.greet()); // "Hello, my name is John"
+
+// Constructor function
+function Car(make, model) {
+    this.make = make;
+    this.model = model;
+    this.getInfo = function() {
+        return \`\${this.make} \${this.model}\`;
+    };
+}
+
+const myCar = new Car("Toyota", "Camry");
+console.log("Constructor this:", myCar.getInfo()); // "Toyota Camry"
+
+// Function without context (this becomes undefined in strict mode)
+function showThis() {
+    console.log("Function this:", this);
+}
+
+showThis(); // undefined in strict mode, global object otherwise
+
+// Arrow functions (inherit this from surrounding context)
+const obj = {
+    value: 42,
+    regularFunction: function() {
+        console.log("Regular function this:", this.value); // 42
+    },
+    arrowFunction: () => {
+        console.log("Arrow function this:", this.value); // undefined (inherits from global)
+    }
+};
+
+obj.regularFunction();
+obj.arrowFunction();
+
+// Using call, apply, and bind to set this
+function introduce(greeting, punctuation) {
+    return \`\${greeting}, I'm \${this.name}\${punctuation}\`;
+}
+
+const person1 = { name: "Alice" };
+const person2 = { name: "Bob" };
+
+// Using call (arguments passed individually)
+console.log("Call:", introduce.call(person1, "Hello", "!")); // "Hello, I'm Alice!"
+
+// Using apply (arguments passed as array)
+console.log("Apply:", introduce.apply(person2, ["Hi", "."])); // "Hi, I'm Bob."
+
+// Using bind (creates a new function with bound this)
+const introduceBob = introduce.bind(person2, "Hey");
+console.log("Bind:", introduceBob("!!")); // "Hey, I'm Bob!!"
+
+// this in event handlers (would refer to the element in a real DOM environment)
+const button = {
+    clicked: false,
+    click: function() {
+        this.clicked = true;
+        console.log("Button clicked:", this.clicked); // true
+        // In a real DOM event handler, this would be the button element
+    }
+};
+
+button.click();`
+                },
+                'constructors': {
+                    title: 'Constructor Functions',
+                    explanation: `<p>Constructor functions are used to create objects in JavaScript. When a function is called with the <code>new</code> keyword, it becomes a constructor function.</p>
+                    <p>Key characteristics of constructor functions:</p>
+                    <ul>
+                        <li>They are named with PascalCase by convention</li>
+                        <li>They create a new object and set <code>this</code> to point to that object</li>
+                        <li>They implicitly return the newly created object (unless explicitly returning another object)</li>
+                        <li>They can be used with the <code>instanceof</code> operator to check if an object was created by a specific constructor</li>
+                    </ul>
+                    <p>Constructor functions are the traditional way to implement object-oriented programming in JavaScript before ES6 classes were introduced.</p>`,
+                    code: `// Constructor function (PascalCase by convention)
+function Person(firstName, lastName, age) {
+    // Properties are assigned to the new object
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.age = age;
+    
+    // Methods can be added to each instance
+    this.getFullName = function() {
+        return \`\${this.firstName} \${this.lastName}\`;
+    };
+    
+    // But this creates a new function for each instance
+    // Better to use prototype for methods (see next example)
+}
+
+// Creating instances with 'new'
+const person1 = new Person("John", "Doe", 30);
+const person2 = new Person("Jane", "Smith", 25);
+
+console.log("Person 1:", person1.getFullName()); // "John Doe"
+console.log("Person 2:", person2.getFullName()); // "Jane Smith"
+
+// Using instanceof to check object type
+console.log("Is person1 a Person?", person1 instanceof Person); // true
+console.log("Is person1 an Object?", person1 instanceof Object); // true
+
+// Adding methods to prototype (more memory efficient)
+function Car(make, model, year) {
+    this.make = make;
+    this.model = model;
+    this.year = year;
+}
+
+// Method added to prototype - shared by all instances
+Car.prototype.getInfo = function() {
+    return \`\${this.year} \${this.make} \${this.model}\`;
+};
+
+Car.prototype.startEngine = function() {
+    return "Vroom! " + this.getInfo() + " is running";
+};
+
+const car1 = new Car("Toyota", "Camry", 2020);
+const car2 = new Car("Honda", "Civic", 2021);
+
+console.log("Car 1 info:", car1.getInfo()); // "2020 Toyota Camry"
+console.log("Car 2 info:", car2.getInfo()); // "2021 Honda Civic"
+console.log("Car 1 engine:", car1.startEngine()); // "Vroom! 2020 Toyota Camry is running"
+
+// Checking prototype chain
+console.log("car1.__proto__ === Car.prototype:", car1.__proto__ === Car.prototype); // true
+console.log("Car.prototype.isPrototypeOf(car1):", Car.prototype.isPrototypeOf(car1)); // true
+
+// Built-in constructors
+const num = new Number(42);
+const str = new String("Hello");
+const arr = new Array(1, 2, 3);
+
+console.log("Number object:", num);
+console.log("String object:", str);
+console.log("Array object:", arr);
+
+// But literals are preferred over constructors
+const literalNum = 42;
+const literalStr = "Hello";
+const literalArr = [1, 2, 3];
+
+// Constructor with return value
+function WeirdConstructor() {
+    this.value = "normal";
+    
+    // If returning an object, it replaces the created object
+    return { value: "special" };
+}
+
+const weird = new WeirdConstructor();
+console.log("Weird constructor result:", weird.value); // "special" (not "normal")`
+                },
+                'array-methods': {
+                    title: 'Array Methods (map, filter, reduce)',
+                    explanation: `<p>JavaScript arrays have many powerful built-in methods for transformation and iteration. The most commonly used are:</p>
+                    <ul>
+                        <li><strong>map():</strong> Creates a new array with the results of calling a provided function on every element</li>
+                        <li><strong>filter():</strong> Creates a new array with all elements that pass the test implemented by the provided function</li>
+                        <li><strong>reduce():</strong> Executes a reducer function on each element of the array, resulting in a single output value</li>
+                    </ul>
+                    <p>These methods are fundamental to functional programming in JavaScript and allow for concise, expressive data manipulation.</p>`,
+                    code: `const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// map() - transform each element
+const squared = numbers.map(num => num * num);
+console.log("Squared numbers:", squared); // [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+
+const doubled = numbers.map(num => num * 2);
+console.log("Doubled numbers:", doubled); // [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+
+// map() with objects
+const users = [
+    { id: 1, name: "John", age: 30 },
+    { id: 2, name: "Jane", age: 25 },
+    { id: 3, name: "Bob", age: 35 }
+];
+
+const userNames = users.map(user => user.name);
+console.log("User names:", userNames); // ["John", "Jane", "Bob"]
+
+// filter() - select elements that meet a condition
+const evenNumbers = numbers.filter(num => num % 2 === 0);
+console.log("Even numbers:", evenNumbers); // [2, 4, 6, 8, 10]
+
+const adults = users.filter(user => user.age >= 30);
+console.log("Adults:", adults); // [{ id: 1, name: "John", age: 30 }, { id: 3, name: "Bob", age: 35 }]
+
+// Chaining map() and filter()
+const result = numbers
+    .filter(num => num > 5) // [6, 7, 8, 9, 10]
+    .map(num => num * 2) // [12, 14, 16, 18, 20]
+    .filter(num => num % 3 === 0); // [12, 18]
+
+console.log("Chained result:", result); // [12, 18]
+
+// reduce() - reduce array to a single value
+const sum = numbers.reduce((accumulator, currentValue) => {
+    return accumulator + currentValue;
+}, 0); // 0 is the initial value
+
+console.log("Sum of numbers:", sum); // 55
+
+// reduce() with objects
+const totalAge = users.reduce((acc, user) => acc + user.age, 0);
+console.log("Total age:", totalAge); // 90
+console.log("Average age:", totalAge / users.length); // 30
+
+// reduce() to create an object
+const ageMap = users.reduce((acc, user) => {
+    acc[user.name] = user.age;
+    return acc;
+}, {});
+
+console.log("Age map:", ageMap); // { John: 30, Jane: 25, Bob: 35 }
+
+// reduce() to group items
+const items = [
+    { type: "fruit", name: "apple" },
+    { type: "vegetable", name: "carrot" },
+    { type: "fruit", name: "banana" },
+    { type: "vegetable", name: "broccoli" }
+];
+
+const groupedItems = items.reduce((acc, item) => {
+    if (!acc[item.type]) {
+        acc[item.type] = [];
+    }
+    acc[item.type].push(item.name);
+    return acc;
+}, {});
+
+console.log("Grouped items:", groupedItems); // { fruit: ["apple", "banana"], vegetable: ["carrot", "broccoli"] }
+
+// Other useful array methods
+// find() - find first element that matches condition
+const firstEven = numbers.find(num => num % 2 === 0);
+console.log("First even:", firstEven); // 2
+
+// some() - check if at least one element matches condition
+const hasEven = numbers.some(num => num % 2 === 0);
+console.log("Has even numbers?", hasEven); // true
+
+// every() - check if all elements match condition
+const allEven = numbers.every(num => num % 2 === 0);
+console.log("All even?", allEven); // false
+
+// sort() - sort elements (modifies original array)
+const unsorted = [3, 1, 4, 1, 5, 9, 2, 6, 5];
+const sorted = [...unsorted].sort((a, b) => a - b); // Create copy to avoid modifying original
+console.log("Sorted:", sorted); // [1, 1, 2, 3, 4, 5, 5, 6, 9]`
+                },
+                'iterables': {
+                    title: 'Iterables & Array-likes',
+                    explanation: `<p>In JavaScript, iterables and array-like objects are objects that can be iterated over, but they have different characteristics:</p>
+                    <ul>
+                        <li><strong>Iterables:</strong> Objects that implement the iterable protocol (have a <code>[Symbol.iterator]</code> method). Examples include Arrays, Strings, Maps, Sets, and NodeLists.</li>
+                        <li><strong>Array-like objects:</strong> Objects that have indexed access and a <code>length</code> property but don't have array methods. Examples include the <code>arguments</code> object and DOM collections.</li>
+                    </ul>
+                    <p>You can convert array-like objects to real arrays using <code>Array.from()</code> or the spread operator.</p>`,
+                    code: `// Iterables - objects that can be iterated with for..of
+const arr = [1, 2, 3]; // Array is iterable
+const str = "hello"; // String is iterable
+const map = new Map([['a', 1], ['b', 2]]); // Map is iterable
+const set = new Set([1, 2, 3]); // Set is iterable
+
+console.log("Array iteration:");
+for (const item of arr) {
+    console.log(item); // 1, 2, 3
+}
+
+console.log("String iteration:");
+for (const char of str) {
+    console.log(char); // "h", "e", "l", "l", "o"
+}
+
+// Array-like objects - have length and indexed access
+function exampleFunction() {
+    // arguments is array-like but not iterable (in older JS)
+    console.log("Arguments:", arguments);
+    console.log("Length:", arguments.length);
+    console.log("First argument:", arguments[0]);
+    
+    // Convert to real array using Array.from()
+    const argsArray = Array.from(arguments);
+    console.log("As array:", argsArray);
+    
+    // Now we can use array methods
+    argsArray.forEach(arg => console.log("Argument:", arg));
+}
+
+exampleFunction(1, "two", true);
+
+// Another array-like example: DOM NodeList
+// In a browser environment, this would work:
+// const divs = document.querySelectorAll('div'); // NodeList is array-like
+// const divArray = Array.from(divs); // Convert to array
+
+// Creating custom iterable
+const myIterable = {
+    data: [10, 20, 30],
+    [Symbol.iterator]: function() {
+        let index = 0;
+        return {
+            next: () => {
+                if (index < this.data.length) {
+                    return { value: this.data[index++], done: false };
+                } else {
+                    return { done: true };
+                }
+            }
+        };
+    }
+};
+
+console.log("Custom iterable:");
+for (const value of myIterable) {
+    console.log(value); // 10, 20, 30
+}
+
+// Using spread operator with iterables
+const iterableValues = [...myIterable];
+console.log("Spread iterable:", iterableValues); // [10, 20, 30]
+
+// Using Array.from() with array-like objects
+const arrayLike = {
+    0: "a",
+    1: "b",
+    2: "c",
+    length: 3
+};
+
+const realArray = Array.from(arrayLike);
+console.log("Array.from result:", realArray); // ["a", "b", "c"]
+
+// Array.from() with mapping function
+const squared = Array.from([1, 2, 3], x => x * x);
+console.log("Array.from with mapping:", squared); // [1, 4, 9]`
+                },
+                'destructuring': {
+                    title: 'Destructuring Assignment',
+                    explanation: `<p>Destructuring assignment is a syntax that allows you to unpack values from arrays or properties from objects into distinct variables.</p>
+                    <p>Key features:</p>
+                    <ul>
+                        <li><strong>Array destructuring:</strong> Extract values from arrays based on position</li>
+                        <li><strong>Object destructuring:</strong> Extract values from objects based on property names</li>
+                        <li><strong>Default values:</strong> Provide fallback values if the unpacked value is undefined</li>
+                        <li><strong>Rest pattern:</strong> Collect remaining elements into a new array or object</li>
+                        <li><strong>Nested destructuring:</strong> Extract values from nested arrays or objects</li>
+                    </ul>
+                    <p>Destructuring makes code more concise and readable when working with complex data structures.</p>`,
+                    code: `// Array destructuring
+const numbers = [1, 2, 3, 4, 5];
+
+// Basic array destructuring
+const [first, second, third] = numbers;
+console.log("First:", first); // 1
+console.log("Second:", second); // 2
+console.log("Third:", third); // 3
+
+// Skipping elements
+const [a, , c] = numbers;
+console.log("A:", a, "C:", c); // A: 1, C: 3
+
+// Rest pattern with arrays
+const [x, y, ...rest] = numbers;
+console.log("X:", x, "Y:", y); // X: 1, Y: 2
+console.log("Rest:", rest); // [3, 4, 5]
+
+// Default values
+const [p = 10, q = 20] = [1];
+console.log("P:", p, "Q:", q); // P: 1, Q: 20
+
+// Swapping variables
+let m = 1;
+let n = 2;
+[m, n] = [n, m];
+console.log("M:", m, "N:", n); // M: 2, N: 1
+
+// Object destructuring
+const person = {
+    name: "John",
+    age: 30,
+    city: "New York",
+    country: "USA"
+};
+
+// Basic object destructuring
+const { name, age } = person;
+console.log("Name:", name, "Age:", age); // Name: John, Age: 30
+
+// Renaming variables
+const { name: personName, age: personAge } = person;
+console.log("Person name:", personName, "Person age:", personAge); // Person name: John, Person age: 30
+
+// Default values with objects
+const { phone = "N/A" } = person;
+console.log("Phone:", phone); // Phone: N/A
+
+// Rest pattern with objects
+const { city, ...personInfo } = person;
+console.log("City:", city); // City: New York
+console.log("Person info:", personInfo); // { name: "John", age: 30, country: "USA" }
+
+// Nested destructuring
+const company = {
+    name: "Tech Corp",
+    employees: [
+        { name: "Alice", position: "Developer" },
+        { name: "Bob", position: "Designer" }
+    ],
+    address: {
+        street: "123 Main St",
+        city: "San Francisco",
+        coordinates: {
+            lat: 37.7749,
+            lng: -122.4194
+        }
+    }
+};
+
+// Nested object destructuring
+const { 
+    name: companyName, 
+    address: { 
+        city: companyCity,
+        coordinates: { lat, lng }
+    } 
+} = company;
+
+console.log("Company:", companyName); // Tech Corp
+console.log("City:", companyCity); // San Francisco
+console.log("Coordinates:", lat, lng); // 37.7749, -122.4194
+
+// Nested array destructuring
+const { employees: [firstEmployee] } = company;
+console.log("First employee:", firstEmployee); // { name: "Alice", position: "Developer" }
+
+// Function parameter destructuring
+function printPerson({ name, age }) {
+    console.log(\`\${name} is \${age} years old\`);
+}
+
+printPerson(person); // John is 30 years old
+
+// With default values
+function createElement({ tag = 'div', content = '', className = '' }) {
+    return \`<\${tag} class="\${className}">\${content}</\${tag}>\`;
+}
+
+const element = createElement({ tag: 'p', content: 'Hello', className: 'text' });
+console.log("Element:", element); // <p class="text">Hello</p>`
+                },
+                'json-methods': {
+                    title: 'JSON Methods',
+                    explanation: `<p>JSON (JavaScript Object Notation) is a lightweight data interchange format. JavaScript provides two main methods for working with JSON:</p>
+                    <ul>
+                        <li><strong>JSON.stringify():</strong> Converts a JavaScript object or value to a JSON string</li>
+                        <li><strong>JSON.parse():</strong> Parses a JSON string and constructs the JavaScript value or object described by the string</li>
+                    </ul>
+                    <p>These methods are essential for:</p>
+                    <ul>
+                        <li>Storing data in localStorage</li>
+                        <li>Sending data to servers</li>
+                        <li>Receiving data from servers</li>
+                        <li>Configuring applications</li>
+                    </ul>`,
+                    code: `const person = {
+    name: "John",
+    age: 30,
+    city: "New York",
+    isEmployed: true,
+    hobbies: ["reading", "swimming", "coding"],
+    address: {
+        street: "123 Main St",
+        zipCode: "10001"
+    },
+    // Functions and undefined are not included in JSON
+    sayHello: function() {
+        return "Hello";
+    },
+    undefinedProp: undefined
+};
+
+// JSON.stringify() - convert object to JSON string
+const jsonString = JSON.stringify(person);
+console.log("JSON string:", jsonString);
+// {"name":"John","age":30,"city":"New York","isEmployed":true,
+// "hobbies":["reading","swimming","coding"],"address":{"street":"123 Main St","zipCode":"10001"}}
+
+// JSON.parse() - convert JSON string back to object
+const parsedObject = JSON.parse(jsonString);
+console.log("Parsed object:", parsedObject);
+// Note: functions and undefined properties are lost
+
+// Pretty printing with space parameter
+const prettyJSON = JSON.stringify(person, null, 2);
+console.log("Pretty JSON:");
+console.log(prettyJSON);
+
+// Replacer function - customize serialization
+function replacer(key, value) {
+    // Exclude age property
+    if (key === "age") {
+        return undefined;
+    }
+    // Convert strings to uppercase
+    if (typeof value === "string") {
+        return value.toUpperCase();
+    }
+    return value;
+}
+
+const customJSON = JSON.stringify(person, replacer, 2);
+console.log("Custom JSON:");
+console.log(customJSON);
+
+// Replacer as array - only include specified properties
+const selectedProperties = JSON.stringify(person, ["name", "city", "hobbies"], 2);
+console.log("Selected properties:");
+console.log(selectedProperties);
+
+// toJSON method - custom serialization
+const customObject = {
+    name: "Special",
+    secret: "hidden",
+    toJSON: function() {
+        return {
+            name: this.name,
+            publicData: "This is public"
+        };
+    }
+};
+
+console.log("Custom toJSON:", JSON.stringify(customObject));
+// {"name":"Special","publicData":"This is public"}
+
+// Reviver function - customize parsing
+const reviver = function(key, value) {
+    if (key === "age") {
+        return value + 1; // Increment age by 1
+    }
+    if (key === "name") {
+        return "Mr. " + value; // Add title to name
+    }
+    return value;
+};
+
+const revived = JSON.parse(jsonString, reviver);
+console.log("Revived object:", revived);
+
+// Handling dates in JSON
+const dateObject = {
+    event: "Meeting",
+    date: new Date()
+};
+
+// Date is converted to string in JSON
+const dateJSON = JSON.stringify(dateObject);
+console.log("Date JSON:", dateJSON); // {"event":"Meeting","date":"2023-07-15T12:34:56.789Z"}
+
+// Custom date parsing
+const dateReviver = function(key, value) {
+    // Check if value is a date string
+    if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/.test(value)) {
+        return new Date(value);
+    }
+    return value;
+};
+
+const parsedWithDate = JSON.parse(dateJSON, dateReviver);
+console.log("Parsed with date:", parsedWithDate);
+console.log("Date type:", typeof parsedWithDate.date); // object
+console.log("Date value:", parsedWithDate.date); // Date object
+
+// Error handling with JSON.parse()
+const invalidJSON = '{ "name": "John", "age": 30, }'; // Trailing comma
+
+try {
+    const result = JSON.parse(invalidJSON);
+    console.log("Parsed:", result);
+} catch (error) {
+    console.log("JSON parse error:", error.message);
+}
+
+// Practical example - localStorage
+const settings = {
+    theme: "dark",
+    language: "en",
+    notifications: true
+};
+
+// Save to localStorage
+localStorage.setItem("userSettings", JSON.stringify(settings));
+
+// Retrieve from localStorage
+const savedSettings = JSON.parse(localStorage.getItem("userSettings") || "{}");
+console.log("Saved settings:", savedSettings);`
+                }
+            };
+            
+            // Add click event listeners to topics
+            topics.forEach(topic => {
+                topic.addEventListener('click', function() {
+                    const topicId = this.getAttribute('data-topic');
+                    if (topicData[topicId]) {
+                        showExplanation(topicData[topicId]);
+                        this.classList.add('completed');
+                    }
+                });
+            });
+            
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                topics.forEach(topic => {
+                    const topicText = topic.textContent.toLowerCase();
+                    if (topicText.includes(searchTerm)) {
+                        topic.style.display = 'flex';
+                        
+                        // Highlight the search term
+                        if (searchTerm) {
+                            const regex = new RegExp(`(${searchTerm})`, 'gi');
+                            topic.innerHTML = topic.innerHTML.replace(regex, '<span class="highlight">$1</span>');
+                        }
+                    } else {
+                        topic.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Show explanation in modal
+            function showExplanation(data) {
+                modalTitle.textContent = data.title;
+                modalExplanation.innerHTML = data.explanation;
+                modalCode.textContent = data.code;
+                
+                // Syntax highlighting (simplified)
+                const code = modalCode.textContent;
+                modalCode.innerHTML = code
+                    .replace(/(\/\/.*)/g, '<span style="color: #6a9955;">$1</span>')
+                    .replace(/(\b(function|const|let|var|if|else|for|while|return|new|this)\b)/g, '<span style="color: #569cd6;">$1</span>')
+                    .replace(/(\b(true|false|null|undefined)\b)/g, '<span style="color: #569cd6;">$1</span>')
+                    .replace(/(\b(\d+)\b)/g, '<span style="color: #b5cea8;">$1</span>')
+                    .replace(/(["'].*?["'])/g, '<span style="color: #ce9178;">$1</span>');
+                
+                modal.style.display = 'block';
+                
+                // Clear previous output
+                codeOutput.textContent = '';
+            }
+            
+            // Run code button
+            runButton.addEventListener('click', function() {
+                try {
+                    // Capture console.log output
+                    const originalLog = console.log;
+                    let output = '';
+                    
+                    console.log = function() {
+                        output += Array.from(arguments).join(' ') + '\n';
+                        originalLog.apply(console, arguments);
+                    };
+                    
+                    // Execute the code
+                    eval(modalCode.textContent);
+                    
+                    // Restore original console.log
+                    console.log = originalLog;
+                    
+                    // Display output
+                    codeOutput.textContent = output;
+                } catch (error) {
+                    codeOutput.textContent = 'Error: ' + error.message;
+                }
+            });
+            
+            // Close modal
+            closeBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

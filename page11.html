@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Frameworks & Libraries Tutorial</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --dark-green: #1a4b3a;
+            --pale-blue: #a8d0e6;
+            --light-green: #2c6e49;
+            --cream: #f8f9fa;
+            --dark-text: #2d3436;
+            --light-text: #dfe6e9;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --header-bg: rgba(0, 0, 0, 0.3);
+            --sidebar-width: 300px;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark-green) 0%, var(--pale-blue) 100%);
+            background-attachment: fixed;
+            color: var(--light-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: background 0.5s ease;
+        }
+        
+        body.dark-blue {
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%);
+            --pale-blue: #90e0ef;
+            --header-bg: rgba(0, 0, 0, 0.4);
+        }
+        
+        .container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .nav-btn {
+            background: var(--header-bg);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--header-bg);
+            padding: 20px;
+            overflow-y: auto;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+        
+        .sidebar h2 {
+            color: var(--pale-blue);
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--pale-blue);
+        }
+        
+        .topics-list {
+            list-style: none;
+        }
+        
+        .topics-list li {
+            padding: 12px 15px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+        }
+        
+        .topics-list li:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .topics-list li.active {
+            background: rgba(255, 255, 255, 0.2);
+            font-weight: bold;
+        }
+        
+        .topics-list li:before {
+            content: "•";
+            color: var(--pale-blue);
+            font-weight: bold;
+            display: inline-block;
+            width: 20px;
+            font-size: 20px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .topic-content {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .topic-content.active {
+            display: block;
+        }
+        
+        .topic-content h2 {
+            color: var(--pale-blue);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--pale-blue);
+        }
+        
+        .topic-content h3 {
+            color: var(--pale-blue);
+            margin: 25px 0 15px;
+        }
+        
+        .topic-content p {
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        .topic-content ul {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .topic-content li {
+            margin-bottom: 10px;
+        }
+        
+        /* Code Examples */
+        .code-example {
+            background: #2d3436;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .code-example pre {
+            color: #f8f9fa;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+            tab-size: 4;
+            margin-bottom: 15px;
+        }
+        
+        .run-btn {
+            background: var(--light-green);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .run-btn:hover {
+            background: var(--dark-green);
+        }
+        
+        .output {
+            background: #1e2124;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            color: #f8f9fa;
+            display: none;
+        }
+        
+        .output.active {
+            display: block;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--header-bg);
+            padding: 20px;
+            border-radius: 0 0 15px 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            color: white;
+        }
+        
+        .theme-btn {
+            background: var(--header-bg);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .theme-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Responsive */
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+        
+        .keyword {
+            color: #ff79c6;
+        }
+        
+        .function {
+            color: #50fa7b;
+        }
+        
+        .string {
+            color: #f1fa8c;
+        }
+        
+        .comment {
+            color: #6272a4;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>JavaScript Frameworks & Libraries</h1>
+        <button class="theme-btn" id="themeToggle">
+            <i class="fas fa-moon"></i> Switch Theme
+        </button>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <h2>Topics</h2>
+            <ul class="topics-list">
+                <li class="active" data-target="react">React.js</li>
+                <li data-target="vue">Vue.js</li>
+                <li data-target="angular">Angular</li>
+                <li data-target="svelte">Svelte</li>
+                <li data-target="state">State Management</li>
+                <li data-target="routing">Routing</li>
+                <li data-target="ssr">Server-Side Rendering</li>
+                <li data-target="ssg">Static Site Generation</li>
+                <li data-target="components">Component Libraries</li>
+                <li data-target="utils">Utility Libraries</li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navigation Buttons -->
+            <div class="nav-buttons">
+                <a href="page10.html" target="_blank" class="nav-btn">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </a>
+                <a href="page12.html" target="_blank" class="nav-btn">
+                    Next <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- React.js Content -->
+            <div class="topic-content active" id="react">
+                <h2>React.js</h2>
+                <p>React is a JavaScript library for building user interfaces, particularly single-page applications where data changes over time. It was developed by Facebook and is now maintained by Facebook and the community.</p>
+                
+                <h3>Key Features:</h3>
+                <ul>
+                    <li>Component-based architecture</li>
+                    <li>Virtual DOM for efficient updates</li>
+                    <li>Unidirectional data flow</li>
+                    <li>JSX syntax for writing components</li>
+                    <li>Hooks for state and lifecycle management</li>
+                </ul>
+                
+                <h3>Example: Simple Counter Component</h3>
+                <div class="code-example">
+                    <pre><code>import { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;You clicked {count} times&lt;/p&gt;
+      &lt;button onClick={() => setCount(count + 1)}&gt;
+        Click me
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Render the component
+ReactDOM.render(&lt;Counter /&gt;, document.getElementById('root'));</code></pre>
+                    <button class="run-btn" onclick="runCode('react')">
+                        <i class="fas fa-play"></i> Run Code
+                    </button>
+                    <div class="output" id="react-output"></div>
+                </div>
+            </div>
+
+            <!-- Vue.js Content -->
+            <div class="topic-content" id="vue">
+                <h2>Vue.js</h2>
+                <p>Vue.js is a progressive JavaScript framework for building user interfaces. Unlike other monolithic frameworks, Vue is designed from the ground up to be incrementally adoptable.</p>
+                
+                <h3>Key Features:</h3>
+                <ul>
+                    <li>Reactive data binding</li>
+                    <li>Component-based architecture</li>
+                    <li>Simple and flexible API</li>
+                    <li>Directives for DOM manipulation</li>
+                    <li>Transition effects system</li>
+                </ul>
+                
+                <h3>Example: Simple Vue App</h3>
+                <div class="code-example">
+                    <pre><code>&lt;div id="app"&gt;
+  {{ message }}
+  &lt;button v-on:click="reverseMessage"&gt;Reverse Message&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+new Vue({
+  el: '#app',
+  data: {
+    message: 'Hello Vue.js!'
+  },
+  methods: {
+    reverseMessage: function () {
+      this.message = this.message.split('').reverse().join('')
+    }
+  }
+})
+&lt;/script&gt;</code></pre>
+                    <button class="run-btn" onclick="runCode('vue')">
+                        <i class="fas fa-play"></i> Run Code
+                    </button>
+                    <div class="output" id="vue-output"></div>
+                </div>
+            </div>
+
+            <!-- Angular Content -->
+            <div class="topic-content" id="angular">
+                <h2>Angular</h2>
+                <p>Angular is a platform and framework for building single-page client applications using HTML and TypeScript. Angular is written in TypeScript and implements core and optional functionality as a set of TypeScript libraries.</p>
+                
+                <h3>Key Features:</h3>
+                <ul>
+                    <li>TypeScript-based</li>
+                    <li>Dependency injection</li>
+                    <li>Two-way data binding</li>
+                    <li>Modular architecture</li>
+                    <li>Comprehensive routing solution</li>
+                </ul>
+                
+                <h3>Example: Simple Component</h3>
+                <div class="code-example">
+                    <pre><code>import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    &lt;h1&gt;{{title}}&lt;/h1&gt;
+    &lt;button (click)="onClick()"&gt;Click me!&lt;/button&gt;
+    &lt;p&gt;{{message}}&lt;/p&gt;
+  `
+})
+export class AppComponent {
+  title = 'My Angular App';
+  message = 'Hello Angular!';
+
+  onClick() {
+    this.message = 'Button was clicked!';
+  }
+}</code></pre>
+                    <button class="run-btn" onclick="runCode('angular')">
+                        <i class="fas fa-play"></i> Run Code
+                    </button>
+                    <div class="output" id="angular-output"></div>
+                </div>
+            </div>
+
+            <!-- Svelte Content -->
+            <div class="topic-content" id="svelte">
+                <h2>Svelte</h2>
+                <p>Svelte is a radical new approach to building user interfaces. Whereas traditional frameworks like React and Vue do the bulk of their work in the browser, Svelte shifts that work into a compile step that happens when you build your app.</p>
+                
+                <h3>Key Features:</h3>
+                <ul>
+                    <li>No virtual DOM</li>
+                    <li>Truly reactive</li>
+                    <li>Compiles to tiny, framework-less vanilla JS</li>
+                    <li>Simple syntax with minimal boilerplate</li>
+                    <li>Built-in state management</li>
+                </ul>
+                
+                <h3>Example: Svelte Component</h3>
+                <div class="code-example">
+                    <pre><code>&lt;script&gt;
+  let count = 0;
+  
+  function increment() {
+    count += 1;
+  }
+&lt;/script&gt;
+
+&lt;button on:click={increment}&gt;
+  Clicked {count} {count === 1 ? 'time' : 'times'}
+&lt;/button&gt;</code></pre>
+                    <button class="run-btn" onclick="runCode('svelte')">
+                        <i class="fas fa-play"></i> Run Code
+                    </button>
+                    <div class="output" id="svelte-output"></div>
+                </div>
+            </div>
+
+            <!-- State Management Content -->
+            <div class="topic-content" id="state">
+                <h2>State Management (Redux, Vuex)</h2>
+                <p>State management libraries help manage application state in a predictable way. Redux is commonly used with React, while Vuex is the official state management library for Vue.</p>
+                
+                <h3>Key Concepts:</h3>
+                <ul>
+                    <li>Single source of truth</li>
+                    <li>State is read-only</li>
+                    <li>Changes are made with pure functions</li>
+                    <li>Centralized state management</li>
+                    <li>Time-travel debugging</li>
+                </ul>
+                
+                <h3>Example: Redux Store Setup</h3>
+                <div class="code-example">
+                    <pre><code>import { createStore } from 'redux';
+
+// Reducer function
+function counter(state = 0, action) {
+  switch (action.type) {
+    case 'INCREMENT':
+      return state + 1;
+    case 'DECREMENT':
+      return state - 1;
+    default:
+      return state;
+  }
+}
+
+// Create a Redux store
+let store = createStore(counter);
+
+// Subscribe to store updates
+store.subscribe(() => {
+  console.log(store.getState());
+});
+
+// Dispatch actions
+store.dispatch({ type: 'INCREMENT' });
+store.dispatch({ type: 'INCREMENT' });
+store.dispatch({ type: 'DECREMENT' });</code></pre>
+                    <button class="run-btn" onclick="runCode('state')">
+                        <i class="fas fa-play"></i> Run Code
+                    </button>
+                    <div class="output" id="state-output"></div>
+                </div>
+            </div>
+
+            <!-- Routing Content -->
+            <div class="topic-content" id="routing">
+                <h2>Routing (React Router, Vue Router)</h2>
+                <p>Routing libraries enable navigation between different components/views in a single-page application, changing the browser URL, and keeping UI in sync with the URL.</p>
+                
+                <h3>Example: React Router</h3>
+                <div class="code-example">
+                    <pre><code>import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+
+function Home() {
+  return &lt;h2&gt;Home&lt;/h2&gt;;
+}
+
+function About() {
+  return &lt;h2&gt;About&lt;/h2&gt;;
+}
+
+function App() {
+  return (
+    &lt;Router&gt;
+      &lt;div&gt;
+        &lt;nav&gt;
+          &lt;ul&gt;
+            &lt;li&gt;&lt;Link to="/"&gt;Home&lt;/Link&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;Link to="/about"&gt;About&lt;/Link&gt;&lt;/li&gt;
+          &lt;/ul&gt;
+        &lt;/nav&gt;
+
+        &lt;Route path="/" exact component={Home} /&gt;
+        &lt;Route path="/about" component={About} /&gt;
+      &lt;/div&gt;
+    &lt;/Router&gt;
+  );
+}</code></pre>
+                    <button class="run-btn" onclick="runCode('routing')">
+                        <i class="fas fa-play"></i> Run Code
+                    </button>
+                    <div class="output" id="routing-output"></div>
+                </div>
+            </div>
+
+            <!-- Server-Side Rendering Content -->
+            <div class="topic-content" id="ssr">
+                <h2>Server-Side Rendering (SSR)</h2>
+                <p>Server-Side Rendering generates the complete HTML for a page on the server in response to navigation. This improves SEO and initial load performance.</p>
+                
+                <h3>Benefits of SSR:</h3>
+                <ul>
+                    <li>Improved SEO as search engines can crawl content</li>
+                    <li>Faster initial page load</li>
+                    <li>Better performance on low-powered devices</li>
+                    <li>Social media sharing previews work correctly</li>
+                </ul>
+                
+                <h3>Example: Next.js (React SSR)</h3>
+                <div class="code-example">
+                    <pre><code>// pages/index.js
+import React from 'react';
+
+export default function HomePage({ data }) {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Server-Side Rendered Page&lt;/h1&gt;
+      &lt;p&gt;Data fetched on server: {data}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+// This gets called on every request
+export async function getServerSideProps() {
+  // Fetch data from external API
+  const res = await fetch('https://api.example.com/data');
+  const data = await res.json();
+
+  // Pass data to the page via props
+  return { props: { data } };
+}</code></pre>
+                    <button class="run-btn" onclick="runCode('ssr')">
+                        <i class="fas fa-play"></i> Run Code
+                    </button>
+                    <div class="output" id="ssr-output"></div>
+                </div>
+            </div>
+
+            <!-- Static Site Generation Content -->
+            <div class="topic-content" id="ssg">
+                <h2>Static Site Generation (SSG)</h2>
+                <p>Static Site Generation pre-renders pages at build time. The HTML is generated once and served to all users, providing excellent performance.</p>
+                
+                <h3>Benefits of SSG:</h3>
+                <ul>
+                    <li>Exceptional performance with pre-built HTML</li>
+                    <li>Reduced server load and cost</li>
+                    <li>Better security with no server-side processing</li>
+                    <li>Easy to deploy on CDNs</li>
+                </ul>
+                
+                <h3>Example: Next.js Static Generation</h3>
+                <div class="code-example">
+                    <pre><code>// pages/posts/[id].js
+import React from 'react';
+
+export default function Post({ post }) {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{post.title}&lt;/h1&gt;
+      &lt;p&gt;{post.content}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+// This function gets called at build time
+export async function getStaticPaths() {
+  // Fetch list of posts from API
+  const res = await fetch('https://api.example.com/posts');
+  const posts = await res.json();
+
+  // Get the paths we want to pre-render
+  const paths = posts.map(post => ({
+    params: { id: post.id.toString() },
+  }));
+
+  // Pre-render only these paths at build time
+  return { paths, fallback: false };
+}
+
+// This also gets called at build time
+export async function getStaticProps({ params }) {
+  // Fetch single post detail
+  const res = await fetch(`https://api.example.com/posts/${params.id}`);
+  const post = await res.json();
+
+  // Pass post data to the page via props
+  return { props: { post } };
+}</code></pre>
+                    <button class="run-btn" onclick="runCode('ssg')">
+                        <i class="fas fa-play"></i> Run Code
+                    </button>
+                    <div class="output" id="ssg-output"></div>
+                </div>
+            </div>
+
+            <!-- Component Libraries Content -->
+            <div class="topic-content" id="components">
+                <h2>Component Libraries</h2>
+                <p>Component libraries provide pre-built, reusable UI components that follow design system principles, helping developers build consistent interfaces quickly.</p>
+                
+                <h3>Popular Component Libraries:</h3>
+                <ul>
+                    <li>Material-UI (React)</li>
+                    <li>Ant Design (React)</li>
+                    <li>Vuetify (Vue)</li>
+                    <li>Chakra UI (React)</li>
+                    <li>Bootstrap Vue (Vue)</li>
+                </ul>
+                
+                <h3>Example: Material-UI Button</h3>
+                <div class="code-example">
+                    <pre><code>import React from 'react';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+
+export default function ButtonVariants() {
+  return (
+    &lt;Stack spacing={2} direction="row"&gt;
+      &lt;Button variant="text"&gt;Text&lt;/Button&gt;
+      &lt;Button variant="contained"&gt;Contained&lt;/Button&gt;
+      &lt;Button variant="outlined"&gt;Outlined&lt;/Button&gt;
+    &lt;/Stack&gt;
+  );
+}</code></pre>
+                    <button class="run-btn" onclick="runCode('components')">
+                        <i class="fas fa-play"></i> Run Code
+                    </button>
+                    <div class="output" id="components-output"></div>
+                </div>
+            </div>
+
+            <!-- Utility Libraries Content -->
+            <div class="topic-content" id="utils">
+                <h2>Utility Libraries</h2>
+                <p>Utility libraries provide helper functions for common programming tasks, making development more efficient and code more consistent.</p>
+                
+                <h3>Popular Utility Libraries:</h3>
+                <ul>
+                    <li>Lodash - JavaScript utility library</li>
+                    <li>date-fns - Date manipulation library</li>
+                    <li>Axios - HTTP client</li>
+                    <li>Immer - Immutable state updates</li>
+                    <li>Classnames - Conditionally joining classNames</li>
+                </ul>
+                
+                <h3>Example: Lodash Utility Functions</h3>
+                <div class="code-example">
+                    <pre><code>import _ from 'lodash';
+
+// Array manipulation
+const numbers = [1, 2, 3, 4, 5];
+const doubled = _.map(numbers, n => n * 2);
+console.log('Doubled numbers:', doubled);
+
+// Object manipulation
+const user = { name: 'John', age: 30, city: 'New York' };
+const picked = _.pick(user, ['name', 'age']);
+console.log('Picked properties:', picked);
+
+// Debouncing a function
+const search = _.debounce((query) => {
+  console.log('Searching for:', query);
+}, 300);
+
+// Call the debounced function
+search('react');
+search('vue');
+search('angular'); // Only this call will execute after 300ms</code></pre>
+                    <button class="run-btn" onclick="runCode('utils')">
+                        <i class="fas fa-play"></i> Run Code
+                    </button>
+                    <div class="output" id="utils-output"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme switching functionality
+        const themeToggle = document.getElementById('themeToggle');
+        let isDarkBlue = false;
+        
+        themeToggle.addEventListener('click', function() {
+            if (isDarkBlue) {
+                document.body.classList.remove('dark-blue');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i> Switch to Dark Blue Theme';
+                isDarkBlue = false;
+            } else {
+                document.body.classList.add('dark-blue');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i> Switch to Default Theme';
+                isDarkBlue = true;
+            }
+        });
+
+        // Topic navigation
+        const topicItems = document.querySelectorAll('.topics-list li');
+        const topicContents = document.querySelectorAll('.topic-content');
+        
+        topicItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const target = this.getAttribute('data-target');
+                
+                // Update active topic in sidebar
+                topicItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding content
+                topicContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === target) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Code execution simulation
+        function runCode(topic) {
+            const outputEl = document.getElementById(`${topic}-output`);
+            
+            // Clear previous output
+            outputEl.innerHTML = '';
+            
+            // Simulate different outputs based on topic
+            let output = '';
+            switch(topic) {
+                case 'react':
+                    output = '<p>Counter component rendered. Clicking the button would update the count.</p>';
+                    break;
+                case 'vue':
+                    output = '<p>Vue app initialized. The message would reverse when the button is clicked.</p>';
+                    break;
+                case 'angular':
+                    output = '<p>Angular component created. Clicking the button would change the message.</p>';
+                    break;
+                case 'svelte':
+                    output = '<p>Svelte component compiled. The button would show the click count.</p>';
+                    break;
+                case 'state':
+                    output = '<p>Redux store created. Actions dispatched: INCREMENT, INCREMENT, DECREMENT</p><p>Final state: 1</p>';
+                    break;
+                case 'routing':
+                    output = '<p>React Router configured with Home and About pages.</p>';
+                    break;
+                case 'ssr':
+                    output = '<p>Next.js server-side rendering example. Page would be rendered on the server with fetched data.</p>';
+                    break;
+                case 'ssg':
+                    output = '<p>Next.js static generation example. Pages would be pre-rendered at build time.</p>';
+                    break;
+                case 'components':
+                    output = '<p>Material-UI buttons rendered with different variants: text, contained, and outlined.</p>';
+                    break;
+                case 'utils':
+                    output = '<p>Lodash utility functions executed:</p><p>Doubled numbers: [2, 4, 6, 8, 10]</p><p>Picked properties: {name: "John", age: 30}</p><p>Debounced search function created (only last call executes after delay)</p>';
+                    break;
+                default:
+                    output = '<p>Code executed successfully.</p>';
+            }
+            
+            outputEl.innerHTML = output;
+            outputEl.classList.add('active');
+            
+            // Auto-hide output after 5 seconds
+            setTimeout(() => {
+                outputEl.classList.remove('active');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

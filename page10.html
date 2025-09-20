@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Testing & Debugging</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --dark-blue: #0a192f;
+            --pale-green: #d8f3dc;
+            --medium-blue: #112240;
+            --light-text: #ccd6f6;
+            --dark-text: #2d3436;
+            --card-bg: rgba(17, 34, 64, 0.8);
+            --highlight: #64ffda;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark-blue) 0%, var(--medium-blue) 100%);
+            background-attachment: fixed;
+            color: var(--light-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        
+        body.light-mode {
+            background: linear-gradient(135deg, var(--pale-green) 0%, #b7e4c7 100%);
+            --light-text: #2d3436;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --highlight: #2c6e49;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px;
+            background: rgba(10, 25, 47, 0.8);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            grid-column: 1 / -1;
+            transition: background 0.3s ease;
+        }
+        
+        body.light-mode header {
+            background: rgba(216, 243, 220, 0.8);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            color: var(--light-text);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--highlight);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 10px;
+            position: relative;
+            grid-column: 1 / -1;
+        }
+        
+        .nav-btn {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+            text-decoration: none;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .theme-toggle {
+            background: var(--highlight);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .theme-toggle:hover {
+            background: #4fd8b9;
+        }
+        
+        body.light-mode .theme-toggle:hover {
+            background: #3d8e63;
+        }
+        
+        .search-box {
+            margin: 0 auto 30px;
+            max-width: 600px;
+            position: relative;
+            grid-column: 1 / -1;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 50px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            color: var(--dark-text);
+        }
+        
+        .search-box i {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            color: var(--dark-blue);
+            font-size: 1.2rem;
+        }
+        
+        .topics-container {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--highlight);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+            transition: background 0.3s ease, border 0.3s ease;
+        }
+        
+        .topics-container h2 {
+            color: var(--highlight);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--highlight);
+        }
+        
+        .topics-list {
+            list-style: none;
+        }
+        
+        .topics-list li {
+            padding: 12px 15px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--light-text);
+        }
+        
+        .topics-list li:hover {
+            background: rgba(100, 255, 218, 0.1);
+        }
+        
+        body.light-mode .topics-list li:hover {
+            background: rgba(44, 110, 73, 0.1);
+        }
+        
+        .topics-list li.active {
+            background: rgba(100, 255, 218, 0.2);
+            border-left: 3px solid var(--highlight);
+        }
+        
+        body.light-mode .topics-list li.active {
+            background: rgba(44, 110, 73, 0.2);
+        }
+        
+        .topics-list li:before {
+            content: "•";
+            color: var(--highlight);
+            font-weight: bold;
+            display: inline-block;
+            width: 20px;
+            font-size: 20px;
+        }
+        
+        .content-area {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--highlight);
+            transition: background 0.3s ease, border 0.3s ease;
+            min-height: 600px;
+        }
+        
+        .topic-content {
+            display: none;
+        }
+        
+        .topic-content.active {
+            display: block;
+        }
+        
+        .topic-content h2 {
+            color: var(--highlight);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--highlight);
+        }
+        
+        .topic-content p {
+            margin-bottom: 20px;
+            line-height: 1.8;
+            color: var(--light-text);
+        }
+        
+        .code-example {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            border-left: 3px solid var(--highlight);
+            position: relative;
+            transition: background 0.3s ease;
+        }
+        
+        body.light-mode .code-example {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .code-example pre {
+            color: var(--light-text);
+            font-family: 'Fira Code', monospace;
+            white-space: pre-wrap;
+            margin: 0;
+        }
+        
+        .run-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--highlight);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+        
+        .run-button:hover {
+            background: #4fd8b9;
+            transform: translateY(-2px);
+        }
+        
+        body.light-mode .run-button {
+            color: white;
+        }
+        
+        .output {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-top: 1px solid var(--highlight);
+            transition: background 0.3s ease;
+        }
+        
+        body.light-mode .output {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .output h4 {
+            color: var(--highlight);
+            margin-bottom: 10px;
+        }
+        
+        .output-content {
+            color: var(--light-text);
+            white-space: pre-wrap;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .key-points {
+            background: rgba(100, 255, 218, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            transition: background 0.3s ease;
+        }
+        
+        body.light-mode .key-points {
+            background: rgba(44, 110, 73, 0.1);
+        }
+        
+        .key-points h3 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+        }
+        
+        .key-points ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+        
+        .key-points li {
+            margin-bottom: 10px;
+            position: relative;
+            color: var(--light-text);
+        }
+        
+        .key-points li:before {
+            content: "→";
+            color: var(--highlight);
+            position: absolute;
+            left: -20px;
+        }
+        
+        .highlight {
+            background-color: yellow;
+            color: black;
+        }
+        
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .topics-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .theme-toggle {
+                position: relative;
+                left: 0;
+                transform: none;
+                order: 3;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>JavaScript Testing & Debugging</h1>
+            <p class="subtitle">Master the art of testing and debugging JavaScript applications</p>
+        </header>
+        
+        <div class="controls">
+            <a href="page9.html" class="nav-btn">
+                <i class="fas fa-arrow-left"></i> Previous
+            </a>
+            
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-palette"></i> Change Theme
+            </button>
+            
+            <a href="page11.html" class="nav-btn">
+                Next <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search for testing and debugging topics...">
+            <i class="fas fa-search"></i>
+        </div>
+        
+        <div class="topics-container">
+            <h2>Testing & Debugging</h2>
+            <ul class="topics-list" id="topicsNav">
+                <li class="active" data-topic="debugging-tools">Debugging Tools</li>
+                <li data-topic="console-methods">Console Methods</li>
+                <li data-topic="error-objects">Error Objects</li>
+                <li data-topic="unit-testing">Unit Testing (Jest, Mocha)</li>
+                <li data-topic="integration-testing">Integration Testing</li>
+                <li data-topic="e2e-testing">End-to-End Testing</li>
+                <li data-topic="tdd">Test-Driven Development</li>
+                <li data-topic="mocking">Mocking & Stubbing</li>
+                <li data-topic="performance-testing">Performance Testing</li>
+                <li data-topic="devtools">Browser DevTools</li>
+            </ul>
+        </div>
+        
+        <div class="content-area">
+            <!-- Debugging Tools Content -->
+            <div class="topic-content active" id="debugging-tools">
+                <h2>Debugging Tools</h2>
+                <p>Modern browsers come with powerful debugging tools that help developers identify and fix issues in their JavaScript code. The most commonly used tool is the browser's Developer Tools (DevTools), which includes a JavaScript debugger.</p>
+                
+                <div class="key-points">
+                    <h3>Key Features</h3>
+                    <ul>
+                        <li>Breakpoints: Pause code execution at specific lines</li>
+                        <li>Step through code: Execute code line by line</li>
+                        <li>Watch expressions: Monitor values of variables and expressions</li>
+                        <li>Call stack: View the sequence of function calls</li>
+                        <li>Scope inspection: Examine variables in different scopes</li>
+                    </ul>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Using Debugger Statement</h3>
+                    <button class="run-button" onclick="runCode(this)"><i class="fas fa-play"></i> Run</button>
+                    <pre><code>function calculateTotal(price, quantity) {
+    // This will pause execution if DevTools is open
+    debugger;
+    
+    const subtotal = price * quantity;
+    const tax = subtotal * 0.08;
+    const total = subtotal + tax;
+    
+    return total;
+}
+
+// Test the function
+console.log("Total: $" + calculateTotal(25, 3));</code></pre>
+                    <div class="output" style="display: none;">
+                        <h4>Output:</h4>
+                        <div class="output-content"></div>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Setting Breakpoints Programmatically</h3>
+                    <button class="run-button" onclick="runCode(this)"><i class="fas fa-play"></i> Run</button>
+                    <pre><code>function complexCalculation(values) {
+    if (values.length === 0) {
+        console.error("No values provided");
+        return;
+    }
+    
+    // Conditional breakpoint - only pauses if condition is true
+    if (values.some(v => v < 0)) {
+        debugger; // Pause if any value is negative
+    }
+    
+    const result = values.reduce((acc, val) => {
+        return acc + (val * 2);
+    }, 0);
+    
+    return result / values.length;
+}
+
+// Test with different inputs
+console.log("Result 1:", complexCalculation([1, 2, 3, 4, 5]));
+console.log("Result 2:", complexCalculation([-1, 2, 3])); // This will trigger the debugger</code></pre>
+                    <div class="output" style="display: none;">
+                        <h4>Output:</h4>
+                        <div class="output-content"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Console Methods Content -->
+            <div class="topic-content" id="console-methods">
+                <h2>Console Methods</h2>
+                <p>The console object provides several methods for logging information, debugging code, and measuring performance. These methods are essential for understanding what's happening in your code.</p>
+                
+                <div class="key-points">
+                    <h3>Common Console Methods</h3>
+                    <ul>
+                        <li>console.log(): Outputs a message to the console</li>
+                        <li>console.error(): Outputs an error message</li>
+                        <li>console.warn(): Outputs a warning message</li>
+                        <li>console.table(): Displays data as a table</li>
+                        <li>console.time() & console.timeEnd(): Measures time between operations</li>
+                        <li>console.group() & console.groupEnd(): Groups related messages</li>
+                    </ul>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Basic Console Methods</h3>
+                    <button class="run-button" onclick="runCode(this)"><i class="fas fa-play"></i> Run</button>
+                    <pre><code>// Basic logging
+console.log("This is a regular log message");
+
+// Warning and error messages
+console.warn("This is a warning message");
+console.error("This is an error message");
+
+// Informational and debug messages
+console.info("This is an informational message");
+console.debug("This is a debug message");</code></pre>
+                    <div class="output" style="display: none;">
+                        <h4>Output:</h4>
+                        <div class="output-content"></div>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Advanced Console Methods</h3>
+                    <button class="run-button" onclick="runCode(this)"><i class="fas fa-play"></i> Run</button>
+                    <pre><code>// Using console.table for structured data
+const users = [
+    { id: 1, name: "John Doe", age: 30, email: "john@example.com" },
+    { id: 2, name: "Jane Smith", age: 25, email: "jane@example.com" },
+    { id: 3, name: "Bob Johnson", age: 35, email: "bob@example.com" }
+];
+
+console.table(users);
+
+// Using console.group for grouped messages
+console.group("User Details");
+console.log("Name: John Doe");
+console.log("Age: 30");
+console.log("Email: john@example.com");
+console.groupEnd();
+
+// Timing operations
+console.time("Array initialization");
+const largeArray = new Array(1000000).fill().map((_, i) => i);
+console.timeEnd("Array initialization");
+
+// Counting
+for (let i = 0; i < 5; i++) {
+    console.count("Loop counter");
+}</code></pre>
+                    <div class="output" style="display: none;">
+                        <h4>Output:</h4>
+                        <div class="output-content"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Error Objects Content -->
+            <div class="topic-content" id="error-objects">
+                <h2>Error Objects</h2>
+                <p>JavaScript has several built-in error constructors that create specific error objects. Understanding these error types helps in effective debugging and error handling.</p>
+                
+                <div class="key-points">
+                    <h3>Error Types</h3>
+                    <ul>
+                        <li>Error: Generic error object</li>
+                        <li>SyntaxError: Invalid JavaScript syntax</li>
+                        <li>ReferenceError: Reference to non-existent variable</li>
+                        <li>TypeError: Value is not of expected type</li>
+                        <li>RangeError: Value is outside valid range</li>
+                        <li>URIError: Error in encodeURI() or decodeURI()</li>
+                        <li>AggregateError: Multiple errors wrapped together</li>
+                    </ul>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Creating and Throwing Errors</h3>
+                    <button class="run-button" onclick="runCode(this)"><i class="fas fa-play"></i> Run</button>
+                    <pre><code>// Creating different types of errors
+const genericError = new Error("This is a generic error");
+const typeError = new TypeError("Expected a number");
+const referenceError = new ReferenceError("Variable is not defined");
+const rangeError = new RangeError("Value out of range");
+
+// Log error details
+console.log("Generic error:", genericError.message);
+console.log("Error stack:", genericError.stack);
+
+// Function that throws errors based on input
+function processValue(value) {
+    if (typeof value !== "number") {
+        throw new TypeError("Value must be a number");
+    }
+    
+    if (value < 0 || value > 100) {
+        throw new RangeError("Value must be between 0 and 100");
+    }
+    
+    return value * 2;
+}
+
+// Test the function with error handling
+try {
+    console.log("Result:", processValue(50));
+    console.log("Result:", processValue("not a number")); // This will throw
+} catch (error) {
+    console.error("Caught error:", error.name, "-", error.message);
+}</code></pre>
+                    <div class="output" style="display: none;">
+                        <h4>Output:</h4>
+                        <div class="output-content"></div>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Custom Error Classes</h3>
+                    <button class="run-button" onclick="runCode(this)"><i class="fas fa-play"></i> Run</button>
+                    <pre><code>// Creating a custom error class
+class ValidationError extends Error {
+    constructor(message, field) {
+        super(message);
+        this.name = "ValidationError";
+        this.field = field;
+        this.date = new Date();
+    }
+}
+
+// Using the custom error
+function validateUser(user) {
+    if (!user.name) {
+        throw new ValidationError("Name is required", "name");
+    }
+    
+    if (!user.email || !user.email.includes("@")) {
+        throw new ValidationError("Valid email is required", "email");
+    }
+    
+    return true;
+}
+
+// Test validation with error handling
+try {
+    validateUser({ name: "", email: "invalid" });
+} catch (error) {
+    if (error instanceof ValidationError) {
+        console.error(`Validation error in ${error.field}: ${error.message}`);
+        console.error("Timestamp:", error.date);
+    } else {
+        console.error("Unexpected error:", error);
+    }
+}</code></pre>
+                    <div class="output" style="display: none;">
+                        <h4>Output:</h4>
+                        <div class="output-content"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Unit Testing Content -->
+            <div class="topic-content" id="unit-testing">
+                <h2>Unit Testing (Jest, Mocha)</h2>
+                <p>Unit testing involves testing individual units or components of code in isolation to ensure they work as expected. Jest and Mocha are popular JavaScript testing frameworks.</p>
+                
+                <div class="key-points">
+                    <h3>Key Concepts</h3>
+                    <ul>
+                        <li>Test suites: Group of related tests</li>
+                        <li>Test cases: Individual tests</li>
+                        <li>Assertions: Checking if values match expectations</li>
+                        <li>Setup and teardown: Preparing and cleaning up test environment</li>
+                        <li>Mocking: Simulating dependencies</li>
+                    </ul>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Basic Unit Test with Jest</h3>
+                    <button class="run-button" onclick="runCode(this)"><i class="fas fa-play"></i> Run</button>
+                    <pre><code>// Simple function to test
+function sum(a, b) {
+    return a + b;
+}
+
+// Test using Jest-style assertions
+function testSum() {
+    // Test case 1: Positive numbers
+    console.assert(sum(1, 2) === 3, "Sum of 1 and 2 should be 3");
+    
+    // Test case 2: Negative numbers
+    console.assert(sum(-1, -2) === -3, "Sum of -1 and -2 should be -3");
+    
+    // Test case 3: Decimal numbers
+    console.assert(sum(1.5, 2.5) === 4, "Sum of 1.5 and 2.5 should be 4");
+    
+    console.log("All sum tests passed!");
+}
+
+// Run the tests
+testSum();</code></pre>
+                    <div class="output" style="display: none;">
+                        <h4>Output:</h4>
+                        <div class="output-content"></div>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Testing Asynchronous Code</h3>
+                    <button class="run-button" onclick="runCode(this)"><i class="fas fa-play"></i> Run</button>
+                    <pre><code>// Function that returns a promise
+function fetchData() {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve({ data: "Sample data", status: 200 });
+        }, 100);
+    });
+}
+
+// Async test function
+async function testFetchData() {
+    try {
+        const result = await fetchData();
+        
+        // Assertions
+        console.assert(result.status === 200, "Status should be 200");
+        console.assert(result.data === "Sample data", "Data should match");
+        
+        console.log("Async test passed!");
+    } catch (error) {
+        console.error("Async test failed:", error);
+    }
+}
+
+// Run the async test
+testFetchData();</code></pre>
+                    <div class="output" style="display: none;">
+                        <h4>Output:</h4>
+                        <div class="output-content"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Integration Testing Content -->
+            <div class="topic-content" id="integration-testing">
+                <h2>Integration Testing</h2>
+                <p>Integration testing verifies that different modules or services work together correctly. It focuses on testing the interactions between components.</p>
+                
+                <div class="key-points">
+                    <h3>Key Concepts</h3>
+                    <ul>
+                        <li>Testing component interactions</li>
+                        <li>Verifying data flow between modules</li>
+                        <li>Testing API integrations</li>
+                        <li>Database integration testing</li>
+                        <li>Third-party service integration</li>
+                    </ul>
+                </div>
+                
+                <div class="code-example">
+                    <h3>API Integration Test Example</h3>
+                    <button class="run-button" onclick="runCode(this)"><i class="fas fa-play"></i> Run</button>
+                    <pre><code>// Simulated API functions
+const api = {
+    getUser: (id) => Promise.resolve({ id, name: "John Doe", email: "john@example.com" }),
+    getPosts: (userId) => Promise.resolve([
+        { id: 1, title: "Post 1", userId },
+        { id: 2, title: "Post 2", userId }
+    ])
+};
+
+// Integration test: Get user and their posts
+async function testUserPostIntegration() {
+    try {
+        // Get user
+        const user = await api.getUser(1);
+        console.log("User:", user);
+        
+        // Get user's posts
+        const posts = await api.getPosts(user.id);
+        console.log("Posts:", posts);
+        
+        // Verify integration
+        console.assert(user.id === 1, "User ID should be 1");
+        console.assert(posts.length > 0, "User should have posts");
+        console.assert(posts.every(post => post.userId === user.id), 
+                      "All posts should belong to the user");
+        
+        console.log("Integration test passed!");
+    } catch (error) {
+        console.error("Integration test failed:", error);
+    }
+}
+
+// Run the integration test
+testUserPostIntegration();</code></pre>
+                    <div class="output" style="display: none;">
+                        <h4>Output:</h4>
+                        <div class="output-content"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- End-to-End Testing Content -->
+            <div class="topic-content" id="e2e-testing">
+                <h2>End-to-End Testing</h2>
+                <p>End-to-end (E2E) testing validates the complete flow of an application from start to finish. It simulates real user scenarios and interactions.</p>
+                
+                <div class="key-points">
+                    <h3>Key Concepts</h3>
+                    <ul>
+                        <li>Testing complete user workflows</li>
+                        <li>Simulating user interactions</li>
+                        <li>Testing across multiple systems</li>
+                        <li>Validating UI and functionality together</li>
+                        <li>Using tools like Cypress, Selenium, or Playwright</li>
+                    </ul>
+                </div>
+                
+                <div class="code-example">
+                    <h3>E2E Test Simulation</h3>
+                    <button class="run-button" onclick="runCode(this)"><i class="fas fa-play"></i> Run</button>
+                    <pre><code>// Simulated user interface functions
+const ui = {
+    login: (username, password) => {
+        console.log(`Logging in with ${username}`);
+        return Promise.resolve({ success: true, token: "abc123" });
+    },
+    navigateToDashboard: () => {
+        console.log("Navigating to dashboard");
+        return Promise.resolve();
+    },
+    createPost: (title, content) => {
+        console.log(`Creating post: ${title}`);
+        return Promise.resolve({ id: 100, title, content });
+    },
+    logout: () => {
+        console.log("Logging out");
+        return Promise.resolve();
+    }
+};
+
+// Simulated E2E test
+async function testUserWorkflow() {
+    try {
+        console.log("Starting E2E test: User creates a post");
+        
+        // Step 1: Login
+        const loginResult = await ui.login("testuser", "password");
+        console.assert(loginResult.success, "Login should succeed");
+        console.assert(loginResult.token, "Should receive auth token");
+        
+        // Step 2: Navigate to dashboard
+        await ui.navigateToDashboard();
+        
+        // Step 3: Create a post
+        const post = await ui.createPost("Test Post", "This is test content");
+        console.assert(post.id, "Post should have an ID");
+        console.assert(post.title === "Test Post", "Post title should match");
+        
+        // Step 4: Logout
+        await ui.logout();
+        
+        console.log("E2E test completed successfully!");
+    } catch (error) {
+        console.error("E2E test failed:", error);
+    }
+}
+
+// Run the E2E test
+testUserWorkflow();</code></pre>
+                    <div class="output" style="display: none;">
+                        <h4>Output:</h4>
+                        <div class="output-content"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Test-Driven Development Content -->
+            <div class="topic-content" id="tdd">
+                <h2>Test-Driven Development</h2>
+                <p>Test-Driven Development (TDD) is a software development approach where tests are written before the actual code. The process follows a cycle: Red, Green, Refactor.</p>
+                
+                <div class="key-points">
+                    <h3>TDD Cycle</h3>
+                    <ul>
+                        <li>Red: Write a failing test</li>
+                        <li>Green: Write minimal code to pass the test</li>
+                        <li>Refactor: Improve code while keeping tests passing</li>
+                        <li>Repeat: Continue the cycle for each feature</li>
+                    </ul>
+                </div>
+                
+                <div class="code-example">
+                    <h3>TDD Example: String Calculator</h3>
+                    <button class="run-button" onclick="runCode(this)"><i class="fas fa-play"></i> Run</button>
+                    <pre><code>// Step 1: Write a failing test (RED)
+function testStringCalculator() {
+    // Test empty string returns 0
+    try {
+        const result = add("");
+        console.assert(result === 0, `Empty string should return 0, got ${result}`);
+        console.log("✓ Empty string test passed");
+    } catch (e) {
+        console.log("✗ Empty string test failed:", e.message);
+    }
+    
+    // Test single number returns the number
+    try {
+        const result = add("5");
+        console.assert(result === 5, `Single number should return itself, got ${result}`);
+        console.log("✓ Single number test passed");
+    } catch (e) {
+        console.log("✗ Single number test failed:", e.message);
+    }
+}
+
+// Step 2: Write minimal implementation (GREEN)
+function add(numbers) {
+    if (numbers === "") return 0;
+    return parseInt(numbers);
+}
+
+// Run the tests
+console.log("Running TDD tests for string calculator:");
+testStringCalculator();
+
+// Step 3: Refactor and add more tests (REFACTOR)
+// This would continue in the TDD cycle</code></pre>
+                    <div class="output" style="display: none;">
+                        <h4>Output:</h4>
+                        <div class="output-content"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mocking & Stubbing Content -->
+            <div class="topic-content" id="mocking">
+                <h2>Mocking & Stubbing</h2>
+                <p>Mocking and stubbing are techniques used in testing to replace real dependencies with controlled substitutes. This allows for isolated testing of components.</p>
+                
+                <div class="key-points">
+                    <h3>Key Concepts</h3>
+                    <ul>
+                        <li>Mocks: Objects that simulate the behavior of real objects</li>
+                        <li>Stubs: Replace functions with controlled versions</li>
+                        <li>Spies: Record information about function calls</li>
+                        <li>Dependency injection: Providing dependencies externally</li>
+                    </ul>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Mocking API Calls</h3>
+                    <button class="run-button" onclick="runCode(this)"><i class="fas fa-play"></i> Run</button>
+                    <pre><code>// Real API function (would normally make HTTP request)
+function fetchUserData(userId) {
+    // This would make an actual API call in production
+    return Promise.resolve({ id: userId, name: "Real User" });
+}
+
+// Function we want to test
+async function getUserName(userId) {
+    const user = await fetchUserData(userId);
+    return user.name;
+}
+
+// Test with a mock
+async function testGetUserName() {
+    // Save original function
+    const originalFetch = fetchUserData;
+    
+    // Create mock
+    fetchUserData = async (userId) => {
+        console.log(`Mock called with userId: ${userId}`);
+        return { id: userId, name: "Mock User" };
+    };
+    
+    try {
+        // Test with mock
+        const name = await getUserName(123);
+        console.assert(name === "Mock User", `Expected "Mock User", got "${name}"`);
+        console.log("✓ Mock test passed");
+    } catch (error) {
+        console.error("Mock test failed:", error);
+    } finally {
+        // Restore original function
+        fetchUserData = originalFetch;
+    }
+}
+
+// Run the test
+testGetUserName();
+
+// Test with original function
+getUserName(456).then(name => {
+    console.log("Original function result:", name);
+});</code></pre>
+                    <div class="output" style="display: none;">
+                        <h4>Output:</h4>
+                        <div class="output-content"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Performance Testing Content -->
+            <div class="topic-content" id="performance-testing">
+                <h2>Performance Testing</h2>
+                <p>Performance testing measures the speed, responsiveness, and stability of an application under various conditions. It helps identify bottlenecks and optimize code.</p>
+                
+                <div class="key-points">
+                    <h3>Key Concepts</h3>
+                    <ul>
+                        <li>Load testing: Testing under expected load</li>
+                        <li>Stress testing: Testing beyond normal capacity</li>
+                        <li>Benchmarking: Comparing performance metrics</li>
+                        <li>Profiling: Identifying performance bottlenecks</li>
+                    </ul>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Basic Performance Measurement</h3>
+                    <button class="run-button" onclick="runCode(this)"><i class="fas fa-play"></i> Run</button>
+                    <pre><code>// Function to test performance of
+function heavyComputation(n) {
+    let result = 0;
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            result += i * j;
+        }
+    }
+    return result;
+}
+
+// Performance test function
+function testPerformance() {
+    const sizes = [100, 200, 400];
+    const results = [];
+    
+    for (const size of sizes) {
+        // Start timer
+        const startTime = performance.now();
+        
+        // Run the function
+        heavyComputation(size);
+        
+        // End timer
+        const endTime = performance.now();
+        const duration = endTime - startTime;
+        
+        results.push({ size, duration: duration.toFixed(2) });
+    }
+    
+    // Display results
+    console.table(results);
+    
+    // Analyze results
+    console.log("Performance analysis:");
+    for (let i = 1; i < results.length; i++) {
+        const prev = results[i-1];
+        const curr = results[i];
+        const factor = (curr.size / prev.size).toFixed(1);
+        const timeIncrease = (curr.duration / prev.duration).toFixed(1);
+        console.log(`Size ${factor}x larger, time ${timeIncrease}x longer`);
+    }
+}
+
+// Run performance test
+testPerformance();</code></pre>
+                    <div class="output" style="display: none;">
+                        <h4>Output:</h4>
+                        <div class="output-content"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Browser DevTools Content -->
+            <div class="topic-content" id="devtools">
+                <h2>Browser DevTools</h2>
+                <p>Browser Developer Tools are essential for debugging, profiling, and optimizing web applications. They provide insights into HTML, CSS, JavaScript, network activity, and performance.</p>
+                
+                <div class="key-points">
+                    <h3>Key DevTools Features</h3>
+                    <ul>
+                        <li>Elements panel: Inspect and modify HTML/CSS</li>
+                        <li>Console: Execute JavaScript and view logs</li>
+                        <li>Sources: Debug JavaScript with breakpoints</li>
+                        <li>Network: Monitor network requests</li>
+                        <li>Performance: Analyze runtime performance</li>
+                        <li>Memory: Identify memory leaks</li>
+                    </ul>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Using Console API for Debugging</h3>
+                    <button class="run-button" onclick="runCode(this)"><i class="fas fa-play"></i> Run</button>
+                    <pre><code>// Demonstrate various Console API features
+
+// 1. console.log with formatting
+const user = { name: "Alice", age: 30, city: "Wonderland" };
+console.log("User object: %o", user);
+
+// 2. console.dir for detailed object inspection
+console.dir(user);
+
+// 3. console.trace for stack traces
+function firstFunction() {
+    secondFunction();
+}
+
+function secondFunction() {
+    console.trace("Function call trace");
+}
+
+firstFunction();
+
+// 4. console.assert for testing assumptions
+console.assert(2 + 2 === 4, "Math should work");
+console.assert(2 + 2 === 5, "This assertion will fail");
+
+// 5. console.clear to clear the console
+// console.clear(); // Uncomment to see it work
+
+console.log("Open browser DevTools to see all console outputs!");</code></pre>
+                    <div class="output" style="display: none;">
+                        <h4>Output:</h4>
+                        <div class="output-content"></div>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+                    <h3>Performance Monitoring</h3>
+                    <button class="run-button" onclick="runCode(this)"><i class="fas fa-play"></i> Run</button>
+                    <pre><code>// Demonstrate performance monitoring techniques
+
+// Monitor JavaScript execution time
+console.time("Array creation");
+const largeArray = Array.from({ length: 100000 }, (_, i) => i);
+console.timeEnd("Array creation");
+
+// Monitor function performance
+function expensiveOperation() {
+    console.time("Expensive operation");
+    let result = 0;
+    for (let i = 0; i < 1000000; i++) {
+        result += Math.sqrt(i) * Math.sin(i);
+    }
+    console.timeEnd("Expensive operation");
+    return result;
+}
+
+expensiveOperation();
+
+// Monitor memory usage (if supported)
+if (window.performance && performance.memory) {
+    const memory = performance.memory;
+    console.log("Memory usage:");
+    console.log(`Used JS heap: ${(memory.usedJSHeapSize / 1048576).toFixed(2)} MB`);
+    console.log(`Total JS heap: ${(memory.totalJSHeapSize / 1048576).toFixed(2)} MB`);
+    console.log(`Heap size limit: ${(memory.jsHeapSizeLimit / 1048576).toFixed(2)} MB`);
+} else {
+    console.log("Memory API not supported in this browser");
+}</code></pre>
+                    <div class="output" style="display: none;">
+                        <h4>Output:</h4>
+                        <div class="output-content"></div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const topicsNav = document.getElementById('topicsNav');
+            const topicContents = document.querySelectorAll('.topic-content');
+            const searchInput = document.getElementById('searchInput');
+            const themeToggle = document.getElementById('themeToggle');
+            const topicItems = topicsNav.querySelectorAll('li');
+            
+            // Theme toggle functionality
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('light-mode');
+                
+                if (document.body.classList.contains('light-mode')) {
+                    themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+                } else {
+                    themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+                }
+            });
+            
+            // Set up topic navigation
+            topicItems.forEach((item) => {
+                item.addEventListener('click', () => {
+                    // Update active class
+                    topicItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    // Show corresponding content
+                    const topicId = item.getAttribute('data-topic');
+                    topicContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === topicId) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                topicItems.forEach(item => {
+                    const topicText = item.textContent.toLowerCase();
+                    
+                    // Remove previous highlights
+                    item.innerHTML = item.textContent;
+                    
+                    if (searchTerm && topicText.includes(searchTerm)) {
+                        // Highlight matching text
+                        const regex = new RegExp(searchTerm, 'gi');
+                        item.innerHTML = item.textContent.replace(regex, match => 
+                            `<span class="highlight">${match}</span>`
+                        );
+                        
+                        // Scroll to match
+                        item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            });
+        });
+        
+        // Function to run code examples
+        function runCode(button) {
+            const codeExample = button.parentElement;
+            const code = codeExample.querySelector('code').textContent;
+            const outputElement = codeExample.querySelector('.output-content');
+            const outputContainer = codeExample.querySelector('.output');
+            
+            // Show output container
+            outputContainer.style.display = 'block';
+            
+            try {
+                // Clear previous output
+                outputElement.textContent = '';
+                
+                // Create a function from the code and execute it
+                const execute = new Function(code);
+                const originalLog = console.log;
+                
+                // Override console.log to capture output
+                console.log = function() {
+                    const args = Array.from(arguments);
+                    outputElement.textContent += args.map(arg => 
+                        typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+                    ).join(' ') + '\n';
+                    originalLog.apply(console, arguments);
+                };
+                
+                // Execute the code
+                execute();
+                
+                // Restore original console.log
+                console.log = originalLog;
+                
+            } catch (error) {
+                outputElement.textContent = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

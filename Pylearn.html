@@ -1,0 +1,2029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Learning Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Load Skulpt for Python execution -->
+    <script src="https://skulpt.org/js/skulpt.min.js"></script>
+    <script src="https://skulpt.org/js/skulpt-stdlib.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        body {
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, #0a2a5e 0%, #1a5fb4 100%);
+            color: #f0f7ff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, #1a5fb4 0%, #3584e4 100%);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+        }
+
+        .logo h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            background: white;
+            border-radius: 50px;
+            overflow: hidden;
+            padding: 8px 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 10px;
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: #1a5fb4;
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Topics Grid */
+        .topics-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .topic-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            color: #333;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .topic-card h3 {
+            color: #1a5fb4;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eef6ff;
+        }
+
+        .topic-card ul {
+            list-style-type: none;
+        }
+
+        .topic-card li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .topic-card li:hover {
+            color: #1a5fb4;
+            font-weight: 500;
+        }
+
+        .topic-card li:before {
+            content: "•";
+            color: #1a5fb4;
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-right: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Topic Detail View */
+        .topic-detail {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        .topic-detail h2 {
+            color: #1a5fb4;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eef6ff;
+        }
+
+        .topic-detail p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .topic-detail ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .topic-detail li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .back-button {
+            background: #1a5fb4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: #0d4a8e;
+        }
+
+        /* Subtopic styles */
+        .subtopic {
+            cursor: pointer;
+            padding: 5px 0;
+            transition: all 0.2s;
+        }
+
+        .subtopic:hover {
+            background-color: #f5f9ff;
+            padding-left: 5px;
+            border-radius: 4px;
+        }
+
+        /* Code Editor Styles */
+        .code-container {
+            margin: 25px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .code-header {
+            background: #2d3748;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-header span {
+            font-weight: 500;
+        }
+
+        .run-button {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.3s;
+        }
+
+        .run-button:hover {
+            background: #38a169;
+        }
+
+        .code-editor {
+            background: #1a202c;
+            color: #cbd5e0;
+            padding: 15px;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+            white-space: pre;
+            tab-size: 4;
+            -moz-tab-size: 4;
+        }
+
+        .code-output {
+            background: #edf2f7;
+            padding: 15px;
+            border-top: 1px solid #cbd5e0;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            min-height: 50px;
+            color: #2d3748;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .search-container {
+                width: 100%;
+                margin: 10px 0;
+            }
+            
+            .topics-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .topic-detail {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fab fa-python"></i>
+                    <h1>Python Learning Portal</h1>
+                </div>
+                <div class="search-container">
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search Python topics...">
+                        <button><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                    <span>Switch Theme</span>
+                </button>
+            </div>
+        </header>
+
+        <button class="back-button" id="backButton" style="display: none;">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Topics</span>
+        </button>
+
+        <div id="topicDetail" class="topic-detail">
+            <!-- Topic content will be loaded here -->
+        </div>
+
+        <div id="topicsContainer" class="topics-container">
+            <div class="topic-card">
+                <h3>Core Python</h3>
+                <ul>
+                    <li class="subtopic" data-topic="core-python" data-subtopic="syntax">Syntax & Structure</li>
+                    <li class="subtopic" data-topic="core-python" data-subtopic="variables">Variables & Data Types</li>
+                    <li class="subtopic" data-topic="core-python" data-subtopic="operators">Basic Operators</li>
+                    <li class="subtopic" data-topic="core-python" data-subtopic="io">Input/Output (I/O)</li>
+                    <li class="subtopic" data-topic="core-python" data-subtopic="conversion">Type Conversion</li>
+                </ul>
+            </div>
+
+            <div class="topic-card">
+                <h3>Control Flow</h3>
+                <ul>
+                    <li class="subtopic" data-topic="control-flow" data-subtopic="conditionals">Conditional Statements</li>
+                    <li class="subtopic" data-topic="control-flow" data-subtopic="forloops">For Loops</li>
+                    <li class="subtopic" data-topic="control-flow" data-subtopic="whileloops">While Loops</li>
+                    <li class="subtopic" data-topic="control-flow" data-subtopic="breakcontinue">Break & Continue</li>
+                </ul>
+            </div>
+
+            <div class="topic-card">
+                <h3>Data Structures</h3>
+                <ul>
+                    <li class="subtopic" data-topic="data-structures" data-subtopic="lists">Lists</li>
+                    <li class="subtopic" data-topic="data-structures" data-subtopic="tuples">Tuples</li>
+                    <li class="subtopic" data-topic="data-structures" data-subtopic="dictionaries">Dictionaries</li>
+                    <li class="subtopic" data-topic="data-structures" data-subtopic="sets">Sets</li>
+                    <li class="subtopic" data-topic="data-structures" data-subtopic="comprehensions">Comprehensions</li>
+                </ul>
+            </div>
+
+            <div class="topic-card">
+                <h3>Functions & Modules</h3>
+                <ul>
+                    <li class="subtopic" data-topic="functions-modules" data-subtopic="defining">Defining Functions</li>
+                    <li class="subtopic" data-topic="functions-modules" data-subtopic="parameters">Parameters & Arguments</li>
+                    <li class="subtopic" data-topic="functions-modules" data-subtopic="return">Return Values</li>
+                    <li class="subtopic" data-topic="functions-modules" data-subtopic="lambda">Lambda Functions</li>
+                    <li class="subtopic" data-topic="functions-modules" data-subtopic="modules">Modules & Packages</li>
+                </ul>
+            </div>
+
+            <div class="topic-card">
+                <h3>Object-Oriented Programming</h3>
+                <ul>
+                    <li class="subtopic" data-topic="oop" data-subtopic="classes">Classes & Objects</li>
+                    <li class="subtopic" data-topic="oop" data-subtopic="inheritance">Inheritance</li>
+                    <li class="subtopic" data-topic="oop" data-subtopic="encapsulation">Encapsulation</li>
+                    <li class="subtopic" data-topic="oop" data-subtopic="polymorphism">Polymorphism</li>
+                    <li class="subtopic" data-topic="oop" data-subtopic="magic">Magic Methods</li>
+                </ul>
+            </div>
+
+            <div class="topic-card">
+                <h3>Intermediate Concepts</h3>
+                <ul>
+                    <li class="subtopic" data-topic="intermediate" data-subtopic="errors">Error Handling</li>
+                    <li class="subtopic" data-topic="intermediate" data-subtopic="files">File Handling</li>
+                    <li class="subtopic" data-topic="intermediate" data-subtopic="iterators">Iterators & Generators</li>
+                    <li class="subtopic" data-topic="intermediate" data-subtopic="decorators">Decorators</li>
+                    <li class="subtopic" data-topic="intermediate" data-subtopic="context">Context Managers</li>
+                </ul>
+            </div>
+
+            <div class="topic-card">
+                <h3>Popular Libraries</h3>
+                <ul>
+                    <li class="subtopic" data-topic="libraries" data-subtopic="web">Web Development (Flask, Django)</li>
+                    <li class="subtopic" data-topic="libraries" data-subtopic="data">Data Science (NumPy, Pandas)</li>
+                    <li class="subtopic" data-topic="libraries" data-subtopic="viz">Data Visualization (Matplotlib, Seaborn)</li>
+                    <li class="subtopic" data-topic="libraries" data-subtopic="ml">Machine Learning (Scikit-learn)</li>
+                    <li class="subtopic" data-topic="libraries" data-subtopic="scraping">Web Scraping (BeautifulSoup)</li>
+                </ul>
+            </div>
+
+            <div class="topic-card">
+                <h3>Advanced Topics</h3>
+                <ul>
+                    <li class="subtopic" data-topic="advanced" data-subtopic="concurrency">Concurrency & Parallelism</li>
+                    <li class="subtopic" data-topic="advanced" data-subtopic="asyncio">AsyncIO</li>
+                    <li class="subtopic" data-topic="advanced" data-subtopic="testing">Testing (unittest, pytest)</li>
+                    <li class="subtopic" data-topic="advanced" data-subtopic="packaging">Packaging</li>
+                    <li class="subtopic" data-topic="advanced" data-subtopic="api">API Development</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2023 Python Learning Portal | Browse all topics to master Python programming</p>
+        </div>
+    </div>
+
+    <script>
+        // Configure Skulpt for Python execution
+        function outf(text) {
+            const outputElements = document.querySelectorAll('.code-output:last-child');
+            if (outputElements.length > 0) {
+                const outputElement = outputElements[0];
+                outputElement.textContent += text;
+            }
+        }
+
+        function builtinRead(x) {
+            if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+                throw "File not found: '" + x + "'";
+            return Sk.builtinFiles["files"][x];
+        }
+
+        // Topic explanations data with code examples
+        const topicData = {
+            "core-python": {
+                "syntax": {
+                    title: "Python Syntax & Structure",
+                    content: `
+                        <h2>Python Syntax & Structure</h2>
+                        <p>Python is known for its clean and readable syntax. Unlike many other programming languages, Python uses whitespace indentation to define code blocks instead of curly braces.</p>
+                        
+                        <h3>Key Features:</h3>
+                        <ul>
+                            <li><strong>Indentation:</strong> Python uses indentation to define blocks of code. Standard practice is to use 4 spaces per indentation level.</li>
+                            <li><strong>Readability:</strong> Python code is designed to be readable and often resembles pseudo-code.</li>
+                            <li><strong>Statements:</strong> Each line is typically a single statement, but you can use semicolons to separate multiple statements on one line.</li>
+                            <li><strong>Comments:</strong> Use the # symbol for single-line comments. For multi-line comments, you can use triple quotes (""") but these are actually docstrings.</li>
+                        </ul>
+                        
+                        <div class="code-container">
+                            <div class="code-header">
+                                <span>Python Example</span>
+                                <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                            </div>
+                            <div class="code-editor"># This is a comment
+print("Hello, World!")
+
+# Conditional statement with proper indentation
+x = 10
+if x > 5:
+    print("x is greater than 5")
+    print("This is inside the if block")
+else:
+    print("x is not greater than 5")
+
+print("This is outside the if block")</div>
+                            <div class="code-output"></div>
+                        </div>
+                    `
+                },
+                "variables": {
+                    title: "Variables & Data Types",
+                    content: `
+                        <h2>Variables & Data Types in Python</h2>
+                        <p>Python is dynamically typed, meaning you don't need to declare variable types explicitly. The interpreter infers the type based on the assigned value.</p>
+                        
+                        <h3>Basic Data Types:</h3>
+                        <ul>
+                            <li><strong>Integers:</strong> Whole numbers (e.g., 5, -3, 1000)</li>
+                            <li><strong>Floats:</strong> Decimal numbers (e.g., 3.14, -0.001, 2.0)</li>
+                            <li><strong>Strings:</strong> Text data, enclosed in quotes (e.g., "hello", 'Python')</li>
+                            <li><strong>Booleans:</strong> True or False values</li>
+                            <li><strong>None:</strong> Represents the absence of a value</li>
+                        </ul>
+                        
+                        <h3>Variable Assignment:</h3>
+                        <p>Variables are created when you first assign a value to them using the = operator.</p>
+                        
+                        <div class="code-container">
+                            <div class="code-header">
+                                <span>Python Example</span>
+                                <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                            </div>
+                            <div class="code-editor"># Variable assignment
+x = 5           # integer
+y = 3.14        # float
+name = "Alice"  # string
+is_valid = True # boolean
+value = None    # None type
+
+# Print variables and their types
+print("x =", x, "| Type:", type(x).__name__)
+print("y =", y, "| Type:", type(y).__name__)
+print("name =", name, "| Type:", type(name).__name__)
+print("is_valid =", is_valid, "| Type:", type(is_valid).__name__)
+print("value =", value, "| Type:", type(value).__name__)
+
+# Dynamic typing - variable can change type
+x = "Now I'm a string"
+print("x =", x, "| Type:", type(x).__name__)</div>
+                            <div class="code-output"></div>
+                        </div>
+                    `
+                },
+                "operators": {
+                    title: "Basic Operators",
+                    content: `
+                        <h2>Basic Operators in Python</h2>
+                        <p>Python provides a variety of operators for performing operations on variables and values.</p>
+                        
+                        <h3>Arithmetic Operators:</h3>
+                        <ul>
+                            <li><strong>+</strong> Addition</li>
+                            <li><strong>-</strong> Subtraction</li>
+                            <li><strong>*</strong> Multiplication</li>
+                            <li><strong>/</strong> Division (returns float)</li>
+                            <li><strong>//</strong> Floor division (returns integer)</li>
+                            <li><strong>%</strong> Modulus (remainder)</li>
+                            <li><strong>**</strong> Exponentiation (power)</li>
+                        </ul>
+                        
+                        <h3>Comparison Operators:</h3>
+                        <ul>
+                            <li><strong>==</strong> Equal to</li>
+                            <li><strong>!=</strong> Not equal to</li>
+                            <li><strong>></strong> Greater than</li>
+                            <li><strong><</strong> Less than</li>
+                            <li><strong>>=</strong> Greater than or equal to</li>
+                            <li><strong><=</strong> Less than or equal to</li>
+                        </ul>
+                        
+                        <h3>Logical Operators:</h3>
+                        <ul>
+                            <li><strong>and</strong> Returns True if both statements are true</li>
+                            <li><strong>or</strong> Returns True if one of the statements is true</li>
+                            <li><strong>not</strong> Reverse the result, returns False if the result is true</li>
+                        </ul>
+                        
+                        <div class="code-container">
+                            <div class="code-header">
+                                <span>Python Example</span>
+                                <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                            </div>
+                            <div class="code-editor"># Arithmetic operators
+a = 10
+b = 3
+
+print("a + b =", a + b)   # Addition
+print("a - b =", a - b)   # Subtraction
+print("a * b =", a * b)   # Multiplication
+print("a / b =", a / b)   # Division
+print("a // b =", a // b) # Floor division
+print("a % b =", a % b)   # Modulus
+print("a ** b =", a ** b) # Exponentiation
+
+# Comparison operators
+print("a == b:", a == b)   # Equal to
+print("a != b:", a != b)   # Not equal to
+print("a > b:", a > b)     # Greater than
+print("a < b:", a < b)     # Less than
+print("a >= b:", a >= b)   # Greater than or equal to
+print("a <= b:", a <= b)   # Less than or equal to
+
+# Logical operators
+x = True
+y = False
+
+print("x and y:", x and y) # And
+print("x or y:", x or y)   # Or
+print("not x:", not x)     # Not</div>
+                            <div class="code-output"></div>
+                        </div>
+                    `
+                },
+                "io": {
+                    title: "Input/Output (I/O)",
+                    content: `
+                        <h2>Input/Output (I/O) in Python</h2>
+                        <p>Python provides simple functions for receiving input from users and displaying output.</p>
+                        
+                        <h3>Output with print():</h3>
+                        <p>The print() function is used to output data to the standard output device (screen).</p>
+                        
+                        <h3>Input with input():</h3>
+                        <p>The input() function allows user input. It reads a line from input, converts it to a string, and returns that string.</p>
+                        
+                        <div class="code-container">
+                            <div class="code-header">
+                                <span>Python Example</span>
+                                <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                            </div>
+                            <div class="code-editor"># Basic output
+print("Hello, World!")
+name = "Alice"
+print("Hello,", name)
+print(f"Hello, {name}!")  # f-string (formatted string literal)
+
+# For input demonstration, we'll simulate input
+# In a real environment, you would use: name = input("Enter your name: ")
+user_name = "Python Learner"
+print("Hello, " + user_name)
+
+# Input with conversion simulation
+age_str = "25"  # Simulating input
+age_int = int(age_str)  # Convert to integer
+print(f"Next year, you will be {age_int + 1} years old.")
+
+# Multiple values input simulation
+values = "10 20"  # Simulating input
+a, b = values.split()
+a = float(a)
+b = float(b)
+print(f"{a} + {b} = {a + b}")</div>
+                            <div class="code-output"></div>
+                        </div>
+                    `
+                },
+                "conversion": {
+                    title: "Type Conversion",
+                    content: `
+                        <h2>Type Conversion in Python</h2>
+                        <p>Type conversion is the process of converting one data type to another. Python provides built-in functions for these conversions.</p>
+                        
+                        <h3>Implicit Conversion:</h3>
+                        <p>Python automatically converts one data type to another without user involvement.</p>
+                        
+                        <h3>Explicit Conversion:</h3>
+                        <p>You can convert between types using built-in functions like int(), float(), str(), etc.</p>
+                        
+                        <div class="code-container">
+                            <div class="code-header">
+                                <span>Python Example</span>
+                                <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                            </div>
+                            <div class="code-editor"># Implicit conversion
+x = 5    # integer
+y = 2.5  # float
+z = x + y  # z will be 7.5 (float)
+print("Implicit conversion:", z, type(z).__name__)
+
+# Explicit conversion
+# float to int
+x = 5.7
+y = int(x)  # y will be 5
+print("float to int:", x, "->", y)
+
+# int to string
+age = 25
+age_str = str(age)  # age_str will be "25"
+print("int to string:", age, "->", repr(age_str), type(age_str).__name__)
+
+# string to int
+num_str = "10"
+num = int(num_str)  # num will be 10
+print("string to int:", repr(num_str), "->", num, type(num).__name__)
+
+# string to float
+pi_str = "3.14"
+pi = float(pi_str)  # pi will be 3.14
+print("string to float:", repr(pi_str), "->", pi, type(pi).__name__)
+
+# int to boolean
+x = 5
+y = 0
+print("int to boolean:", x, "->", bool(x))
+print("int to boolean:", y, "->", bool(y))
+
+# Handling conversion errors
+try:
+    invalid = int("abc")
+    print(invalid)
+except ValueError as e:
+    print("Error:", str(e))</div>
+                            <div class="code-output"></div>
+                        </div>
+                    `
+                }
+            },
+            "control-flow": {
+                "conditionals": {
+                    title: "Conditional Statements",
+                    content: `<h2>Conditional Statements in Python</h2>
+                    <p>Conditional statements allow you to execute different blocks of code based on conditions. They are fundamental to controlling the flow of your program.</p>
+                    
+                    <h3>Types of Conditional Statements:</h3>
+                    <ul>
+                        <li><strong>if statements:</strong> Execute a block of code if a condition is true</li>
+                        <li><strong>if-else statements:</strong> Execute one block if true, another if false</li>
+                        <li><strong>if-elif-else statements:</strong> Handle multiple conditions</li>
+                        <li><strong>Nested conditionals:</strong> Conditionals inside other conditionals</li>
+                    </ul>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python Example</span>
+                            <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                        </div>
+                        <div class="code-editor"># Simple if statement
+x = 10
+if x > 5:
+    print("x is greater than 5")
+
+# if-else statement
+age = 17
+if age >= 18:
+    print("You are an adult")
+else:
+    print("You are a minor")
+
+# if-elif-else statement
+score = 85
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+elif score >= 70:
+    grade = "C"
+elif score >= 60:
+    grade = "D"
+else:
+    grade = "F"
+
+print(f"Score: {score}, Grade: {grade}")
+
+# Nested if statements
+num = 15
+if num > 0:
+    if num % 2 == 0:
+        print("Positive even number")
+    else:
+        print("Positive odd number")
+elif num < 0:
+    print("Negative number")
+else:
+    print("Zero")
+
+# Conditional expressions (ternary operator)
+x = 10
+y = 20
+max_value = x if x > y else y
+print(f"The maximum value is {max_value}")</div>
+                        <div class="code-output"></div>
+                    </div>`
+                },
+                "forloops": {
+                    title: "For Loops",
+                    content: `<h2>For Loops in Python</h2>
+                    <p>For loops are used for iterating over sequences (such as lists, tuples, dictionaries, sets, or strings).</p>
+                    
+                    <h3>Key Concepts:</h3>
+                    <ul>
+                        <li><strong>Iteration:</strong> The process of looping through sequences</li>
+                        <li><strong>range() function:</strong> Generates a sequence of numbers</li>
+                        <li><strong>enumerate() function:</strong> Gets both index and value when iterating</li>
+                        <li><strong>Nested loops:</strong> Loops inside other loops</li>
+                    </ul>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python Example</span>
+                            <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                        </div>
+                        <div class="code-editor"># Iterating through a list
+fruits = ["apple", "banana", "cherry"]
+for fruit in fruits:
+    print(fruit)
+
+# Iterating through a string
+message = "Hello"
+for char in message:
+    print(char)
+
+# Using range() function
+print("Numbers from 0 to 4:")
+for i in range(5):
+    print(i)
+
+print("Numbers from 2 to 6:")
+for i in range(2, 7):
+    print(i)
+
+print("Even numbers from 0 to 10:")
+for i in range(0, 11, 2):
+    print(i)
+
+# Using enumerate to get index and value
+fruits = ["apple", "banana", "cherry"]
+for index, fruit in enumerate(fruits):
+    print(f"Index {index}: {fruit}")
+
+# Nested for loops
+for i in range(3):
+    for j in range(2):
+        print(f"i={i}, j={j}")
+
+# Using else clause with for loop
+for i in range(3):
+    print(i)
+else:
+    print("Loop completed successfully")</div>
+                        <div class="code-output"></div>
+                    </div>`
+                },
+                "whileloops": {
+                    title: "While Loops",
+                    content: `<h2>While Loops in Python</h2>
+                    <p>While loops execute a set of statements as long as a condition is true.</p>
+                    
+                    <h3>Key Concepts:</h3>
+                    <ul>
+                        <li><strong>Condition-controlled loops:</strong> Continue until condition becomes false</li>
+                        <li><strong>Infinite loops:</strong> Loops that never terminate (usually a bug)</li>
+                        <li><strong>Loop control:</strong> Using break and continue statements</li>
+                    </ul>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python Example</span>
+                            <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                        </div>
+                        <div class="code-editor"># Basic while loop
+count = 0
+while count < 5:
+    print(f"Count is {count}")
+    count += 1
+
+# While loop with break
+num = 0
+while True:
+    print(num)
+    num += 1
+    if num >= 5:
+        break
+
+# While loop with continue
+num = 0
+while num < 10:
+    num += 1
+    if num % 2 == 0:
+        continue
+    print(f"Odd number: {num}")
+
+# While loop with else
+num = 0
+while num < 3:
+    print(num)
+    num += 1
+else:
+    print("Loop finished")
+
+# Real-world example: user input validation
+# Simulating user input
+password = "abc"
+attempts = 0
+
+while password != "secret" and attempts < 3:
+    # In real code: password = input("Enter password: ")
+    password = "guess" + str(attempts)  # Simulating wrong guesses
+    attempts += 1
+    print(f"Attempt {attempts}: Incorrect password")
+
+if password == "secret":
+    print("Access granted!")
+else:
+    print("Too many failed attempts")</div>
+                        <div class="code-output"></div>
+                    </div>`
+                },
+                "breakcontinue": {
+                    title: "Break & Continue Statements",
+                    content: `<h2>Break and Continue Statements in Python</h2>
+                    <p>Break and continue are loop control statements that alter the normal flow of loops.</p>
+                    
+                    <h3>Key Concepts:</h3>
+                    <ul>
+                        <li><strong>break:</strong> Exits the loop immediately</li>
+                        <li><strong>continue:</strong> Skips the rest of the current iteration and moves to the next</li>
+                        <li><strong>Use cases:</strong> Breaking out of loops when a condition is met or skipping certain iterations</li>
+                    </ul>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python Example</span>
+                            <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                        </div>
+                        <div class="code-editor"># Using break to exit a loop
+print("Break example:")
+for i in range(10):
+    if i == 5:
+        break
+    print(i)
+
+print("\nContinue example:")
+# Using continue to skip iterations
+for i in range(10):
+    if i % 2 == 0:
+        continue
+    print(i)
+
+# Practical example: searching for an item
+fruits = ["apple", "banana", "cherry", "date", "elderberry"]
+search_for = "cherry"
+
+print(f"\nSearching for {search_for}:")
+for fruit in fruits:
+    print(f"Checking {fruit}...")
+    if fruit == search_for:
+        print("Found it!")
+        break
+else:
+    print("Not found")
+
+# Practical example: skipping invalid data
+numbers = [1, 2, -3, 4, -5, 6, 7, -8]
+print("\nProcessing only positive numbers:")
+for num in numbers:
+    if num <= 0:
+        continue
+    print(f"Processing positive number: {num}")
+
+# Break in nested loops
+print("\nBreak in nested loops:")
+for i in range(3):
+    for j in range(5):
+        if j == 3:
+            break  # This only breaks the inner loop
+        print(f"i={i}, j={j}")</div>
+                        <div class="code-output"></div>
+                    </div>`
+                }
+            },
+            "data-structures": {
+                "lists": {
+                    title: "Lists",
+                    content: `<h2>Lists in Python</h2>
+                    <p>Lists are ordered, mutable collections of items. They are one of Python's most versatile data structures.</p>
+                    
+                    <h3>Key Features:</h3>
+                    <ul>
+                        <li><strong>Ordered:</strong> Items maintain their order</li>
+                        <li><strong>Mutable:</strong> Can be changed after creation</li>
+                        <li><strong>Heterogeneous:</strong> Can contain different data types</li>
+                        <li><strong>Indexed:</strong> Items can be accessed by their position</li>
+                    </ul>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python Example</span>
+                            <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                        </div>
+                        <div class="code-editor"># Creating lists
+numbers = [1, 2, 3, 4, 5]
+fruits = ["apple", "banana", "cherry"]
+mixed = [1, "hello", 3.14, True]
+
+print("Numbers:", numbers)
+print("Fruits:", fruits)
+print("Mixed:", mixed)
+
+# Accessing elements
+print("First fruit:", fruits[0])
+print("Last fruit:", fruits[-1])
+print("Slice:", fruits[1:3])
+
+# Modifying lists
+fruits[1] = "blueberry"
+print("Modified fruits:", fruits)
+
+# List methods
+fruits.append("orange")
+print("After append:", fruits)
+
+fruits.insert(1, "mango")
+print("After insert:", fruits)
+
+fruits.remove("blueberry")
+print("After remove:", fruits)
+
+popped = fruits.pop()
+print("Popped item:", popped)
+print("After pop:", fruits)
+
+# List operations
+more_fruits = ["grape", "pineapple"]
+all_fruits = fruits + more_fruits
+print("Combined list:", all_fruits)
+
+# List length
+print("Number of fruits:", len(all_fruits))
+
+# Checking if item exists
+if "apple" in all_fruits:
+    print("Apple is in the list")
+
+# Iterating through a list
+print("All fruits:")
+for fruit in all_fruits:
+    print(f"- {fruit}")
+
+# List comprehension (creating new lists from existing ones)
+squares = [x**2 for x in range(1, 6)]
+print("Squares:", squares)</div>
+                        <div class="code-output"></div>
+                    </div>`
+                },
+                "tuples": {
+                    title: "Tuples",
+                    content: `<h2>Tuples in Python</h2>
+                    <p>Tuples are ordered, immutable collections of items. They are similar to lists but cannot be modified after creation.</p>
+                    
+                    <h3>Key Features:</h3>
+                    <ul>
+                        <li><strong>Ordered:</strong> Items maintain their order</li>
+                        <li><strong>Immutable:</strong> Cannot be changed after creation</li>
+                        <li><strong>Heterogeneous:</strong> Can contain different data types</li>
+                        <li><strong>Indexed:</strong> Items can be accessed by their position</li>
+                    </ul>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python Example</span>
+                            <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                        </div>
+                        <div class="code-editor"># Creating tuples
+coordinates = (10, 20)
+colors = ("red", "green", "blue")
+mixed = (1, "hello", 3.14, True)
+
+print("Coordinates:", coordinates)
+print("Colors:", colors)
+print("Mixed:", mixed)
+
+# Accessing elements
+print("First color:", colors[0])
+print("Last color:", colors[-1])
+print("Slice:", colors[1:3])
+
+# Tuples are immutable - this would cause an error:
+# colors[1] = "yellow"
+
+# Tuple packing and unpacking
+person = ("Alice", 25, "Engineer")
+name, age, profession = person
+print(f"{name} is {age} years old and works as an {profession}")
+
+# Returning multiple values from a function
+def get_stats(numbers):
+    return min(numbers), max(numbers), sum(numbers)/len(numbers)
+
+stats = get_stats([5, 2, 8, 1, 9])
+min_val, max_val, avg_val = stats
+print(f"Min: {min_val}, Max: {max_val}, Average: {avg_val:.2f}")
+
+# Single element tuple (note the comma)
+single = ("hello",)
+print("Single element tuple:", single)
+print("Type:", type(single))
+
+# Tuple without parentheses (tuple packing)
+packed = 1, 2, 3
+print("Packed tuple:", packed)
+print("Type:", type(packed))
+
+# Comparing tuples
+tuple1 = (1, 2, 3)
+tuple2 = (1, 2, 4)
+print("tuple1 < tuple2:", tuple1 < tuple2)  # True because 3 < 4
+
+# Using tuples as keys in dictionaries
+locations = {
+    (35.6895, 139.6917): "Tokyo",
+    (40.7128, -74.0060): "New York",
+    (51.5074, -0.1278): "London"
+}
+print("Location at (40.7128, -74.0060):", locations[(40.7128, -74.0060)])</div>
+                        <div class="code-output"></div>
+                    </div>`
+                },
+                "dictionaries": {
+                    title: "Dictionaries",
+                    content: `<h2>Dictionaries in Python</h2>
+                    <p>Dictionaries are unordered collections of key-value pairs. They are optimized for retrieving values when the key is known.</p>
+                    
+                    <h3>Key Features:</h3>
+                    <ul>
+                        <li><strong>Unordered:</strong> Items do not maintain order (until Python 3.7)</li>
+                        <li><strong>Mutable:</strong> Can be changed after creation</li>
+                        <li><strong>Key-Value pairs:</strong> Store data as key:value pairs</li>
+                        <li><strong>Keys must be unique:</strong> No duplicate keys allowed</li>
+                    </ul>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python Example</span>
+                            <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                        </div>
+                        <div class="code-editor"># Creating dictionaries
+person = {
+    "name": "Alice",
+    "age": 30,
+    "city": "New York"
+}
+print("Person:", person)
+
+# Accessing values
+print("Name:", person["name"])
+print("Age:", person.get("age"))
+
+# Adding and modifying values
+person["email"] = "alice@example.com"
+person["age"] = 31
+print("Updated person:", person)
+
+# Removing items
+removed_value = person.pop("city")
+print("Removed city:", removed_value)
+print("After removal:", person)
+
+# Dictionary methods
+print("Keys:", list(person.keys()))
+print("Values:", list(person.values()))
+print("Items:", list(person.items()))
+
+# Iterating through a dictionary
+print("Key-Value pairs:")
+for key, value in person.items():
+    print(f"{key}: {value}")
+
+# Dictionary comprehension
+squares = {x: x**2 for x in range(1, 6)}
+print("Squares dictionary:", squares)
+
+# Nested dictionaries
+students = {
+    "student1": {
+        "name": "Alice",
+        "age": 20,
+        "grades": [85, 90, 78]
+    },
+    "student2": {
+        "name": "Bob",
+        "age": 21,
+        "grades": [92, 88, 95]
+    }
+}
+print("Students:", students)
+print("Bob's grades:", students["student2"]["grades"])
+
+# Checking if key exists
+if "name" in person:
+    print("Name key exists")
+
+# Default values with get()
+print("Country:", person.get("country", "USA"))  # Returns "USA" if key doesn't exist
+
+# Merging dictionaries
+additional_info = {"country": "USA", "occupation": "Engineer"}
+person.update(additional_info)
+print("Merged person:", person)</div>
+                        <div class="code-output"></div>
+                    </div>`
+                },
+                "sets": {
+                    title: "Sets",
+                    content: `<h2>Sets in Python</h2>
+                    <p>Sets are unordered collections of unique elements. They are useful for membership testing and eliminating duplicate entries.</p>
+                    
+                    <h3>Key Features:</h3>
+                    <ul>
+                        <li><strong>Unordered:</strong> Items do not maintain order</li>
+                        <li><strong>Unique elements:</strong> No duplicates allowed</li>
+                        <li><strong>Mutable:</strong> Can be changed after creation</li>
+                        <li><strong>Mathematical operations:</strong> Support union, intersection, difference, etc.</li>
+                    </ul>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python Example</span>
+                            <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                        </div>
+                        <div class="code-editor"># Creating sets
+fruits = {"apple", "banana", "cherry", "apple"}  # Duplicate will be removed
+numbers = set([1, 2, 3, 4, 5, 3, 2])  # From list with duplicates
+
+print("Fruits:", fruits)
+print("Numbers:", numbers)
+
+# Adding elements
+fruits.add("orange")
+fruits.add("banana")  # Won't add duplicate
+print("After adding:", fruits)
+
+# Removing elements
+fruits.remove("banana")
+print("After removal:", fruits)
+
+# Set operations
+set1 = {1, 2, 3, 4, 5}
+set2 = {4, 5, 6, 7, 8}
+
+print("Set1:", set1)
+print("Set2:", set2)
+print("Union:", set1 | set2)           # All elements from both sets
+print("Intersection:", set1 & set2)    # Elements common to both sets
+print("Difference:", set1 - set2)      # Elements in set1 but not set2
+print("Symmetric Difference:", set1 ^ set2)  # Elements in either set but not both
+
+# Set methods
+set3 = {1, 2, 3}
+set4 = {3, 4, 5}
+
+print("Set3:", set3)
+print("Set4:", set4)
+print("Union:", set3.union(set4))
+print("Intersection:", set3.intersection(set4))
+print("Difference:", set3.difference(set4))
+
+# Set comprehension
+squares = {x**2 for x in range(1, 6)}
+print("Squares set:", squares)
+
+# Membership testing
+if "apple" in fruits:
+    print("Apple is in the set")
+
+# Frozenset (immutable set)
+immutable_set = frozenset([1, 2, 3, 4])
+print("Frozen set:", immutable_set)
+# immutable_set.add(5)  # This would cause an error
+
+# Removing duplicates from a list
+numbers_with_duplicates = [1, 2, 2, 3, 4, 4, 5, 5, 5]
+unique_numbers = list(set(numbers_with_duplicates))
+print("Original list:", numbers_with_duplicates)
+print("Unique numbers:", unique_numbers)</div>
+                        <div class="code-output"></div>
+                    </div>`
+                },
+                "comprehensions": {
+                    title: "Comprehensions",
+                    content: `<h2>Comprehensions in Python</h2>
+                    <p>Comprehensions provide a concise way to create lists, dictionaries, and sets based on existing iterables.</p>
+                    
+                    <h3>Types of Comprehensions:</h3>
+                    <ul>
+                        <li><strong>List comprehensions:</strong> Create new lists</li>
+                        <li><strong>Dictionary comprehensions:</strong> Create new dictionaries</li>
+                        <li><strong>Set comprehensions:</strong> Create new sets</li>
+                    </ul>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python Example</span>
+                            <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                        </div>
+                        <div class="code-editor"># List comprehensions
+# Basic list comprehension
+squares = [x**2 for x in range(1, 6)]
+print("Squares:", squares)
+
+# With condition
+even_squares = [x**2 for x in range(1, 11) if x % 2 == 0]
+print("Even squares:", even_squares)
+
+# Nested list comprehension
+matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+flattened = [num for row in matrix for num in row]
+print("Matrix:", matrix)
+print("Flattened:", flattened)
+
+# Dictionary comprehensions
+# Basic dictionary comprehension
+squares_dict = {x: x**2 for x in range(1, 6)}
+print("Squares dictionary:", squares_dict)
+
+# With condition
+even_squares_dict = {x: x**2 for x in range(1, 11) if x % 2 == 0}
+print("Even squares dictionary:", even_squares_dict)
+
+# Transforming existing dictionary
+person = {"name": "Alice", "age": 30, "city": "New York"}
+uppercase_person = {k.upper(): v for k, v in person.items()}
+print("Uppercase keys:", uppercase_person)
+
+# Set comprehensions
+# Basic set comprehension
+squares_set = {x**2 for x in range(1, 6)}
+print("Squares set:", squares_set)
+
+# With condition
+even_squares_set = {x**2 for x in range(1, 11) if x % 2 == 0}
+print("Even squares set:", even_squares_set)
+
+# More complex examples
+# List of tuples
+coordinates = [(x, y) for x in range(3) for y in range(3)]
+print("Coordinates:", coordinates)
+
+# Dictionary from two lists
+keys = ['a', 'b', 'c']
+values = [1, 2, 3]
+combined = {k: v for k, v in zip(keys, values)}
+print("Combined dictionary:", combined)
+
+# Filtering dictionary
+scores = {'Alice': 85, 'Bob': 92, 'Charlie': 78, 'David': 95}
+high_scores = {k: v for k, v in scores.items() if v > 90}
+print("High scores:", high_scores)
+
+# Nested comprehensions
+# Create a multiplication table
+multiplication_table = [[i * j for j in range(1, 6)] for i in range(1, 6)]
+print("Multiplication table:")
+for row in multiplication_table:
+    print(row)</div>
+                        <div class="code-output"></div>
+                    </div>`
+                }
+            },
+            "functions-modules": {
+                "defining": {
+                    title: "Defining Functions",
+                    content: `<h2>Defining Functions in Python</h2>
+                    <p>Functions are reusable blocks of code that perform a specific task. They help organize code into logical units and avoid repetition.</p>
+                    
+                    <h3>Key Concepts:</h3>
+                    <ul>
+                        <li><strong>Function definition:</strong> Using the def keyword</li>
+                        <li><strong>Parameters:</strong> Inputs that a function accepts</li>
+                        <li><strong>Return values:</strong> Output that a function produces</li>
+                        <li><strong>Scope:</strong> Variables defined inside a function are local to that function</li>
+                    </ul>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python Example</span>
+                            <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                        </div>
+                        <div class="code-editor"># Basic function
+def greet():
+    print("Hello, World!")
+
+greet()
+
+# Function with parameters
+def greet_name(name):
+    print(f"Hello, {name}!")
+
+greet_name("Alice")
+greet_name("Bob")
+
+# Function with return value
+def add_numbers(a, b):
+    return a + b
+
+result = add_numbers(5, 3)
+print("5 + 3 =", result)
+
+# Function with multiple return values
+def get_stats(numbers):
+    total = sum(numbers)
+    count = len(numbers)
+    average = total / count
+    return total, count, average
+
+stats = get_stats([10, 20, 30, 40, 50])
+print("Stats:", stats)
+
+# Unpacking return values
+total, count, average = get_stats([10, 20, 30, 40, 50])
+print(f"Total: {total}, Count: {count}, Average: {average}")
+
+# Function with default parameters
+def greet_person(name, greeting="Hello"):
+    print(f"{greeting}, {name}!")
+
+greet_person("Alice")
+greet_person("Bob", "Hi")
+
+# Function with keyword arguments
+def describe_person(name, age, city):
+    print(f"{name} is {age} years old and lives in {city}")
+
+describe_person(name="Alice", age=30, city="New York")
+describe_person(city="London", age=25, name="Bob")
+
+# Variable scope example
+x = 10  # Global variable
+
+def test_scope():
+    y = 5  # Local variable
+    print("Inside function - x:", x)  # Can access global
+    print("Inside function - y:", y)  # Can access local
+
+test_scope()
+print("Outside function - x:", x)
+# print("Outside function - y:", y)  # This would cause an error
+
+# Docstrings for documentation
+def multiply(a, b):
+    """Multiply two numbers and return the result.
+    
+    Args:
+        a (int or float): The first number
+        b (int or float): The second number
+        
+    Returns:
+        int or float: The product of a and b
+    """
+    return a * b
+
+print("3 * 4 =", multiply(3, 4))
+print("Function documentation:", multiply.__doc__)</div>
+                        <div class="code-output"></div>
+                    </div>`
+                },
+                "parameters": {
+                    title: "Parameters & Arguments",
+                    content: `<h2>Parameters & Arguments in Python</h2>
+                    <p>Parameters are variables in a function definition, while arguments are the actual values passed to the function when it is called.</p>
+                    
+                    <h3>Types of Parameters:</h3>
+                    <ul>
+                        <li><strong>Positional parameters:</strong> Passed based on their position</li>
+                        <li><strong>Keyword arguments:</strong> Passed with explicit parameter names</li>
+                        <li><strong>Default parameters:</strong> Have default values if not provided</li>
+                        <li><strong>Variable-length arguments:</strong> *args and **kwargs for flexible inputs</li>
+                    </ul>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python Example</span>
+                            <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                        </div>
+                        <div class="code-editor"># Positional arguments
+def describe_pet(animal_type, pet_name):
+    print(f"I have a {animal_type} named {pet_name}.")
+
+describe_pet("dog", "Rex")
+describe_pet("cat", "Whiskers")
+
+# Keyword arguments
+describe_pet(animal_type="hamster", pet_name="Nibbles")
+describe_pet(pet_name="Goldie", animal_type="fish")
+
+# Default parameter values
+def describe_pet_default(pet_name, animal_type="dog"):
+    print(f"I have a {animal_type} named {pet_name}.")
+
+describe_pet_default("Rex")
+describe_pet_default("Whiskers", "cat")
+
+# Mixing positional and keyword arguments
+def create_profile(name, age, city="Unknown", country="Unknown"):
+    print(f"Name: {name}, Age: {age}, City: {city}, Country: {country}")
+
+create_profile("Alice", 30)
+create_profile("Bob", 25, city="London")
+create_profile("Charlie", 35, country="Canada", city="Toronto")
+
+# Variable-length arguments (*args)
+def sum_numbers(*args):
+    total = 0
+    for num in args:
+        total += num
+    return total
+
+print("Sum of 1, 2, 3:", sum_numbers(1, 2, 3))
+print("Sum of 4, 5, 6, 7:", sum_numbers(4, 5, 6, 7))
+
+# Variable-length keyword arguments (**kwargs)
+def print_profile(**kwargs):
+    for key, value in kwargs.items():
+        print(f"{key}: {value}")
+
+print_profile(name="Alice", age=30, city="New York")
+print_profile(name="Bob", occupation="Engineer")
+
+# Combining different argument types
+def complex_function(a, b, *args, option=True, **kwargs):
+    print(f"a: {a}, b: {b}")
+    print(f"args: {args}")
+    print(f"option: {option}")
+    print(f"kwargs: {kwargs}")
+
+complex_function(1, 2, 3, 4, 5, option=False, x=10, y=20)
+
+# Unpacking arguments
+def point(x, y, z):
+    print(f"Point coordinates: ({x}, {y}, {z})")
+
+coordinates = (3, 7, 2)
+point(*coordinates)  # Unpack tuple
+
+person_info = {"name": "Alice", "age": 30, "city": "New York"}
+create_profile(**person_info)  # Unpack dictionary</div>
+                        <div class="code-output"></div>
+                    </div>`
+                },
+                "return": {
+                    title: "Return Values",
+                    content: `<h2>Return Values in Python</h2>
+                    <p>The return statement is used to exit a function and go back to the place where it was called, optionally passing back data.</p>
+                    
+                    <h3>Key Concepts:</h3>
+                    <ul>
+                        <li><strong>Single return values:</strong> Returning one value from a function</li>
+                        <li><strong>Multiple return values:</strong> Returning multiple values as a tuple</li>
+                        <li><strong>Early returns:</strong> Exiting a function before reaching the end</li>
+                        <li><strong>Returning None:</strong> Functions without a return statement return None</li>
+                    </ul>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python Example</span>
+                            <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                        </div>
+                        <div class="code-editor"># Returning a single value
+def square(number):
+    return number * number
+
+result = square(5)
+print("Square of 5:", result)
+
+# Returning multiple values (as a tuple)
+def calculate_stats(numbers):
+    total = sum(numbers)
+    count = len(numbers)
+    average = total / count
+    return total, count, average
+
+stats = calculate_stats([10, 20, 30, 40, 50])
+print("Stats as tuple:", stats)
+
+# Unpacking returned values
+total, count, average = calculate_stats([10, 20, 30, 40, 50])
+print(f"Total: {total}, Count: {count}, Average: {average}")
+
+# Early return
+def is_even(number):
+    if number % 2 == 0:
+        return True
+    return False
+
+print("Is 4 even?", is_even(4))
+print("Is 7 even?", is_even(7))
+
+# Multiple return points
+def get_grade(score):
+    if score >= 90:
+        return "A"
+    elif score >= 80:
+        return "B"
+    elif score >= 70:
+        return "C"
+    elif score >= 60:
+        return "D"
+    else:
+        return "F"
+
+print("Score 85 gets:", get_grade(85))
+print("Score 45 gets:", get_grade(45))
+
+# Returning None explicitly
+def do_nothing():
+    return None
+
+result = do_nothing()
+print("Result of do_nothing:", result)
+
+# Function without return statement returns None
+def no_return():
+    print("This function doesn't return anything")
+
+result = no_return()
+print("Result of no_return:", result)
+
+# Returning different types based on conditions
+def process_data(data):
+    if isinstance(data, list):
+        return sum(data)
+    elif isinstance(data, str):
+        return data.upper()
+    else:
+        return None
+
+print("Process list:", process_data([1, 2, 3]))
+print("Process string:", process_data("hello"))
+print("Process number:", process_data(42))
+
+# Returning complex data structures
+def create_person(name, age, city):
+    return {
+        "name": name,
+        "age": age,
+        "city": city,
+        "is_adult": age >= 18
+    }
+
+person = create_person("Alice", 25, "New York")
+print("Person dictionary:", person)
+
+# Using return values in expressions
+def add(a, b):
+    return a + b
+
+def multiply(a, b):
+    return a * b
+
+result = multiply(add(2, 3), add(4, 5))
+print("(2+3) * (4+5) =", result)</div>
+                        <div class="code-output"></div>
+                    </div>`
+                },
+                "lambda": {
+                    title: "Lambda Functions",
+                    content: `<h2>Lambda Functions in Python</h2>
+                    <p>Lambda functions are small anonymous functions defined with the lambda keyword. They can have any number of arguments but only one expression.</p>
+                    
+                    <h3>Key Concepts:</h3>
+                    <ul>
+                        <li><strong>Anonymous functions:</strong> Functions without a name</li>
+                        <li><strong>Single expression:</strong> Can only contain one expression</li>
+                        <li><strong>Immediate use:</strong> Often used for short, simple operations</li>
+                        <li><strong>Functional programming:</strong> Often used with functions like map(), filter(), and reduce()</li>
+                    </ul>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python Example</span>
+                            <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                        </div>
+                        <div class="code-editor"># Basic lambda function
+square = lambda x: x * x
+print("Square of 5:", square(5))
+
+# Lambda with multiple parameters
+add = lambda a, b: a + b
+print("3 + 4 =", add(3, 4))
+
+# Using lambda immediately
+result = (lambda x, y: x * y)(5, 6)
+print("5 * 6 =", result)
+
+# Lambda with default arguments
+greet = lambda name, greeting="Hello": f"{greeting}, {name}!"
+print(greet("Alice"))
+print(greet("Bob", "Hi"))
+
+# Using lambda with map()
+numbers = [1, 2, 3, 4, 5]
+squares = list(map(lambda x: x**2, numbers))
+print("Numbers:", numbers)
+print("Squares:", squares)
+
+# Using lambda with filter()
+even_numbers = list(filter(lambda x: x % 2 == 0, numbers))
+print("Even numbers:", even_numbers)
+
+# Using lambda with sorted()
+names = ["Alice", "Bob", "Charlie", "David"]
+sorted_by_length = sorted(names, key=lambda x: len(x))
+print("Names sorted by length:", sorted_by_length)
+
+# Lambda with multiple conditions
+categorize = lambda x: "Even" if x % 2 == 0 else "Odd"
+print("4 is:", categorize(4))
+print("7 is:", categorize(7))
+
+# Nested lambda functions
+multiplier = lambda x: (lambda y: x * y)
+times_three = multiplier(3)
+print("5 * 3 =", times_three(5))
+
+# Lambda in a function
+def make_adder(n):
+    return lambda x: x + n
+
+add_five = make_adder(5)
+print("10 + 5 =", add_five(10))
+
+# Lambda with multiple statements (using tuple)
+# Note: This is not recommended as it reduces readability
+complex_op = lambda x: (x**2, x**3)
+square, cube = complex_op(4)
+print("Square of 4:", square)
+print("Cube of 4:", cube)
+
+# Practical example: sorting list of tuples
+students = [("Alice", 85), ("Bob", 92), ("Charlie", 78)]
+sorted_by_score = sorted(students, key=lambda x: x[1], reverse=True)
+print("Students sorted by score:", sorted_by_score)
+
+# Practical example: creating a simple calculator
+operations = {
+    "add": lambda a, b: a + b,
+    "subtract": lambda a, b: a - b,
+    "multiply": lambda a, b: a * b,
+    "divide": lambda a, b: a / b if b != 0 else "Error: Division by zero"
+}
+
+print("5 + 3 =", operations["add"](5, 3))
+print("10 - 4 =", operations["subtract"](10, 4))
+print("6 * 7 =", operations["multiply"](6, 7))
+print("8 / 2 =", operations["divide"](8, 2))
+print("5 / 0 =", operations["divide"](5, 0))</div>
+                        <div class="code-output"></div>
+                    </div>`
+                },
+                "modules": {
+                    title: "Modules & Packages",
+                    content: `<h2>Modules & Packages in Python</h2>
+                    <p>Modules are files containing Python code, and packages are collections of modules. They help organize code into logical units and promote reusability.</p>
+                    
+                    <h3>Key Concepts:</h3>
+                    <ul>
+                        <li><strong>Modules:</strong> Single files containing Python code</li>
+                        <li><strong>Packages:</strong> Directories containing multiple modules</li>
+                        <li><strong>Importing:</strong> Bringing modules and their contents into your code</li>
+                        <li><strong>Standard Library:</strong> Python's built-in modules</li>
+                    </ul>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python Example</span>
+                            <button class="run-button" onclick="runPythonCode(this)"><i class="fas fa-play"></i> Run Code</button>
+                        </div>
+                        <div class="code-editor"># Importing entire module
+import math
+
+print("Square root of 16:", math.sqrt(16))
+print("Value of pi:", math.pi)
+
+# Importing with alias
+import datetime as dt
+
+current_time = dt.datetime.now()
+print("Current time:", current_time)
+
+# Importing specific items
+from random import randint, choice
+
+random_number = randint(1, 10)
+print("Random number between 1-10:", random_number)
+
+fruits = ["apple", "banana", "cherry"]
+random_fruit = choice(fruits)
+print("Random fruit:", random_fruit)
+
+# Importing everything (not recommended)
+from math import *
+
+print("Cosine of 0:", cos(0))
+print("Square root of 25:", sqrt(25))
+
+# Creating and using your own module
+# (This would be in a separate file in a real project)
+# Save this as my_module.py:
+"""
+# my_module.py
+def greet(name):
+    return f"Hello, {name}!"
+
+def add(a, b):
+    return a + b
+
+PI = 3.14159
+"""
+
+# For demonstration, we'll define it here
+class MyModule:
+    @staticmethod
+    def greet(name):
+        return f"Hello, {name}!"
+    
+    @staticmethod
+    def add(a, b):
+        return a + b
+    
+    PI = 3.14159
+
+# Simulating import
+my_module = MyModule()
+
+print("Using my_module:")
+print(my_module.greet("Alice"))
+print("2 + 3 =", my_module.add(2, 3))
+print("PI =", my_module.PI)
+
+# The __name__ variable
+print("This module's name:", __name__)
+
+# Package structure example
+"""
+my_package/
+    __init__.py
+    module1.py
+    module2.py
+    subpackage/
+        __init__.py
+        module3.py
+"""
+
+# Using standard library modules
+import os
+import sys
+import json
+
+# Get current working directory
+print("Current directory:", os.getcwd())
+
+# Get command line arguments
+print("Command line arguments:", sys.argv)
+
+# Working with JSON
+data = {
+    "name": "Alice",
+    "age": 30,
+    "city": "New York"
+}
+
+json_string = json.dumps(data)
+print("JSON string:", json_string)
+
+parsed_data = json.loads(json_string)
+print("Parsed data:", parsed_data)
+
+# The dir() function
+print("Math module contents:", [item for item in dir(math) if not item.startswith('_')][:10])
+
+# Reloading modules (not commonly used)
+# import importlib
+# importlib.reload(math)
+
+# Creating executable scripts
+"""
+if __name__ == "__main__":
+    # This code runs only when the script is executed directly
+    print("Running as main program")
+"""
+
+# Handling ImportError
+try:
+    import non_existent_module
+except ImportError:
+    print("Module not found")
+
+# Importing from different directories
+"""
+import sys
+sys.path.append('/path/to/your/module')
+import your_module
+"""</div>
+                        <div class="code-output"></div>
+                    </div>`
+                }
+            }
+            // Additional topics would be defined here...
+        };
+
+        // DOM elements
+        const topicsContainer = document.getElementById('topicsContainer');
+        const topicDetail = document.getElementById('topicDetail');
+        const backButton = document.getElementById('backButton');
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const searchInput = document.querySelector('.search-bar input');
+        const subtopics = document.querySelectorAll('.subtopic');
+
+        // Show topic detail
+        function showTopic(topicId, subtopicId) {
+            if (topicData[topicId] && topicData[topicId][subtopicId]) {
+                topicsContainer.style.display = 'none';
+                topicDetail.style.display = 'block';
+                backButton.style.display = 'flex';
+                topicDetail.innerHTML = topicData[topicId][subtopicId].content;
+                
+                // Update page title
+                document.title = `${topicData[topicId][subtopicId].title} - Python Learning Portal`;
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            } else {
+                // Fallback content if topic isn't defined
+                topicsContainer.style.display = 'none';
+                topicDetail.style.display = 'block';
+                backButton.style.display = 'flex';
+                topicDetail.innerHTML = `
+                    <h2>${subtopicId}</h2>
+                    <p>Detailed content for ${subtopicId} is coming soon. Check back later for more information about this Python topic.</p>
+                    <p>In the meantime, you can explore the other available topics to enhance your Python knowledge.</p>
+                `;
+                
+                // Update page title
+                document.title = `${subtopicId} - Python Learning Portal`;
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // Hide topic detail and show topics
+        function hideTopic() {
+            topicsContainer.style.display = 'grid';
+            topicDetail.style.display = 'none';
+            backButton.style.display = 'none';
+            
+            // Reset page title
+            document.title = 'Python Learning Portal';
+        }
+
+        // Add click event listeners to subtopics
+        subtopics.forEach(subtopic => {
+            subtopic.addEventListener('click', (e) => {
+                const topicId = subtopic.getAttribute('data-topic');
+                const subtopicId = subtopic.getAttribute('data-subtopic');
+                showTopic(topicId, subtopicId);
+            });
+        });
+
+        // Back button event listener
+        backButton.addEventListener('click', hideTopic);
+
+        // Theme toggle functionality
+        themeToggle.addEventListener('click', () => {
+            if (body.style.background.includes('0a2a5e')) {
+                body.style.background = 'linear-gradient(135deg, #c1e1c1 0%, #7bc47b 100%)';
+                body.style.color = '#2d5016';
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i><span>Switch Theme</span>';
+            } else {
+                body.style.background = 'linear-gradient(135deg, #0a2a5e 0%, #1a5fb4 100%)';
+                body.style.color = '#f0f7ff';
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i><span>Switch Theme</span>';
+            }
+        });
+
+        // Search functionality
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            document.querySelectorAll('.topic-card').forEach(card => {
+                const topicTitle = card.querySelector('h3').textContent.toLowerCase();
+                const topicItems = card.querySelectorAll('li');
+                let hasMatch = topicTitle.includes(searchTerm);
+                
+                // Check if any list item matches the search term
+                if (!hasMatch) {
+                    topicItems.forEach(item => {
+                        if (item.textContent.toLowerCase().includes(searchTerm)) {
+                            hasMatch = true;
+                        }
+                    });
+                }
+                
+                // Show or hide the card based on search match
+                card.style.display = hasMatch ? 'block' : 'none';
+            });
+        });
+
+        // Run Python code using Skulpt
+        function runPythonCode(button) {
+            const codeContainer = button.parentElement.parentElement;
+            const codeEditor = codeContainer.querySelector('.code-editor');
+            const codeOutput = codeContainer.querySelector('.code-output');
+            
+            // Clear previous output
+            codeOutput.textContent = "Running code...";
+            
+            // Get the code from the editor
+            const code = codeEditor.textContent;
+            
+            // Configure Skulpt
+            Sk.configure({
+                output: outf,
+                read: builtinRead,
+                __future__: Sk.python3
+            });
+            
+            // Execute the code
+            try {
+                Sk.importMainWithBody("<stdin>", false, code);
+            } catch (e) {
+                codeOutput.textContent = "Error: " + e.toString();
+            }
+        }
+    </script>
+</body>
+</html>

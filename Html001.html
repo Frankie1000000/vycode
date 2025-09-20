@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Interactive HTML Guide — Full Expanded (12 Sections)</title>
+  <style>
+    :root{
+      --bg:#fafafa; --panel:#fff; --ink:#111; --muted:#555; --accent:#2563eb; --accent2:#7c3aed;
+      --border:#ddd; --codebg:#f5f5f5; --notes:#f3f4f6;
+      --bg-dark:#0f172a; --panel-dark:#111827; --ink-dark:#e5e7eb; --muted-dark:#9ca3af;
+      --border-dark:#1f2937; --codebg-dark:#1e293b; --notes-dark:#111827;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;background:var(--bg);color:var(--ink);line-height:1.6}
+    body.dark{background:var(--bg-dark);color:var(--ink-dark)}
+    header{position:sticky;top:0;background:var(--panel);padding:18px 16px;border-bottom:1px solid var(--border);z-index:60}
+    body.dark header{background:var(--panel-dark);border-bottom:1px solid var(--border-dark)}
+    header h1{margin:0;font-size:20px;color:var(--accent)}
+    header p{margin:6px 0 0;color:var(--muted);font-size:13px}
+    body.dark header p{color:var(--muted-dark)}
+    .top-controls{max-width:1200px;margin:10px auto 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:0 16px}
+    #search-box{flex:1;min-width:180px;padding:9px 10px;border-radius:6px;border:1px solid var(--border);background:var(--panel);color:inherit;font-size:14px}
+    body.dark #search-box{background:var(--panel-dark);border:1px solid var(--border-dark);color:var(--ink-dark)}
+    #theme-toggle,#toc-toggle{padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:var(--accent);color:#fff;font-weight:600;cursor:pointer}
+    body.dark #theme-toggle, body.dark #toc-toggle{border:1px solid var(--border-dark)}
+    @media (max-width:860px){ #toc-toggle{display:inline-block} nav.toc{display:none} nav.toc.open{display:block} }
+    nav.toc{max-width:1200px;margin:14px auto;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:14px}
+    body.dark nav.toc{background:var(--panel-dark);border:1px solid var(--border-dark)}
+    nav.toc h2{margin:0 0 8px;color:var(--accent);font-size:15px}
+    nav.toc ul{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px}
+    nav.toc a{padding:6px 10px;border-radius:4px;text-decoration:none;color:inherit;background:var(--codebg);font-size:13px}
+    nav.toc a:hover{background:var(--accent);color:#fff}
+    body.dark nav.toc a{background:var(--codebg-dark)}
+    .container{max-width:1200px;margin:18px auto;padding:0 16px 80px}
+    section{background:var(--panel);border:1px solid var(--border);padding:18px;border-radius:6px;margin:18px 0;scroll-margin-top:110px}
+    body.dark section{background:var(--panel-dark);border:1px solid var(--border-dark)}
+    section h2{margin-top:0;color:var(--accent);font-size:18px}
+    .meta{color:var(--muted);font-size:13px;margin-bottom:8px}
+    body.dark .meta{color:var(--muted-dark)}
+    .example-title{font-weight:700;margin:10px 0 6px;color:var(--accent2)}
+    textarea.code-input{width:100%;min-height:150px;background:var(--codebg);color:#111;border:1px solid var(--border);padding:12px;border-radius:6px;font-family:ui-monospace,monospace;font-size:13px;resize:vertical}
+    body.dark textarea.code-input{background:var(--codebg-dark);color:var(--ink-dark);border:1px solid var(--border-dark)}
+    .controls{margin-top:8px}
+    button.run-btn{background:var(--accent);color:#fff;padding:8px 12px;border-radius:6px;border:none;font-weight:600;cursor:pointer;transition:all 0.2s ease}
+    button.run-btn:hover{background:var(--accent2);transform:translateY(-2px)}
+    iframe.preview{width:100%;height:260px;border-radius:6px;border:1px solid var(--border);background:#fff;margin-top:12px}
+    body.dark iframe.preview{border:1px solid var(--border-dark)}
+    .notes{background:var(--notes);padding:12px;border-radius:6px;margin-top:14px;font-size:14px}
+    body.dark .notes{background:var(--notes-dark)}
+    .notes strong{color:var(--accent)}
+    footer{max-width:1200px;margin:20px auto;color:var(--muted);font-size:13px;padding:0 16px 40px;text-align:center}
+    body.dark footer{color:var(--muted-dark)}
+    code{background:rgba(27,31,35,.04);padding:.12em .28em;border-radius:4px}
+    body.dark code{background:rgba(255,255,255,.03)}
+    /* small utility */
+    .small{font-size:13px;color:var(--muted)}
+    body.dark .small{color:var(--muted-dark)}
+    
+    /* Frivaco Tech Centre footer with golden hover effect */
+    .frivaco-footer {
+      color: var(--muted);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      position: relative;
+      display: inline-block;
+      padding: 0 4px;
+      cursor: default;
+    }
+    .frivaco-footer:hover {
+      color: #FFD700; /* Golden color */
+      text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
+      transform: scale(1.05);
+    }
+    body.dark .frivaco-footer {
+      color: var(--muted-dark);
+    }
+
+    /* Reward notification */
+    .reward-notice {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(90deg, #FFD700, #ffed4e);
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+      border: 1px solid rgba(255, 215, 0, 0.5);
+      z-index: 1000;
+      display: none;
+      animation: slideIn 0.5s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    /* Navigation highlight */
+    .nav-highlight {
+      background-color: rgba(37, 99, 235, 0.1);
+      border: 2px solid var(--accent);
+    }
+
+    /* Golden Notification Bar */
+    .golden-notification {
+      background: linear-gradient(90deg, #FFD700, #ffed4e);
+      color: #000;
+      padding: 12px 0;
+      text-align: center;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.5);
+      position: relative;
+    }
+
+    .notification-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 16px;
+    }
+
+    .notification-icon {
+      font-size: 1.2rem;
+    }
+
+    .notification-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #000;
+    }
+
+    .notification-close:hover {
+      color: #d4af37;
+    }
+
+    /* Hide notification if reward already claimed */
+    body.reward-claimed .golden-notification {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Interactive HTML Guide — Full Expanded</h1>
+    <p>12 fully-documented HTML topics with runnable examples and per-section Notes & Best Practices.</p>
+    <div class="top-controls">
+      <input id="search-box" placeholder="Search topics, tags, or code..." oninput="searchGuide()" aria-label="Search guide"/>
+      <button id="theme-toggle" aria-pressed="false">🌞 Light</button>
+      <button id="toc-toggle" onclick="document.getElementById('toc').classList.toggle('open')">☰ TOC</button>
+    </div>
+  </header>
+
+  <!-- Golden Notification Bar -->
+  <div class="golden-notification" id="goldenNotification">
+    <div class="notification-content">
+      <span class="notification-icon">💰</span>
+      <span class="notification-text">Complete all 12 HTML sections to earn $0.10!</span>
+      <button class="notification-close" onclick="document.getElementById('goldenNotification').style.display = 'none'">×</button>
+    </div>
+  </div>
+
+  <div class="reward-notice" id="rewardNotice">
+    🎉 Congratulations! You've earned $0.10 for exploring all HTML concepts!
+  </div>
+
+  <nav id="toc" class="toc" aria-label="Table of contents">
+    <h2>Table of Contents</h2>
+    <ul>
+      <li><a href="#basics">1) HTML Basics</a></li>
+      <li><a href="#text">2) Text & Formatting</a></li>
+      <li><a href="#links">3) Links & Navigation</a></li>
+      <li><a href="#media">4) Images & Multimedia</a></li>
+      <li><a href="#tables">5) Tables</a></li>
+      <li><a href="#forms">6) Forms & Input</a></li>
+      <li><a href="#semantic">7) Semantic HTML</a></li>
+      <li><a href="#attributes">8) Attributes</a></li>
+      <li><a href="#graphics">9) Graphics (SVG & Canvas)</a></li>
+      <li><a href="#head">10) Head & Meta</a></li>
+      <li><a href="#a11y">11) Accessibility</a></li>
+      <li><a href="#advanced">12) Advanced HTML</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+
+    <!-- 1: HTML BASICS -->
+    <section id="basics">
+      <h2>1) HTML Basics</h2>
+      <p>HTML (HyperText Markup Language) is a markup language used to represent the structure of web documents. Elements (tags) such as headings, paragraphs, lists, images and forms express the meaning and organization of content. HTML documents should be valid and well-structured to ensure consistent rendering across browsers and better compatibility with search engines and assistive technologies. The separation of concerns principle — structure in HTML, presentation in CSS, behavior in JavaScript — helps keep code maintainable and performant.</p>
+
+      <div class="example-title">Minimal HTML skeleton</div>
+      <textarea id="code-basics" class="code-input">&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;
+    &lt;title&gt;Page title&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Hello world&lt;/h1&gt;
+    &lt;p&gt;This is a structured document.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</textarea>
+      <div class="controls"><button class="run-btn" onclick="runCode('basics')">▶ Run Code</button></div>
+      <iframe id="preview-basics" class="preview" title="Basics preview"></iframe>
+
+      <div class="notes">
+        <strong>Notes & Best Practices</strong>
+        <ul>
+          <li>Always include <code>&lt;!doctype html&gt;</code> to opt into standards mode.</li>
+          <li>Set the document language via <code>lang</code> on the <code>&lt;html&gt;</code> element.</li>
+          <li>Place critical metadata (charset, viewport, title) in the head to avoid rendering issues.</li>
+          <li>Use semantic HTML to improve accessibility and SEO.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 2: TEXT & FORMATTING -->
+    <section id="text">
+      <h2>2) Text & Formatting</h2>
+      <p>Text elements define document hierarchy and semantic meaning. Headings (<code>&lt;h1&gt;–&lt;h6&gt;</code>) express structure and outline; paragraphs (<code>&lt;p&gt;</code>) encapsulate blocks of prose. Inline elements (<code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;mark&gt;</code>, <code>&lt;abbr&gt;</code>) convey emphasis, importance, or abbreviations. Lists (<code>&lt;ul&gt;</code>, <code>&lt;ol&gt;</code>, <code>&lt;dl&gt;</code>) group related items. For preformatted text and code samples, use <code>&lt;pre&gt;</code> and <code>&lt;code&gt;</code> to preserve whitespace and semantically identify code. Proper use of text semantics improves machine understanding and assistive technology navigation.</p>
+
+      <div class="example-title">Headings, lists, and code sample</div>
+      <textarea id="code-text" class="code-input">&lt;h1&gt;Design Principles&lt;/h1&gt;
+&lt;p&gt;Use semantic tags to express meaning. The following list captures simple points:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Headings for hierarchy&lt;/li&gt;
+  &lt;li&gt;Paragraphs for prose&lt;/li&gt;
+  &lt;li&gt;Lists for related items&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;function greet(){ console.log('hello'); }&lt;/code&gt;&lt;/pre&gt;</textarea>
+      <div class="controls"><button class="run-btn" onclick="runCode('text')">▶ Run Code</button></div>
+      <iframe id="preview-text" class="preview" title="Text preview"></iframe>
+
+      <div class="notes">
+        <strong>Notes & Best Practices</strong>
+        <ul>
+          <li>Use headings to create a logical document outline — one <code>&lt;h1&gt;</code> per page representing the main topic.</li>
+          <li>Avoid using headings for visual styling; use CSS instead.</li>
+          <li>Wrap code in <code>&lt;pre&gt;&lt;code&gt;</code> and consider syntax highlighting libraries for readability.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 3: LINKS & NAVIGATION -->
+    <section id="links">
+      <h2>3) Links & Navigation</h2>
+      <p>Anchors (<code>&lt;a&gt;</code>) create hyperlinks connecting resources on the web. Attributes like <code>href</code> (destination), <code>target</code> (how to open), and <code>rel</code> (relationship, security) control behavior. Descriptive link text helps users and assistive technologies. Navigation sections typically use <code>&lt;nav&gt;</code> and often present links in lists for predictable semantics. When opening external links in new tabs, include <code>rel="noopener noreferrer"</code> with <code>target="_blank"</code> to prevent access to the opening window and to improve performance/security.</p>
+
+      <div class="example-title">Navigation and example links</div>
+      <textarea id="code-links" class="code-input">&lt;nav&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="#basics"&gt;Basics&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#forms"&gt;Forms&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="https://developer.mozilla.org" target="_blank" rel="noopener noreferrer"&gt;MDN&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</textarea>
+      <div class="controls"><button class="run-btn" onclick="runCode('links')">▶ Run Code</button></div>
+      <iframe id="preview-links" class="preview" title="Links preview"></iframe>
+
+      <div class="notes">
+        <strong>Notes & Best Practices</strong>
+        <ul>
+          <li>Use meaningful link text that describes the destination (avoid "click here").</li>
+          <li>For accessibility, ensure links are keyboard-focusable and have visible focus styles via CSS.</li>
+          <li>Use <code>rel="noopener noreferrer"</code> with <code>target="_blank"</code>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 4: IMAGES & MULTIMEDIA -->
+    <section id="media">
+      <h2>4) Images & Multimedia</h2>
+      <p>Images, audio, and video enhance content but must be used with care for performance and accessibility. Always provide descriptive <code>alt</code> text for images — if the image is purely decorative, use an empty alt (<code>alt=""</code>). For responsive delivery, supply variants with <code>srcset</code> and <code>sizes</code> or use the <code>&lt;picture&gt;</code> element for art direction. Video and audio should include controls and captions. Lazy-loading media and choosing modern formats (WebP/AVIF) improves performance.</p>
+
+      <div class="example-title">Figure with caption and placeholder video</div>
+      <textarea id="code-media" class="code-input">&lt;figure&gt;
+  &lt;img src="https://via.placeholder.com/440x240" alt="Placeholder landscape" width="440"&gt;
+  &lt;figcaption&gt;A sample placeholder image with caption&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;video controls width="440"&gt;
+  &lt;source src="" type="video/mp4"&gt;
+  Your browser does not support the video element.
+&lt;/video&gt;</textarea>
+      <div class="controls"><button class="run-btn" onclick="runCode('media')">▶ Run Code</button></div>
+      <iframe id="preview-media" class="preview" title="Media preview"></iframe>
+
+      <div class="notes">
+        <strong>Notes & Best Practices</strong>
+        <ul>
+          <li>Include practical alt text that conveys the content purpose; use <code>alt=""</code> for purely decorative images.</li>
+          <li>Use responsive techniques (<code>srcset</code>/<code>picture</code>) to serve appropriately sized images to devices.</li>
+          <li>Provide captions/transcripts for video/audio to meet accessibility and legal requirements.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 5: TABLES -->
+    <section id="tables">
+      <h2>5) Tables</h2>
+      <p>Tables are appropriate for displaying tabular data: rows and columns that represent records and fields. Use semantic table structure: <code>&lt;caption&gt;</code> for summary, <code>&lt;thead&gt;</code>, <code>&lt;tbody&gt;</code>, and <code>&lt;tfoot&gt;</code> to partition content. Use <code>&lt;th&gt;</code> for headers and include <code>scope</code> or <code>headers</code> where needed to clarify relationships for assistive tech. Do not use tables for visual layout; use CSS layout systems instead.</p>
+
+      <div class="example-title">Schedule table</div>
+      <textarea id="code-tables" class="code-input">&lt;table&gt;
+  &lt;caption&gt;Weekly Schedule&lt;/caption&gt;
+  &lt;thead&gt;&lt;tr&gt;&lt;th scope="col"&gt;Day&lt;/th&gt;&lt;th scope="col"&gt;Activity&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;Mon&lt;/td&gt;&lt;td&gt;Coding practice&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Tue&lt;/td&gt;&lt;td&gt;Reading&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</textarea>
+      <div class="controls"><button class="run-btn" onclick="runCode('tables')">▶ Run Code</button></div>
+      <iframe id="preview-tables" class="preview" title="Tables preview"></iframe>
+
+      <div class="notes">
+        <strong>Notes & Best Practices</strong>
+        <ul>
+          <li>Use <code>&lt;caption&gt;</code> to provide a short description of the table's purpose.</li>
+          <li>Use <code>scope="col"</code> or <code>scope="row"</code> on <code>&lt;th&gt;</code> to help screen readers map headers to cells.</li>
+          <li>Prefer semantic HTML tables for data; for layout, use CSS grid/flexbox.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 6: FORMS & INPUT -->
+    <section id="forms">
+      <h2>6) Forms & Input</h2>
+      <p>Forms capture user-provided data. Use appropriate input types (<code>email</code>, <code>tel</code>, <code>number</code>, <code>date</code>, etc.) to improve validation and mobile input keyboards. Associate each input with a <code>&lt;label&gt;</code> for accessibility. Use <code>fieldset</code> and <code>legend</code> to group related controls. While client-side validation improves UX, always validate and sanitize data on the server. Provide clear error messages and maintain sensible focus behavior when errors occur.</p>
+
+      <div class="example-title">Contact form</div>
+      <textarea id="code-forms" class="code-input">&lt;form action="#" method="post"&gt;
+  &lt;label for="fullname"&gt;Full name&lt;/label&gt;
+  &lt;input id="fullname" name="fullname" type="text" required&gt;&lt;br&gt;
+  &lt;label for="email"&gt;Email&lt;/label&gt;
+  &lt;input id="email" name="email" type="email" required&gt;&lt;br&gt;
+  &lt;label for="message"&gt;Message&lt;/label&gt;
+  &lt;textarea id="message" name="message"&gt;&lt;/textarea&gt;&lt;br&gt;
+  &lt;button type="submit"&gt;Send&lt;/button&gt;
+&lt;/form&gt;</textarea>
+      <div class="controls"><button class="run-btn" onclick="runCode('forms')">▶ Run Code</button></div>
+      <iframe id="preview-forms" class="preview" title="Forms preview"></iframe>
+
+      <div class="notes">
+        <strong>Notes & Best Practices</strong>
+        <ul>
+          <li>Always include a <code>name</code> attribute on inputs to ensure data is submitted to the server.</li>
+          <li>Use semantic grouping for accessibility (e.g., radio/checkbox groups inside <code>fieldset</code>).</li>
+          <li>Validate on both client and server; never trust client-side validation alone.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 7: SEMANTIC HTML -->
+    <section id="semantic">
+      <h2>7) Semantic HTML</h2>
+      <p>Semantic HTML uses elements that convey meaning about the content they contain: <code>&lt;nav&gt;</code> for navigation, <code>&lt;main&gt;</code> for primary content, <code>&lt;article&gt;</code> for standalone items, <code>&lt;section&gt;</code> for thematically grouped content, and so on. Semantic markup makes content more discoverable and accessible. Search engines and assistive technologies rely on these semantic signals to interpret page structure.</p>
+
+      <div class="example-title">Semantic layout</div>
+      <textarea id="code-semantic" class="code-input">&lt;header&gt;
+  &lt;h1&gt;Site Title&lt;/h1&gt;
+&lt;/header&gt;
+&lt;nav&gt;
+  &lt;a href="#basics"&gt;Basics&lt;/a&gt; |
+  &lt;a href="#forms"&gt;Forms&lt;/a&gt;
+&lt;/nav&gt;
+&lt;main&gt;
+  &lt;article&gt;
+    &lt;h2&gt;Article Heading&lt;/h2&gt;
+    &lt;p&gt;Main content here.&lt;/p&gt;
+  &lt;/article&gt;
+  &lt;aside&gt;Related information&lt;/aside&gt;
+&lt;/main&gt;
+&lt;footer&gt;© Example&lt;/footer&gt;</textarea>
+      <div class="controls"><button class="run-btn" onclick="runCode('semantic')">▶ Run Code</button></div>
+      <iframe id="preview-semantic" class="preview" title="Semantic preview"></iframe>
+
+      <div class="notes">
+        <strong>Notes & Best Practices</strong>
+        <ul>
+          <li>Prefer semantic elements to generic <code>&lt;div&gt;</code> where the element's meaning is clear.</li>
+          <li>Landmark elements (<code>header</code>, <code>nav</code>, <code>main</code>, <code>footer</code>) assist screen reader navigation.</li>
+          <li>Use ARIA roles only when native elements do not provide the necessary semantics.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 8: ATTRIBUTES -->
+    <section id="attributes">
+      <h2>8) Attributes</h2>
+      <p>Attributes add metadata or behavior to elements. Common global attributes include <code>id</code>, <code>class</code>, <code>title</code>, and <code>style</code>. Custom data attributes (<code>data-*</code>) store information for scripts, and ARIA attributes can be used to enhance accessibility. Use classes for styling and JavaScript hooks, keep <code>id</code> values unique, and avoid overusing inline styles for maintainability.</p>
+
+      <div class="example-title">Attributes and data-* usage</div>
+      <textarea id="code-attributes" class="code-input">&lt;div id="product-42" class="card featured" data-product-id="42"&gt;
+  &lt;h3&gt;Product 42&lt;/h3&gt;
+  &lt;p&gt;Price: $12.50&lt;/p&gt;
+&lt;/div&gt;</textarea>
+      <div class="controls"><button class="run-btn" onclick="runCode('attributes')">▶ Run Code</button></div>
+      <iframe id="preview-attributes" class="preview" title="Attributes preview"></iframe>
+
+      <div class="notes">
+        <strong>Notes & Best Practices</strong>
+        <ul>
+          <li>Use <code>data-*</code> attributes to store small amounts of application data on elements.</li>
+          <li>Prefer classes for styling and JS hooks rather than element-specific IDs where possible for reusability.</li>
+          <li>Be careful with inline styles — they make maintenance and theming harder.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 9: GRAPHICS (SVG & CANVAS) -->
+    <section id="graphics">
+      <h2>9) Graphics (SVG & Canvas)</h2>
+      <p>SVG (Scalable Vector Graphics) is an XML-based format for vector graphics that scales cleanly and supports accessibility, styling, and scripting. Because SVG elements are part of the DOM, they can be manipulated with CSS/JS. Canvas provides a pixel-oriented drawing surface controlled by JavaScript and is suitable for games and intensive visualizations. When using canvas, provide fallback or textual descriptions for accessibility.</p>
+
+      <div class="example-title">Inline SVG example</div>
+      <textarea id="code-graphics" class="code-input">&lt;svg width="320" height="140" xmlns="http://www.w3.org/2000/svg"&gt;
+  &lt;rect x="10" y="10" width="100" height="80" fill="#2563eb" /&gt;
+  &lt;circle cx="220" cy="50" r="30" fill="#7c3aed" /&gt;
+  &lt;text x="10" y="120" font-size="12"&gt;SVG: rectangle + circle&lt;/text&gt;
+&lt;/svg&gt;</textarea>
+      <div class="controls"><button class="run-btn" onclick="runCode('graphics')">▶ Run Code</button></div>
+      <iframe id="preview-graphics" class="preview" title="Graphics preview"></iframe>
+
+      <div class="notes">
+        <strong>Notes & Best Practices</strong>
+        <ul>
+          <li>Use SVG for icons, diagrams, and any graphics that must scale cleanly.</li>
+          <li>Canvas is powerful but less accessible — provide alternate content or ARIA labeling.</li>
+          <li>Consider file size and complexity — very complex SVGs may perform poorly if not optimized.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 10: HEAD & META -->
+    <section id="head">
+      <h2>10) Head & Meta</h2>
+      <p>The <code>&lt;head&gt;</code> contains metadata that affects rendering, indexing, and linking. Key elements include <code>&lt;title&gt;</code>, character encoding, viewport meta for responsive scaling, links to stylesheets, and preconnect/preload hints. Meta description and Open Graph metadata improve how content appears in search results and social shares. Keep head content concise to avoid render-blocking issues.</p>
+
+      <div class="example-title">Head content example</div>
+      <textarea id="code-head" class="code-input">&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;
+    &lt;title&gt;Sample Head&lt;/title&gt;
+    &lt;meta name="description" content="Short description for search engines"&gt;
+  &lt;/head&gt;
+  &lt;body&gt;Check head elements&lt;/body&gt;
+&lt;/html&gt;</textarea>
+      <div class="controls"><button class="run-btn" onclick="runCode('head')">▶ Run Code</button></div>
+      <iframe id="preview-head" class="preview" title="Head preview"></iframe>
+
+      <div class="notes">
+        <strong>Notes & Best Practices</strong>
+        <ul>
+          <li>Write concise, descriptive titles and meta descriptions for SEO and UX.</li>
+          <li>Use resource hints (<code>preload</code>, <code>prefetch</code>) carefully to optimize loading.</li>
+          <li>Avoid large style/script blocks in the head that block rendering; inline critical CSS only when necessary.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 11: ACCESSibility -->
+    <section id="a11y">
+      <h2>11) Accessibility</h2>
+      <p>Accessibility ensures web content is usable by people with disabilities. Start with semantic HTML and provide meaningful text alternatives, clear focus states, keyboard navigability, and sufficient color contrast. Use <code>label</code> elements with form controls, apply ARIA roles only when native semantics are insufficient, and test with assistive technologies. Accessibility benefits all users and is increasingly required by law in many regions.</p>
+
+      <div class="example-title">Accessible form input example</div>
+      <textarea id="code-a11y" class="code-input">&lt;form&gt;
+  &lt;label for="search"&gt;Search&lt;/label&gt;
+  &lt;input id="search" type="search" aria-label="Search the site" placeholder="Search..."&gt;
+&lt;/form&gt;</textarea>
+      <div class="controls"><button class="run-btn" onclick="runCode('a11y')">▶ Run Code</button></div>
+      <iframe id="preview-a11y" class="preview" title="Accessibility preview"></iframe>
+
+      <div class="notes">
+        <strong>Notes & Best Practices</strong>
+        <ul>
+          <li>Prefer native HTML semantics; only use ARIA to enhance where necessary.</li>
+          <li>Test with keyboard-only navigation and a screen reader (NVDA, VoiceOver, or JAWS).</li>
+          <li>Provide skip links and ensure logical tab order for complex layouts.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 12: ADVANCED HTML -->
+    <section id="advanced">
+      <h2>12) Advanced HTML</h2>
+      <p>Advanced HTML features include interactive elements and integrations: <code>&lt;datalist&gt;</code> for suggestions, <code>contenteditable</code> for inline editing, web components for encapsulated UI, and many browser APIs (Fetch, Web Storage, Service Workers) that expand what web apps can do offline and interactively. Apply progressive enhancement: content should be useful without JavaScript, and features layered on top as capabilities are detected. Consider security implications for user-generated content and apply proper sanitization and Content Security Policy (CSP).</p>
+
+      <div class="example-title">Datalist + contenteditable demo</div>
+      <textarea id="code-advanced" class="code-input">&lt;label&gt;Choose a browser:&lt;/label&gt;
+&lt;input list="browsers" name="browser" id="browser"&gt;
+&lt;datalist id="browsers"&gt;
+  &lt;option value="Chrome"&gt;
+  &lt;option value="Firefox"&gt;
+  &lt;option value="Safari"&gt;
+&lt;/datalist&gt;
+
+&lt;div contenteditable="true" style="border:1px solid #ddd;padding:8px;margin-top:8px"&gt;Edit this text&lt;/div></textarea>
+      <div class="controls"><button class="run-btn" onclick="runCode('advanced')">▶ Run Code</button></div>
+      <iframe id="preview-advanced" class="preview" title="Advanced preview"></iframe>
+
+      <div class="notes">
+        <strong>Notes & Best Practices</strong>
+        <ul>
+          <li>Use progressive enhancement: ensure basic functionality works without JavaScript.</li>
+          <li>Sanitize and validate any user-submitted HTML (contenteditable output) before rendering on other pages.</li>
+          <li>Explore Service Workers for caching and offline support, but handle updates carefully.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span class="frivaco-footer">Frivaco Tech Centre</span>
+  </footer>
+
+  <script>
+    // Track completed examples
+    const completedExamples = JSON.parse(localStorage.getItem('htmlGuideCompleted') || '{}');
+    const totalExamples = 12;
+    let rewardClaimed = localStorage.getItem('htmlGuideRewardClaimed') === 'true';
+
+    // Function to update user balance across all pages
+    function updateUserBalance(amount) {
+      // Get user data from localStorage or create default
+      let userData = JSON.parse(localStorage.getItem('fravicoTechUser')) || {
+        firstName: "Demo",
+        lastName: "User",
+        email: "demo@example.com",
+        username: "DemoUser",
+        balance: 0.00,
+        completedCourses: 0,
+        totalEarnings: 0.00,
+        isLoggedIn: true,
+        lastLanguage: null,
+        quizAnswers: {},
+        certificates: {},
+        courseProgress: {}
+      };
+      
+      // Update balance and total earnings
+      userData.balance += amount;
+      userData.totalEarnings += amount;
+      
+      // Save back to localStorage
+      localStorage.setItem('fravicoTechUser', JSON.stringify(userData));
+      
+      // Dispatch storage event to sync with other tabs
+      window.dispatchEvent(new Event('storage'));
+      
+      return userData;
+    }
+
+    // Award reward function (updated)
+    function awardReward() {
+      // Update user balance
+      const updatedUser = updateUserBalance(0.10);
+      
+      // Mark reward as claimed
+      rewardClaimed = true;
+      localStorage.setItem('htmlGuideRewardClaimed', 'true');
+      
+      // Show reward notification
+      const rewardNotice = document.getElementById('rewardNotice');
+      rewardNotice.style.display = 'block';
+      
+      // Hide notification after 5 seconds
+      setTimeout(() => {
+        rewardNotice.style.display = 'none';
+      }, 5000);
+      
+      // Update golden notification
+      document.body.classList.add('reward-claimed');
+    }
+
+    // Check if reward already claimed and hide notification if so
+    if (rewardClaimed) {
+      document.body.classList.add('reward-claimed');
+    }
+
+    // Update notification if all sections are completed
+    if (Object.keys(completedExamples).length === totalExamples) {
+      const notification = document.getElementById('goldenNotification');
+      if (notification) {
+        if (rewardClaimed) {
+          notification.style.display = 'none';
+        } else {
+          notification.querySelector('.notification-text').textContent = 
+            "Congratulations! You've completed all sections. Click any 'Run Code' button to claim your $0.10 reward!";
+        }
+      }
+    }
+
+    // Run code for a section id
+    function runCode(id) {
+      const textarea = document.getElementById('code-' + id);
+      const iframe = document.getElementById('preview-' + id);
+      if (!textarea || !iframe) return;
+      
+      // Build a safe srcdoc
+      const code = textarea.value;
+      const lower = code.toLowerCase();
+      
+      // Basic theme CSS
+      const theme = document.body.classList.contains('dark') ? 
+        `<style>html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;color:#e5e7eb;background:#0f172a;padding:0.75rem}a{color:#60a5fa}p{margin:0 0 1em}pre{background:#111827;padding:.6rem;border-radius:6px}table{border-collapse:collapse;width:100%;margin-top:.5rem}th,td{border:1px solid #1f2937;padding:.4rem;text-align:left}</style>` :
+        `<style>html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;color:#111;background:#fafafa;padding:0.75rem}a{color:#2563eb}p{margin:0 0 1em}pre{background:#f3f4f6;padding:.6rem;border-radius:6px}table{border-collapse:collapse;width:100%;margin-top:.5rem}th,td{border:1px solid #e5e7eb;padding:.4rem;text-align:left}</style>`;
+      
+      // If user provided a full HTML document
+      if (lower.includes('<!doctype') || lower.includes('<html')) {
+        if (lower.includes('<head')) {
+          // Insert theme stylesheet just after opening <head> tag
+          iframe.srcdoc = code.replace(/<head([^>]*)>/i, (match) => match + '\n' + theme);
+        } else {
+          // No head — prepend theme
+          iframe.srcdoc = theme + '\n' + code;
+        }
+      } else {
+        // Otherwise wrap fragment in minimal document with theme
+        iframe.srcdoc = '<!doctype html><html><head><meta charset="utf-8">' + theme + '</head><body>' + code + '</body></html>';
+      }
+      
+      // Mark this section as completed
+      if (!completedExamples[id]) {
+        completedExamples[id] = true;
+        localStorage.setItem('htmlGuideCompleted', JSON.stringify(completedExamples));
+        
+        // Check if all examples are completed and reward not yet claimed
+        if (Object.keys(completedExamples).length === totalExamples && !rewardClaimed) {
+          awardReward();
+        }
+        
+        // Update golden notification if all sections completed
+        if (Object.keys(completedExamples).length === totalExamples) {
+          const notification = document.getElementById('goldenNotification');
+          if (notification && !rewardClaimed) {
+            notification.querySelector('.notification-text').textContent = 
+              "Congratulations! You've completed all sections. Click any 'Run Code' button to claim your $0.10 reward!";
+          }
+        }
+        
+        // Add visual feedback for the button
+        const runButton = document.querySelector(`button[onclick="runCode('${id}')"]`);
+        if (runButton) {
+          runButton.classList.add('nav-highlight');
+          setTimeout(() => {
+            runButton.classList.remove('nav-highlight');
+          }, 1000);
+        }
+      }
+    }
+
+    // Attach runCode to window so onclick handlers can call it
+    window.runCode = runCode;
+
+    // Initialize theme from localStorage
+    let currentTheme = localStorage.getItem('previewTheme') || 'light';
+    const themeBtn = document.getElementById('theme-toggle');
+    const bodyEl = document.body;
+    function applyThemeUI() {
+      bodyEl.classList.toggle('dark', currentTheme === 'dark');
+      themeBtn.textContent = currentTheme === 'light' ? '🌞 Light' : '🌙 Dark';
+      themeBtn.setAttribute('aria-pressed', currentTheme === 'dark' ? 'true' : 'false');
+    }
+    applyThemeUI();
+
+    // Theme toggle — persist and re-run examples
+    themeBtn.addEventListener('click', () => {
+      currentTheme = (currentTheme === 'light') ? 'dark' : 'light';
+      localStorage.setItem('previewTheme', currentTheme);
+      applyThemeUI();
+    });
+
+    // Search filter
+    function searchGuide() {
+      const q = (document.getElementById('search-box').value || '').toLowerCase().trim();
+      document.querySelectorAll('main section').forEach(s => {
+        const text = s.innerText.toLowerCase();
+        s.style.display = (q === '' || text.includes(q)) ? '' : 'none';
+      });
+    }
+    window.searchGuide = searchGuide;
+
+    // Ctrl/Cmd + Enter inside any textarea runs that example
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        const active = document.activeElement;
+        if (active && active.tagName === 'TEXTAREA') {
+          const id = active.id.replace(/^code-/, '');
+          runCode(id);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

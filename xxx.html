@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Quizzes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #4cb5f5;
+            --text: #333;
+            --bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --border: #ddd;
+            --gold: #ffd700;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --footer-text: #8B4513;
+            --footer-hover: #ffd700;
+            --correct: #4caf50;
+            --incorrect: #f44336;
+        }
+
+        [data-theme="dark"] {
+            --primary: #5e7ba5;
+            --secondary: #1a6c9e;
+            --accent: #5ec1f5;
+            --text: #f0f0f0;
+            --bg: #1a1a2e;
+            --card-bg: #16213e;
+            --border: #374785;
+            --gold: #ffd700;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --footer-text: #D2691E;
+            --footer-hover: #ffd700;
+            --correct: #2e7d32;
+            --incorrect: #c62828;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: linear-gradient(to bottom, rgba(255, 215, 0, 0.1) 0%, transparent 100%);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            flex: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-bottom: 2px solid var(--primary);
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .reward-notice {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #000;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-switch {
+            position: absolute;
+            top: 20px;
+            right: 100px;
+        }
+
+        .profile-icons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .profile-icon, .account-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+
+        .profile-icon:hover, .account-icon:hover {
+            transform: scale(1.1);
+            background-color: var(--secondary);
+        }
+
+        .reward-display {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px var(--shadow);
+            display: none;
+            color: var(--text);
+            z-index: 100;
+            width: 200px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 22px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(18px);
+        }
+
+        .quiz-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 8px var(--shadow);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .quiz-number {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0 0 10px 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 0 20px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            color: var(--text);
+            margin-bottom: 20px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-size: 1.1rem;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(76, 181, 245, 0.3);
+        }
+
+        .answer-input.correct {
+            border-color: var(--correct);
+        }
+
+        .answer-input.incorrect {
+            border-color: var(--incorrect);
+        }
+
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 24px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .results {
+            text-align: center;
+            padding: 30px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px var(--shadow);
+            margin-top: 20px;
+            display: none;
+        }
+
+        .score-display {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: var(--primary);
+        }
+
+        .reward-message {
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 22px;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 10px;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: var(--border);
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .question-counter {
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 500;
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        footer p {
+            color: var(--footer-text);
+            font-weight: bold;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 5px;
+        }
+
+        footer p:hover {
+            color: #000;
+            background-color: var(--footer-hover);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--footer-hover);
+        }
+
+        /* Login Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+            border: 1px solid var(--border);
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        .close:hover {
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        @media (max-width: 768px) {
+            .theme-switch {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .profile-icons {
+                position: relative;
+                top: 0;
+                right: 0;
+                justify-content: center;
+                margin-bottom: 15px;
+            }
+            
+            .reward-display {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin: 0 auto 20px;
+                width: 100%;
+            }
+            
+            .quiz-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2>Login to Your Account</h2>
+            <div class="form-group">
+                <label for="loginEmail">Email</label>
+                <input type="email" id="loginEmail" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your password">
+            </div>
+            <button class="btn" onclick="login()">Login</button>
+            <p style="margin-top: 1.5rem;">Don't have an account? <a href="#" onclick="showSignup()" style="color: var(--primary);">Sign up</a></p>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('signupModal')">&times;</span>
+            <h2>Create an Account</h2>
+            <div class="form-group">
+                <label for="signupUsername">Username</label>
+                <input type="text" id="signupUsername" placeholder="Choose a username">
+            </div>
+            <div class="form-group">
+                <label for="signupEmail">Email</label>
+                <input type="email" id="signupEmail" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="signupPassword">Password</label>
+                <input type="password" id="signupPassword" placeholder="Create a password">
+            </div>
+            <button class="btn" onclick="signup()">Sign Up</button>
+            <p style="margin-top: 1.5rem;">Already have an account? <a href="#" onclick="showLogin()" style="color: var(--primary);">Login</a></p>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>JavaScript Quizzes</h1>
+            <p>Test your knowledge of JavaScript fundamentals</p>
+            <div class="reward-notice">Score more than 92% to earn $0.15 reward!</div>
+            
+            <div class="theme-switch">
+                <label class="switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider"></span>
+                </label>
+                <span id="theme-label">Dark Mode</span>
+            </div>
+            
+            <div class="profile-icons">
+                <div class="profile-icon" id="profile-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="account-icon" id="account-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+            </div>
+            
+            <div class="reward-display" id="reward-display">
+                <p>Your rewards: <span id="reward-amount">$0.00</span></p>
+            </div>
+        </header>
+
+        <div class="question-counter" id="question-counter">
+            Question 1 of 24
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress-bar"></div>
+        </div>
+
+        <div class="quiz-container">
+            <div class="quiz-number" id="quiz-number">1</div>
+            <div class="question" id="question">
+                <!-- Question will be inserted here -->
+            </div>
+            <input type="text" class="answer-input" id="answer-input" placeholder="Type your answer here..." autocomplete="off">
+            
+            <div class="quiz-controls">
+                <button id="prev-btn" disabled>Previous</button>
+                <button id="next-btn">Next Question</button>
+            </div>
+        </div>
+
+        <div class="submit-container">
+            <button id="submit-answers">Submit All Answers</button>
+        </div>
+
+        <div class="results" id="results">
+            <h2>Quiz Results</h2>
+            <div class="score-display" id="score-display">Your score: 0%</div>
+            <div class="reward-message" id="reward-message">Congratulations! You've earned $0.15!</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Frivaco Tech Centre</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const quizzes = [
+                {
+                    question: "How do you declare a JavaScript variable?",
+                    answer: "var, let, or const"
+                },
+                {
+                    question: "Which operator is used to assign a value to a variable?",
+                    answer: "="
+                },
+                {
+                    question: "What is the correct way to write a JavaScript array?",
+                    answer: "var colors = ['red', 'green', 'blue']"
+                },
+                {
+                    question: "How do you create a function in JavaScript?",
+                    answer: "function myFunction()"
+                },
+                {
+                    question: "How do you call a function named 'myFunction'?",
+                    answer: "myFunction()"
+                },
+                {
+                    question: "How to write an IF statement in JavaScript?",
+                    answer: "if (condition)"
+                },
+                {
+                    question: "How to write an IF statement for executing some code if 'i' is NOT equal to 5?",
+                    answer: "if (i != 5)"
+                },
+                {
+                    question: "How does a WHILE loop start?",
+                    answer: "while (condition)"
+                },
+                {
+                    question: "How does a FOR loop start?",
+                    answer: "for (i = 0; i <= 5; i++)"
+                },
+                {
+                    question: "What is the correct way to write a JavaScript object?",
+                    answer: "var person = {firstName: 'John', lastName: 'Doe'}"
+                },
+                {
+                    question: "How do you find the number with the highest value of x and y?",
+                    answer: "Math.max(x, y)"
+                },
+                {
+                    question: "Which operator is used to add together two values?",
+                    answer: "+"
+                },
+                {
+                    question: "How can you add a comment in a JavaScript?",
+                    answer: "// This is a comment"
+                },
+                {
+                    question: "What is the correct way to write a JavaScript string?",
+                    answer: "var carName = 'Volvo XC60';"
+                },
+                {
+                    question: "How do you round the number 7.25 to the nearest integer?",
+                    answer: "Math.round(7.25)"
+                },
+                {
+                    question: "How do you find the length of a string?",
+                    answer: "txt.length"
+                },
+                {
+                    question: "What is the correct way to write a JavaScript promise?",
+                    answer: "let myPromise = new Promise(function(resolve, reject) { // code });"
+                },
+                {
+                    question: "Which method is used to remove the last element from an array?",
+                    answer: "pop()"
+                },
+                {
+                    question: "Which method is used to add new elements to an array?",
+                    answer: "push()"
+                },
+                {
+                    question: "What is the syntax for referring to an external script called 'xxx.js'?",
+                    answer: "<script src='xxx.js'>"
+                },
+                {
+                    question: "How do you create a date object in JavaScript?",
+                    answer: "new Date()"
+                },
+                {
+                    question: "How do you convert a string to all uppercase letters?",
+                    answer: "toUpperCase()"
+                },
+                {
+                    question: "What is the correct JavaScript syntax to change the content of the HTML element below? <p id='demo'>This is a demonstration.</p>",
+                    answer: "document.getElementById('demo').innerHTML = 'Hello World!';"
+                },
+                {
+                    question: "How do you write 'Hello World' in an alert box?",
+                    answer: "alert('Hello World');"
+                }
+            ];
+
+            // DOM elements
+            const questionEl = document.getElementById('question');
+            const answerInput = document.getElementById('answer-input');
+            const quizNumber = document.getElementById('quiz-number');
+            const questionCounter = document.getElementById('question-counter');
+            const progressBar = document.getElementById('progress-bar');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const submitBtn = document.getElementById('submit-answers');
+            const resultsDiv = document.getElementById('results');
+            const scoreDisplay = document.getElementById('score-display');
+            const rewardMessage = document.getElementById('reward-message');
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeLabel = document.getElementById('theme-label');
+            const profileIcon = document.getElementById('profile-icon');
+            const accountIcon = document.getElementById('account-icon');
+            const rewardDisplay = document.getElementById('reward-display');
+            const rewardAmount = document.getElementById('reward-amount');
+
+            // User data
+            let userData = JSON.parse(localStorage.getItem('fravicoTechUser')) || {
+                username: "User",
+                email: "",
+                balance: 0.00,
+                completedCourses: 0,
+                totalEarnings: 0.00,
+                isLoggedIn: false,
+                lastLanguage: null,
+                quizAnswers: {},
+                certificates: {},
+                courseProgress: {}
+            };
+
+            // Quiz state
+            let currentQuestion = 0;
+            let userAnswers = Array(quizzes.length).fill('');
+
+            // Initialize quiz
+            function initQuiz() {
+                // Check if user is logged in
+                if (!userData.isLoggedIn) {
+                    showLoginModal();
+                    return;
+                }
+                
+                showQuestion(currentQuestion);
+                updateRewardDisplay();
+                updateProgressBar();
+            }
+
+            // Show current question
+            function showQuestion(index) {
+                quizNumber.textContent = index + 1;
+                questionEl.textContent = quizzes[index].question;
+                answerInput.value = userAnswers[index];
+                questionCounter.textContent = `Question ${index + 1} of ${quizzes.length}`;
+                
+                // Update navigation buttons
+                prevBtn.disabled = index === 0;
+                nextBtn.disabled = index === quizzes.length - 1;
+                
+                // Update input class based on answer status
+                answerInput.classList.remove('correct', 'incorrect');
+                if (userAnswers[index]) {
+                    checkAnswer(index, false);
+                }
+                
+                // Focus on input
+                answerInput.focus();
+            }
+
+            // Check answer and update UI
+            function checkAnswer(index, showFeedback = true) {
+                const userAnswer = userAnswers[index].trim().toLowerCase();
+                const correctAnswer = quizzes[index].answer.toLowerCase();
+                
+                if (userAnswer === correctAnswer) {
+                    if (showFeedback) {
+                        answerInput.classList.add('correct');
+                        setTimeout(() => {
+                            if (currentQuestion < quizzes.length - 1) {
+                                currentQuestion++;
+                                showQuestion(currentQuestion);
+                                updateProgressBar();
+                            }
+                        }, 800);
+                    } else {
+                        answerInput.classList.add('correct');
+                    }
+                } else if (userAnswer !== '') {
+                    answerInput.classList.add('incorrect');
+                }
+            }
+
+            // Update progress bar
+            function updateProgressBar() {
+                const progress = ((currentQuestion + 1) / quizzes.length) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+
+            // Update reward display
+            function updateRewardDisplay() {
+                rewardAmount.textContent = `$${userData.balance.toFixed(2)}`;
+            }
+
+            // Navigate to next question
+            nextBtn.addEventListener('click', function() {
+                if (currentQuestion < quizzes.length - 1) {
+                    currentQuestion++;
+                    showQuestion(currentQuestion);
+                    updateProgressBar();
+                }
+            });
+
+            // Navigate to previous question
+            prevBtn.addEventListener('click', function() {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    showQuestion(currentQuestion);
+                    updateProgressBar();
+                }
+            });
+
+            // Save answer on input
+            answerInput.addEventListener('input', function() {
+                userAnswers[currentQuestion] = this.value;
+                checkAnswer(currentQuestion);
+            });
+
+            // Submit all answers
+            submitBtn.addEventListener('click', function() {
+                let correctCount = 0;
+                
+                quizzes.forEach((quiz, index) => {
+                    const userAnswer = userAnswers[index].trim().toLowerCase();
+                    const correctAnswer = quiz.answer.toLowerCase();
+                    
+                    if (userAnswer === correctAnswer) {
+                        correctCount++;
+                    }
+                });
+                
+                // Calculate score
+                const score = (correctCount / quizzes.length) * 100;
+                scoreDisplay.textContent = `Your score: ${score.toFixed(1)}%`;
+                resultsDiv.style.display = 'block';
+                
+                // Update user data
+                userData.completedCourses++;
+                if (score > userData.highScore) {
+                    userData.highScore = score;
+                }
+                
+                // Check for reward
+                if (score > 92) {
+                    userData.balance += 0.15;
+                    userData.totalEarnings += 0.15;
+                    rewardMessage.style.display = 'block';
+                }
+                
+                // Save user data
+                localStorage.setItem('fravicoTechUser', JSON.stringify(userData));
+                
+                // Update reward display
+                updateRewardDisplay();
+                
+                // Scroll to results
+                resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // Theme toggle
+            themeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    themeLabel.textContent = 'Light Mode';
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    themeLabel.textContent = 'Dark Mode';
+                }
+            });
+
+            // Profile and account icons
+            profileIcon.addEventListener('click', function() {
+                alert(`JavaScript Quiz Stats:\nUsername: ${userData.username}\nEmail: ${userData.email}\nCompleted Quizzes: ${userData.completedCourses}\nBalance: $${userData.balance.toFixed(2)}`);
+            });
+
+            accountIcon.addEventListener('click', function() {
+                rewardDisplay.style.display = rewardDisplay.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowRight' && currentQuestion < quizzes.length - 1) {
+                    currentQuestion++;
+                    showQuestion(currentQuestion);
+                    updateProgressBar();
+                } else if (e.key === 'ArrowLeft' && currentQuestion > 0) {
+                    currentQuestion--;
+                    showQuestion(currentQuestion);
+                    updateProgressBar();
+                }
+            });
+
+            // Login functions
+            function showLoginModal() {
+                document.getElementById('loginModal').style.display = 'flex';
+            }
+
+            function showSignupModal() {
+                document.getElementById('signupModal').style.display = 'flex';
+            }
+
+            function closeModal(modalId) {
+                document.getElementById(modalId).style.display = 'none';
+            }
+
+            function showSignup() {
+                closeModal('loginModal');
+                showSignupModal();
+            }
+
+            function showLogin() {
+                closeModal('signupModal');
+                showLoginModal();
+            }
+
+            function login() {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                if (!email || !password) {
+                    alert('Please enter both email and password');
+                    return;
+                }
+                
+                // For demo purposes, we'll just set a default user
+                userData = {
+                    username: "User",
+                    email: email,
+                    balance: userData.balance || 0.00,
+                    completedCourses: userData.completedCourses || 0,
+                    totalEarnings: userData.totalEarnings || 0.00,
+                    isLoggedIn: true,
+                    lastLanguage: userData.lastLanguage || null,
+                    quizAnswers: userData.quizAnswers || {},
+                    certificates: userData.certificates || {},
+                    courseProgress: userData.courseProgress || {}
+                };
+                
+                localStorage.setItem('fravicoTechUser', JSON.stringify(userData));
+                updateRewardDisplay();
+                closeModal('loginModal');
+                alert('Login successful!');
+                
+                // Initialize quiz after login
+                initQuiz();
+            }
+
+            function signup() {
+                const username = document.getElementById('signupUsername').value;
+                const email = document.getElementById('signupEmail').value;
+                const password = document.getElementById('signupPassword').value;
+                
+                if (!username || !email || !password) {
+                    alert('Please fill all fields');
+                    return;
+                }
+                
+                userData = {
+                    username: username,
+                    email: email,
+                    balance: 0.00,
+                    completedCourses: 0,
+                    totalEarnings: 0.00,
+                    isLoggedIn: true,
+                    lastLanguage: null,
+                    quizAnswers: {},
+                    certificates: {},
+                    courseProgress: {}
+                };
+                
+                localStorage.setItem('fravicoTechUser', JSON.stringify(userData));
+                updateRewardDisplay();
+                closeModal('signupModal');
+                alert('Account created successfully!');
+                
+                // Initialize quiz after signup
+                initQuiz();
+            }
+
+            // Initialize
+            initQuiz();
+        });
+    </script>
+</body>
+</html>

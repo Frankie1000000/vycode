@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Fundamentals</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --pale-green: #d4e8d9;
+            --medium-green: #7eb893;
+            --dark-green: #3a7d54;
+            --light-text: #2d3436;
+            --dark-blue: #152642;
+            --medium-blue: #2a4a6e;
+            --light-blue: #3a6999;
+            --card-bg: rgba(255, 255, 255, 0.2);
+            --light-bg-gradient: linear-gradient(135deg, var(--pale-green) 0%, var(--medium-green) 50%, var(--dark-green) 100%);
+            --dark-bg-gradient: linear-gradient(135deg, var(--dark-blue) 0%, var(--medium-blue) 50%, var(--light-blue) 100%);
+        }
+        
+        body {
+            background: var(--light-bg-gradient);
+            background-attachment: fixed;
+            color: var(--light-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            transition: background 0.3s ease;
+        }
+        
+        body.dark-mode {
+            background: var(--dark-bg-gradient);
+            color: #f0f0f0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(5px);
+        }
+        
+        body.dark-mode header {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            color: var(--dark-green);
+        }
+        
+        body.dark-mode h1 {
+            color: white;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--dark-green);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        body.dark-mode .subtitle {
+            color: var(--pale-green);
+        }
+        
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .category {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        body.dark-mode .category {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .category h2 {
+            color: var(--dark-green);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--dark-green);
+        }
+        
+        body.dark-mode .category h2 {
+            color: var(--pale-green);
+            border-bottom: 2px solid var(--pale-green);
+        }
+        
+        .topics-list {
+            list-style: none;
+        }
+        
+        .topics-list li {
+            padding: 8px 5px;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        body.dark-mode .topics-list li {
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+        
+        .topics-list li:hover {
+            background-color: rgba(58, 125, 84, 0.2);
+            transform: translateX(5px);
+        }
+        
+        body.dark-mode .topics-list li:hover {
+            background-color: rgba(42, 74, 110, 0.4);
+        }
+        
+        .topics-list li:before {
+            content: "•";
+            color: var(--dark-green);
+            font-weight: bold;
+            display: inline-block;
+            width: 20px;
+            font-size: 20px;
+        }
+        
+        body.dark-mode .topics-list li:before {
+            color: var(--pale-green);
+        }
+        
+        .topics-list li.completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        
+        .search-box {
+            margin: 30px auto;
+            max-width: 600px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 50px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            color: var(--dark-green);
+        }
+        
+        body.dark-mode .search-box input {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .search-box i {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            color: var(--dark-green);
+            font-size: 1.2rem;
+        }
+        
+        body.dark-mode .search-box i {
+            color: var(--pale-green);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+        
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: var(--dark-green);
+            padding: 10px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        body.dark-mode .theme-toggle {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+        
+        body.dark-mode .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .next-page-btn {
+            background: var(--dark-green);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+            text-decoration: none;
+        }
+        
+        .next-page-btn:hover {
+            background: var(--medium-green);
+        }
+        
+        body.dark-mode .next-page-btn {
+            background: var(--light-blue);
+        }
+        
+        body.dark-mode .next-page-btn:hover {
+            background: var(--medium-blue);
+        }
+        
+        .highlight {
+            background-color: yellow;
+            color: black;
+        }
+        
+        /* Explanation Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, var(--medium-green) 0%, var(--dark-green) 100%);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        body.dark-mode .modal-content {
+            background: linear-gradient(135deg, var(--medium-blue) 0%, var(--dark-blue) 100%);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .explanation-content h2 {
+            color: white;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+            padding-bottom: 10px;
+        }
+        
+        .explanation-text {
+            margin-bottom: 25px;
+            line-height: 1.8;
+            color: white;
+        }
+        
+        .code-example {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow-x: auto;
+        }
+        
+        .code-example pre {
+            color: #f8f9fa;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        
+        .run-btn {
+            background-color: white;
+            color: var(--dark-green);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .run-btn:hover {
+            background-color: #e6e6e6;
+        }
+        
+        body.dark-mode .run-btn {
+            background-color: var(--pale-green);
+            color: var(--dark-blue);
+        }
+        
+        body.dark-mode .run-btn:hover {
+            background-color: #c5d9ca;
+        }
+        
+        .output-container {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .output-container h3 {
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        #code-output {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            min-height: 100px;
+            color: white;
+            white-space: pre-wrap;
+        }
+        
+        @media (max-width: 768px) {
+            .categories {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>JavaScript Fundamentals</h1>
+            <p class="subtitle">Master the core concepts of JavaScript programming</p>
+        </header>
+        
+        <div class="controls">
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i> Dark Mode
+            </button>
+            
+            <a href="page2.html" class="next-page-btn">
+                Next Page <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search for JavaScript topics...">
+            <i class="fas fa-search"></i>
+        </div>
+        
+        <div class="categories">
+            <div class="category">
+                <h2>JavaScript Fundamentals</h2>
+                <ul class="topics-list">
+                    <li data-topic="variables">Variables (var, let, const)</li>
+                    <li data-topic="data-types">Data Types (Primitives & Objects)</li>
+                    <li data-topic="type-conversion">Type Conversion & Coercion</li>
+                    <li data-topic="operators">Operators & Expressions</li>
+                    <li data-topic="control-flow">Control Flow (if/else, switch)</li>
+                    <li data-topic="loops">Loops (for, while, do-while)</li>
+                    <li data-topic="functions">Functions & Scope</li>
+                    <li data-topic="arrow-functions">Arrow Functions</li>
+                    <li data-topic="default-parameters">Default Parameters</li>
+                    <li data-topic="template-literals">Template Literals</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Explanation Modal -->
+    <div id="explanationModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="explanation-content">
+                <h2 id="modal-title">Topic Title</h2>
+                <div class="explanation-text" id="modal-explanation">
+                    <!-- Explanation content will be inserted here -->
+                </div>
+                <div class="code-example">
+                    <pre id="modal-code"><code>// Example code will appear here</code></pre>
+                </div>
+                <button class="run-btn" id="run-code">Run Code</button>
+                <div class="output-container">
+                    <h3>Output:</h3>
+                    <div id="code-output"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const topics = document.querySelectorAll('.topics-list li');
+            const searchInput = document.getElementById('searchInput');
+            const themeToggle = document.getElementById('themeToggle');
+            
+            // Modal elements
+            const modal = document.getElementById('explanationModal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalExplanation = document.getElementById('modal-explanation');
+            const modalCode = document.getElementById('modal-code');
+            const runButton = document.getElementById('run-code');
+            const codeOutput = document.getElementById('code-output');
+            const closeBtn = document.querySelector('.close-btn');
+            
+            // Theme toggle functionality
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                themeToggle.innerHTML = isDarkMode ? 
+                    '<i class="fas fa-sun"></i> Light Mode' : 
+                    '<i class="fas fa-moon"></i> Dark Mode';
+                
+                localStorage.setItem('darkMode', isDarkMode);
+            });
+            
+            // Initialize theme from localStorage
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+            }
+            
+            // Topic explanations and code examples
+            const topicData = {
+                'variables': {
+                    title: 'Variables (var, let, const)',
+                    explanation: `<p>Variables are used to store information that can be referenced and manipulated in a program. JavaScript has three ways to declare variables:</p>
+                    <ul>
+                        <li><strong>var</strong>: Function-scoped or globally-scoped variable. Can be redeclared and updated.</li>
+                        <li><strong>let</strong>: Block-scoped variable. Can be updated but not redeclared in the same scope.</li>
+                        <li><strong>const</strong>: Block-scoped constant. Cannot be updated or redeclared. Must be initialized during declaration.</li>
+                    </ul>
+                    <p>Modern JavaScript prefers <code>let</code> and <code>const</code> over <code>var</code> due to their block scoping which helps avoid common bugs.</p>`,
+                    code: `// Using var (function-scoped)
+var x = 10;
+if (true) {
+    var x = 20; // Same variable!
+    console.log("Inside block:", x); // 20
+}
+console.log("Outside block:", x); // 20
+
+// Using let (block-scoped)
+let y = 10;
+if (true) {
+    let y = 20; // Different variable
+    console.log("Inside block:", y); // 20
+}
+console.log("Outside block:", y); // 10
+
+// Using const (block-scoped constant)
+const z = 10;
+// z = 20; // Error: Assignment to constant variable
+
+// const with objects
+const person = { name: "John" };
+person.name = "Jane"; // This is allowed
+// person = { name: "Bob" }; // Error: Assignment to constant variable
+
+console.log("Person:", person.name); // Jane`
+                },
+                'data-types': {
+                    title: 'Data Types (Primitives & Objects)',
+                    explanation: `<p>JavaScript has dynamic types, meaning the same variable can be used to hold different data types. There are two main categories of data types:</p>
+                    <p><strong>Primitive Data Types:</strong></p>
+                    <ul>
+                        <li>String: Represents textual data</li>
+                        <li>Number: Represents numeric values</li>
+                        <li>Boolean: Represents true or false</li>
+                        <li>Undefined: A variable that has been declared but not assigned a value</li>
+                        <li>Null: Represents intentional absence of any object value</li>
+                        <li>Symbol: A unique and immutable primitive value</li>
+                        <li>BigInt: For representing integers larger than 2^53 - 1</li>
+                    </ul>
+                    <p><strong>Objects:</strong></p>
+                    <ul>
+                        <li>Objects: Collections of key-value pairs</li>
+                        <li>Arrays: Special type of object for storing ordered collections</li>
+                        <li>Functions: Callable objects</li>
+                        <li>Dates: For working with dates and times</li>
+                        <li>And many more...</li>
+                    </ul>`,
+                    code: `// Primitive data types
+let name = "John"; // String
+let age = 30; // Number
+let isStudent = true; // Boolean
+let unknown; // Undefined
+let empty = null; // Null
+let id = Symbol("id"); // Symbol
+let bigNumber = 1234567890123456789012345678901234567890n; // BigInt
+
+// Objects
+let person = { // Object
+    firstName: "John",
+    lastName: "Doe"
+};
+
+let colors = ["red", "green", "blue"]; // Array
+
+function greet() { // Function
+    return "Hello!";
+}
+
+let today = new Date(); // Date
+
+// Checking data types
+console.log("Type of name:", typeof name); // string
+console.log("Type of age:", typeof age); // number
+console.log("Type of isStudent:", typeof isStudent); // boolean
+console.log("Type of unknown:", typeof unknown); // undefined
+console.log("Type of empty:", typeof empty); // object (this is a known JavaScript quirk)
+console.log("Type of id:", typeof id); // symbol
+console.log("Type of bigNumber:", typeof bigNumber); // bigint
+console.log("Type of person:", typeof person); // object
+console.log("Type of colors:", typeof colors); // object
+console.log("Type of greet:", typeof greet); // function
+console.log("Type of today:", typeof today); // object`
+                },
+                'type-conversion': {
+                    title: 'Type Conversion & Coercion',
+                    explanation: `<p>JavaScript is a loosely typed language, which means values can be converted between different types automatically (coercion) or manually (conversion).</p>
+                    <p><strong>Type Conversion</strong> is when we explicitly convert a value from one type to another using functions like String(), Number(), Boolean(), etc.</p>
+                    <p><strong>Type Coercion</strong> is when JavaScript implicitly converts types during operations. This can sometimes lead to unexpected results.</p>
+                    <p>Understanding how type conversion and coercion work is crucial for avoiding bugs in your JavaScript code.</p>`,
+                    code: `// Explicit type conversion (manual)
+let num = 123;
+let strNum = String(num); // "123"
+let boolNum = Boolean(num); // true
+
+console.log("Number to String:", strNum, typeof strNum);
+console.log("Number to Boolean:", boolNum, typeof boolNum);
+
+let str = "456";
+let numStr = Number(str); // 456
+let boolStr = Boolean(str); // true
+
+console.log("String to Number:", numStr, typeof numStr);
+console.log("String to Boolean:", boolStr, typeof boolStr);
+
+// Type coercion (automatic)
+console.log("8" + 5); // "85" - string concatenation
+console.log("8" - 5); // 3 - numeric subtraction
+console.log("5" * 2); // 10 - numeric multiplication
+console.log("10" / 2); // 5 - numeric division
+
+// Truthy and falsy values
+console.log("Boolean of empty string:", Boolean("")); // false
+console.log("Boolean of 0:", Boolean(0)); // false
+console.log("Boolean of null:", Boolean(null)); // false
+console.log("Boolean of undefined:", Boolean(undefined)); // false
+console.log("Boolean of NaN:", Boolean(NaN)); // false
+
+console.log("Boolean of 'hello':", Boolean("hello")); // true
+console.log("Boolean of 1:", Boolean(1)); // true
+console.log("Boolean of {}:", Boolean({})); // true
+console.log("Boolean of []:", Boolean([])); // true
+
+// Interesting coercion examples
+console.log("[] + []:", [] + []); // "" (empty string)
+console.log("[] + {}:", [] + {}); // "[object Object]"
+console.log("{} + []:", {} + []); // 0 (different due to how {} is interpreted)
+console.log("true + true:", true + true); // 2
+console.log("5 + '5':", 5 + '5'); // "55"`
+                },
+                'operators': {
+                    title: 'Operators & Expressions',
+                    explanation: `<p>Operators are used to perform operations on variables and values. JavaScript has various types of operators:</p>
+                    <ul>
+                        <li><strong>Arithmetic Operators</strong>: +, -, *, /, %, ** (exponentiation)</li>
+                        <li><strong>Assignment Operators</strong>: =, +=, -=, *=, /=, %=, **=</li>
+                        <li><strong>Comparison Operators</strong>: ==, ===, !=, !==, >, <, >=, <=</li>
+                        <li><strong>Logical Operators</strong>: &&, ||, !</li>
+                        <li><strong>Bitwise Operators</strong>: &, |, ~, ^, <<, >>, >>></li>
+                        <li><strong>Ternary Operator</strong>: condition ? expr1 : expr2</li>
+                        <li><strong>Type Operators</strong>: typeof, instanceof</li>
+                    </ul>
+                    <p>Expressions are combinations of values, variables, and operators that evaluate to a value.</p>`,
+                    code: `// Arithmetic operators
+let a = 10;
+let b = 3;
+
+console.log("a + b =", a + b); // 13
+console.log("a - b =", a - b); // 7
+console.log("a * b =", a * b); // 30
+console.log("a / b =", a / b); // 3.333...
+console.log("a % b =", a % b); // 1 (remainder)
+console.log("a ** b =", a ** b); // 1000 (10 to the power of 3)
+
+// Assignment operators
+let x = 5;
+x += 3; // same as x = x + 3
+console.log("x after += 3:", x); // 8
+
+x *= 2; // same as x = x * 2
+console.log("x after *= 2:", x); // 16
+
+// Comparison operators
+console.log("5 == '5':", 5 == '5'); // true (loose equality)
+console.log("5 === '5':", 5 === '5'); // false (strict equality)
+console.log("5 != '5':", 5 != '5'); // false
+console.log("5 !== '5':", 5 !== '5'); // true
+
+// Logical operators
+let isAdult = true;
+let hasLicense = false;
+
+console.log("isAdult && hasLicense:", isAdult && hasLicense); // false
+console.log("isAdult || hasLicense:", isAdult || hasLicense); // true
+console.log("!isAdult:", !isAdult); // false
+
+// Ternary operator
+let age = 20;
+let canVote = age >= 18 ? "Yes" : "No";
+console.log("Can vote?", canVote); // Yes
+
+// Type operators
+console.log("typeof 42:", typeof 42); // "number"
+console.log("typeof 'hello':", typeof 'hello'); // "string"
+console.log("[] instanceof Array:", [] instanceof Array); // true
+
+// Bitwise operators
+let num1 = 5; // 0101 in binary
+let num2 = 3; // 0011 in binary
+
+console.log("num1 & num2:", num1 & num2); // 1 (0001)
+console.log("num1 | num2:", num1 | num2); // 7 (0111)
+console.log("num1 ^ num2:", num1 ^ num2); // 6 (0110)
+console.log("~num1:", ~num1); // -6 (two's complement)`
+                },
+                'control-flow': {
+                    title: 'Control Flow (if/else, switch)',
+                    explanation: `<p>Control flow statements allow you to control the order in which statements are executed in your program. The most common control flow statements are:</p>
+                    <p><strong>if/else statements:</strong> Execute a block of code if a specified condition is true. Optionally execute another block if the condition is false.</p>
+                    <p><strong>switch statements:</strong> Evaluate an expression, matching the expression's value to a case clause, and execute statements associated with that case.</p>
+                    <p>Control flow is fundamental to writing programs that can make decisions and handle different scenarios.</p>`,
+                    code: `// if/else statements
+let temperature = 25;
+
+if (temperature > 30) {
+    console.log("It's hot outside!");
+} else if (temperature > 20) {
+    console.log("It's warm outside.");
+} else if (temperature > 10) {
+    console.log("It's cool outside.");
+} else {
+    console.log("It's cold outside!");
+}
+
+// Ternary operator (shorthand if/else)
+let message = temperature > 30 ? "Hot!" : "Not too hot";
+console.log("Ternary result:", message);
+
+// Switch statement
+let day = new Date().getDay();
+let dayName;
+
+switch (day) {
+    case 0:
+        dayName = "Sunday";
+        break;
+    case 1:
+        dayName = "Monday";
+        break;
+    case 2:
+        dayName = "Tuesday";
+        break;
+    case 3:
+        dayName = "Wednesday";
+        break;
+    case 4:
+        dayName = "Thursday";
+        break;
+    case 5:
+        dayName = "Friday";
+        break;
+    case 6:
+        dayName = "Saturday";
+        break;
+    default:
+        dayName = "Unknown";
+}
+
+console.log("Today is:", dayName);
+
+// Logical operators in control flow
+let isWeekend = day === 0 || day === 6;
+let isWorkday = !isWeekend;
+let hasMeeting = true;
+
+if (isWorkday && hasMeeting) {
+    console.log("Time for work and meetings!");
+} else if (isWorkday) {
+    console.log("Time for work, but no meetings.");
+} else {
+    console.log("Enjoy your weekend!");
+}`
+                },
+                'loops': {
+                    title: 'Loops (for, while, do-while)',
+                    explanation: `<p>Loops are used to execute a block of code multiple times. JavaScript provides several ways to loop through code:</p>
+                    <ul>
+                        <li><strong>for loop</strong>: Repeats until a specified condition evaluates to false</li>
+                        <li><strong>while loop</strong>: Executes its statements as long as a specified condition evaluates to true</li>
+                        <li><strong>do...while loop</strong>: Executes once, and then repeats as long as a specified condition evaluates to true</li>
+                        <li><strong>for...in loop</strong>: Iterates over the enumerable properties of an object</li>
+                        <li><strong>for...of loop</strong>: Iterates over iterable objects like arrays, strings, etc.</li>
+                    </ul>
+                    <p>Loops are essential for processing collections of data and performing repetitive tasks.</p>`,
+                    code: `// For loop
+console.log("For loop:");
+for (let i = 0; i < 5; i++) {
+    console.log("Iteration:", i);
+}
+
+// While loop
+console.log("While loop:");
+let count = 0;
+while (count < 3) {
+    console.log("Count:", count);
+    count++;
+}
+
+// Do-while loop
+console.log("Do-while loop:");
+let num = 0;
+do {
+    console.log("Number:", num);
+    num++;
+} while (num < 3);
+
+// For...in loop (iterating over object properties)
+console.log("For...in loop:");
+const person = {
+    name: "John",
+    age: 30,
+    occupation: "Developer"
+};
+
+for (let key in person) {
+    console.log(key + ":", person[key]);
+}
+
+// For...of loop (iterating over iterables)
+console.log("For...of loop:");
+const colors = ["red", "green", "blue"];
+
+for (let color of colors) {
+    console.log("Color:", color);
+}
+
+// Iterating over a string
+const text = "Hello";
+for (let char of text) {
+    console.log("Character:", char);
+}
+
+// Loop control: break and continue
+console.log("Break example:");
+for (let i = 0; i < 10; i++) {
+    if (i === 5) {
+        break; // exit the loop
+    }
+    console.log("i =", i);
+}
+
+console.log("Continue example:");
+for (let i = 0; i < 5; i++) {
+    if (i === 2) {
+        continue; // skip this iteration
+    }
+    console.log("i =", i);
+}`
+                },
+                'functions': {
+                    title: 'Functions & Scope',
+                    explanation: `<p>Functions are one of the fundamental building blocks in JavaScript. A function is a set of statements that performs a task or calculates a value. To use a function, you must define it somewhere in the scope from which you wish to call it.</p>
+                    <p><strong>Function Scope:</strong> Variables defined inside a function cannot be accessed from anywhere outside the function, because the variable is defined only in the scope of the function. However, a function can access all variables and functions defined inside the scope in which it is defined.</p>
+                    <p><strong>Types of Functions:</strong></p>
+                    <ul>
+                        <li>Function declarations</li>
+                        <li>Function expressions</li>
+                        <li>Arrow functions (ES6)</li>
+                        <li>Generator functions (ES6)</li>
+                        <li>Async functions (ES2017)</li>
+                    </ul>`,
+                    code: `// Function declaration
+function greet(name) {
+    return "Hello, " + name + "!";
+}
+
+// Function expression
+const square = function(x) {
+    return x * x;
+};
+
+// Arrow function (ES6)
+const multiply = (a, b) => a * b;
+
+// Function scope example
+let globalVar = "I'm global";
+
+function scopeExample() {
+    let localVar = "I'm local";
+    console.log("Inside function:", globalVar); // Can access global variables
+    console.log("Inside function:", localVar); // Can access local variables
+    
+    function innerFunction() {
+        let innerVar = "I'm inner";
+        console.log("Inner function:", localVar); // Can access outer function's variables
+        console.log("Inner function:", innerVar); // Can access own variables
+    }
+    
+    innerFunction();
+    // console.log(innerVar); // Error: innerVar is not defined
+}
+
+scopeExample();
+// console.log(localVar); // Error: localVar is not defined
+
+console.log("Function greet result:", greet("Alice"));
+console.log("Function square result:", square(5));
+console.log("Arrow function multiply result:", multiply(3, 4));
+
+// Default parameters (ES6)
+function createUser(name, age = 18, isAdmin = false) {
+    return {
+        name,
+        age,
+        isAdmin
+    };
+}
+
+console.log("User with defaults:", createUser("Bob"));
+console.log("User with custom values:", createUser("Charlie", 25, true));
+
+// Rest parameters
+function sum(...numbers) {
+    return numbers.reduce((total, num) => total + num, 0);
+}
+
+console.log("Sum of numbers:", sum(1, 2, 3, 4, 5)); // 15`
+                },
+                'arrow-functions': {
+                    title: 'Arrow Functions',
+                    explanation: `<p>Arrow functions (introduced in ES6) provide a concise syntax for writing functions in JavaScript. They have some important differences from traditional function expressions:</p>
+                    <ul>
+                        <li>Shorter syntax</li>
+                        <li>No binding of <code>this</code> (they inherit <code>this</code> from the surrounding context)</li>
+                        <li>Can't be used as constructors (will throw an error when used with <code>new</code>)</li>
+                        <li>No <code>arguments</code> object (use rest parameters instead)</li>
+                    </ul>
+                    <p>Arrow functions are especially useful for short functions and callbacks where the lexical <code>this</code> binding is desirable.</p>`,
+                    code: `// Traditional function expression
+const addTraditional = function(a, b) {
+    return a + b;
+};
+
+// Arrow function equivalent
+const addArrow = (a, b) => a + b;
+
+console.log("Traditional:", addTraditional(2, 3)); // 5
+console.log("Arrow:", addArrow(2, 3)); // 5
+
+// Parentheses can be omitted for single parameter
+const square = x => x * x;
+console.log("Square of 5:", square(5)); // 25
+
+// For no parameters, parentheses are required
+const sayHello = () => "Hello!";
+console.log(sayHello()); // "Hello!"
+
+// For multiple parameters, parentheses are required
+const multiply = (a, b) => a * b;
+console.log("Multiply 3 * 4:", multiply(3, 4)); // 12
+
+// For function body with multiple statements, use curly braces
+const greet = (name) => {
+    const message = "Hello, " + name + "!";
+    return message;
+};
+console.log(greet("Alice")); // "Hello, Alice!"
+
+// Returning object literals - requires parentheses
+const createPerson = (name, age) => ({ name, age });
+console.log(createPerson("John", 30)); // {name: "John", age: 30}
+
+// 'this' behavior difference
+function TraditionalFunction() {
+    this.value = 42;
+    
+    // Traditional function has its own 'this'
+    setTimeout(function() {
+        console.log("Traditional function this.value:", this.value); // undefined
+    }, 100);
+    
+    // Arrow function inherits 'this' from surrounding context
+    setTimeout(() => {
+        console.log("Arrow function this.value:", this.value); // 42
+    }, 100);
+}
+
+new TraditionalFunction();`
+                },
+                'default-parameters': {
+                    title: 'Default Parameters',
+                    explanation: `<p>Default function parameters allow named parameters to be initialized with default values if no value or <code>undefined</code> is passed. This feature was introduced in ES6.</p>
+                    <p>Before default parameters, developers had to manually check if parameters were undefined and assign default values inside the function body.</p>
+                    <p>Default parameters can be any expression, including function calls, and are evaluated at call time.</p>`,
+                    code: `// Basic default parameters
+function greet(name = "Guest") {
+    return "Hello, " + name + "!";
+}
+
+console.log(greet()); // "Hello, Guest!"
+console.log(greet("Alice"); // "Hello, Alice!"
+
+// Multiple default parameters
+function createUser(name, age = 18, isActive = true) {
+    return {
+        name,
+        age,
+        isActive
+    };
+}
+
+console.log("User with defaults:", createUser("John"));
+console.log("User with custom age:", createUser("Jane", 25));
+console.log("User with custom values:", createUser("Bob", 30, false));
+
+// Default parameters can be expressions
+function calculateTotal(price, tax = price * 0.1, discount = 0) {
+    return price + tax - discount;
+}
+
+console.log("Total:", calculateTotal(100)); // 100 + 10 - 0 = 110
+console.log("Total with custom tax:", calculateTotal(100, 15)); // 100 + 15 - 0 = 115
+
+// Default parameters can be function calls
+function getDefaultDate() {
+    return new Date().toISOString().slice(0, 10);
+}
+
+function createPost(title, content, date = getDefaultDate()) {
+    return {
+        title,
+        content,
+        date
+    };
+}
+
+console.log("Post with default date:", createPost("My Post", "Some content"));
+
+// Parameters can reference previous parameters
+function createPerson(firstName, lastName, fullName = firstName + " " + lastName) {
+    return {
+        firstName,
+        lastName,
+        fullName
+    };
+}
+
+console.log(createPerson("John", "Doe")); // {firstName: "John", lastName: "Doe", fullName: "John Doe"}
+
+// Default parameters and the arguments object
+function example(a = 1, b = 2) {
+    console.log("Arguments length:", arguments.length);
+    console.log("Arguments:", arguments[0], arguments[1]);
+    return a + b;
+}
+
+console.log("Result:", example()); // Arguments length: 0, Result: 3
+console.log("Result:", example(5)); // Arguments length: 1, Result: 7
+console.log("Result:", example(5, 5)); // Arguments length: 2, Result: 10`
+                },
+                'template-literals': {
+                    title: 'Template Literals',
+                    explanation: `<p>Template literals (introduced in ES6) are string literals allowing embedded expressions. They are enclosed by backticks (<code>\`</code>) instead of single or double quotes.</p>
+                    <p>Template literals provide several powerful features:</p>
+                    <ul>
+                        <li>String interpolation: Embed expressions with <code>\${expression}</code> syntax</li>
+                        <li>Multi-line strings without needing escape characters</li>
+                        <li>Tagged templates: Function calls that can process template literals</li>
+                    </ul>
+                    <p>Template literals make working with strings in JavaScript much more convenient and readable.</p>`,
+                    code: `// Basic template literal
+const name = "Alice";
+const greeting = \`Hello, \${name}!\`;
+console.log(greeting); // "Hello, Alice!"
+
+// Expression interpolation
+const a = 5;
+const b = 10;
+console.log(\`\${a} + \${b} = \${a + b}\`); // "5 + 10 = 15"
+
+// Multi-line strings
+const multiLine = \`This is a string
+that spans across
+multiple lines\`;
+console.log(multiLine);
+
+// Without template literals, we'd need to do:
+const oldMultiLine = "This is a string\n" +
+                     "that spans across\n" +
+                     "multiple lines";
+console.log(oldMultiLine);
+
+// HTML templates
+const title = "My Page";
+const body = "Welcome to my page!";
+const html = \`
+    <div class="container">
+        <h1>\${title}</h1>
+        <p>\${body}</p>
+    </div>
+\`;
+console.log(html);
+
+// Nested template literals
+const isError = false;
+const message = \`Status: \${isError ? \`\` : \`OK\`}\`;
+console.log(message); // "Status: OK"
+
+// Tagged templates
+function highlight(strings, ...values) {
+    let result = "";
+    strings.forEach((string, i) => {
+        result += string;
+        if (values[i] !== undefined) {
+            result += \`<span class="highlight">\${values[i]}</span>\`;
+        }
+    });
+    return result;
+}
+
+const user = "John";
+const age = 30;
+const taggedResult = highlight\`User \${user} is \${age} years old.\`;
+console.log(taggedResult); // "User <span class="highlight">John</span> is <span class="highlight">30</span> years old."
+
+// Raw strings
+function showRaw(strings, ...values) {
+    console.log("Raw strings:", strings.raw[0]);
+}
+
+showRaw\`This is a tab: \t and a newline: \n\`; // Logs the literal characters \\t and \\n`
+                }
+            };
+            
+            // Initialize completed topics from localStorage
+            let completedTopics = JSON.parse(localStorage.getItem('completedTopics')) || {};
+            
+            // Mark topic as completed
+            function toggleCompleted(topic) {
+                completedTopics[topic] = !completedTopics[topic];
+                localStorage.setItem('completedTopics', JSON.stringify(completedTopics));
+            }
+            
+            // Show explanation modal
+            function showExplanation(topic) {
+                if (topicData[topic]) {
+                    modalTitle.textContent = topicData[topic].title;
+                    modalExplanation.innerHTML = topicData[topic].explanation;
+                    modalCode.textContent = topicData[topic].code;
+                    modal.style.display = 'block';
+                    
+                    // Store current topic for running code
+                    runButton.dataset.topic = topic;
+                    codeOutput.textContent = '';
+                }
+            }
+            
+            // Close modal
+            closeBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Run code example
+            runButton.addEventListener('click', function() {
+                const topic = runButton.dataset.topic;
+                if (topicData[topic]) {
+                    try {
+                        // Capture console.log output
+                        const originalLog = console.log;
+                        let output = '';
+                        
+                        console.log = function() {
+                            output += Array.from(arguments).join(' ') + '\n';
+                            originalLog.apply(console, arguments);
+                        };
+                        
+                        // Execute the code
+                        eval(topicData[topic].code);
+                        
+                        // Restore original console.log
+                        console.log = originalLog;
+                        
+                        // Display output
+                        codeOutput.textContent = output || 'Code executed (no output)';
+                    } catch (error) {
+                        codeOutput.textContent = 'Error: ' + error.message;
+                    }
+                }
+            });
+            
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                document.querySelectorAll('.topics-list li').forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    const topic = item.dataset.topic;
+                    
+                    if (text.includes(searchTerm)) {
+                        item.style.display = 'flex';
+                        
+                        // Highlight the matching text
+                        if (searchTerm) {
+                            const regex = new RegExp(searchTerm, 'gi');
+                            item.innerHTML = item.textContent.replace(regex, match => 
+                                `<span class="highlight">${match}</span>`
+                            );
+                        }
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Set up topic click handlers
+            topics.forEach(topic => {
+                const topicId = topic.dataset.topic;
+                
+                // Apply completed status if it exists
+                if (completedTopics[topicId]) {
+                    topic.classList.add('completed');
+                }
+                
+                // Click to mark as completed
+                topic.addEventListener('click', function(e) {
+                    // Don't toggle if clicking a highlighted search term
+                    if (e.target.tagName !== 'SPAN' || !e.target.classList.contains('highlight')) {
+                        this.classList.toggle('completed');
+                        toggleCompleted(topicId);
+                    }
+                });
+                
+                // Double-click to show explanation
+                topic.addEventListener('dblclick', function() {
+                    showExplanation(topicId);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

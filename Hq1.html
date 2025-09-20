@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>22 HTML Quizzes — Learn & Check</title>
+  <style>
+    :root {
+      --bg: #0f172a; --panel: #1e293b; --text: #e2e8f0; --muted: #94a3b8;
+      --accent: #2563eb; --accent-2: #f59e0b;
+      --ok: #22c55e; --bad: #ef4444;
+      --border: rgba(148,163,184,.25); --input: #0b1220; --btn-text: #ffffff;
+      --reward: #ffd700;
+    }
+    [data-theme="light"] {
+      --bg: #ffffff; --panel: #f8fafc; --text: #0f172a; --muted: #475569;
+      --accent: #1d4ed8; --accent-2: #b45309;
+      --ok: #16a34a; --bad: #dc2626;
+      --border: rgba(15,23,42,.12); --input: #ffffff; --btn-text: #ffffff;
+      --reward: #ffbf00;
+    }
+    body { margin:0; font-family:sans-serif; background:linear-gradient(120deg,var(--bg),var(--panel)); color:var(--text); min-height:100vh; }
+    header { max-width:1000px; margin:0 auto; padding:24px 16px; display:flex; justify-content:space-between; align-items:center; }
+    .title { font-weight:800; font-size:clamp(20px,3vw,28px); background:linear-gradient(90deg,var(--accent),var(--accent-2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+    .container { max-width:1000px; margin:0 auto; padding:16px; display:grid; gap:16px; }
+    .card { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:18px; box-shadow:0 10px 30px rgba(0,0,0,.15); }
+    .q { display:grid; gap:10px; padding:12px; border:1px dashed var(--border); border-radius:12px; background:rgba(0,0,0,.03); }
+    .q h3 { margin:0; font-size:16px; }
+    .help { font-size:13px; color:var(--muted); }
+    .grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:10px; }
+    input[type="text"], textarea { width:100%; padding:10px; border-radius:10px; border:1px solid var(--border); background:var(--input); color:var(--text); transition: all 0.3s ease; }
+    input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); }
+    .btn { border:0; border-radius:12px; padding:12px 16px; font-weight:700; cursor:pointer; transition: all 0.2s ease; }
+    .primary { background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:var(--btn-text); }
+    .primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3); }
+    .ghost { background:transparent; border:1px solid var(--border); color:var(--text); }
+    .pill { display:inline-block; padding:4px 10px; border-radius:999px; font-size:12px; border:1px solid var(--border); color:var(--muted); }
+    .result { font-weight:800; text-align: center; margin: 20px 0; }
+    .ok { color:var(--ok); } .bad { color:var(--bad); } .hidden{display:none;}
+    .footer-fravico { text-align:center; padding:24px; color:var(--muted); cursor:pointer; transition:color 0.3s ease,text-shadow 0.3s ease; }
+    .footer-fravico:hover { color:gold; text-shadow:0 0 8px gold; }
+    
+    /* Progress bar */
+    .progress-container {
+      width: 100%;
+      height: 8px;
+      background-color: var(--border);
+      border-radius: 4px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+    
+    /* Question navigation */
+    .question-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+    }
+    
+    .question-counter {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    
+    /* Profile icon */
+    .profile-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .profile-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+    }
+    
+    .profile-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+    
+    .profile-balance {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--reward);
+      color: black;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 5px;
+      border-radius: 10px;
+      min-width: 15px;
+      text-align: center;
+    }
+    
+    /* Profile dropdown */
+    .profile-dropdown {
+      position: absolute;
+      top: 60px;
+      right: 16px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 15px;
+      width: 200px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.15);
+      z-index: 100;
+      display: none;
+    }
+    
+    .profile-dropdown p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+    
+    .profile-dropdown .balance {
+      color: var(--reward);
+      font-weight: bold;
+    }
+    
+    /* Login Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background: var(--panel);
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.3);
+    }
+    
+    .modal h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--input);
+      color: var(--text);
+    }
+    
+    .modal-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    
+    .modal-buttons button {
+      flex: 1;
+    }
+
+    /* Submit button styles */
+    .submit-container {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .submit-btn {
+      background: linear-gradient(90deg, var(--ok), #22c55e);
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 50px;
+      box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <h2>Login to Your Account</h2>
+      <div class="form-group">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" placeholder="Enter your email">
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" placeholder="Enter your password">
+      </div>
+      <div class="modal-buttons">
+        <button class="btn ghost" onclick="closeModal('loginModal')">Cancel</button>
+        <button class="btn primary" onclick="login()">Login</button>
+      </div>
+      <p style="text-align:center; margin-top:20px;">Don't have an account? <a href="#" onclick="showSignup()" style="color:var(--accent);">Sign up</a></p>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div id="signupModal" class="modal">
+    <div class="modal-content">
+      <h2>Create an Account</h2>
+      <div class="form-group">
+        <label for="signupUsername">Username</label>
+        <input type="text" id="signupUsername" placeholder="Choose a username">
+      </div>
+      <div class="form-group">
+        <label for="signupEmail">Email</label>
+        <input type="email" id="signupEmail" placeholder="Enter your email">
+      </div>
+      <div class="form-group">
+        <label for="signupPassword">Password</label>
+        <input type="password" id="signupPassword" placeholder="Create a password">
+      </div>
+      <div class="modal-buttons">
+        <button class="btn ghost" onclick="closeModal('signupModal')">Cancel</button>
+        <button class="btn primary" onclick="signup()">Sign Up</button>
+      </div>
+      <p style="text-align:center; margin-top:20px;">Already have an account? <a href="#" onclick="showLogin()" style="color:var(--accent);">Login</a></p>
+    </div>
+  </div>
+
+  <header>
+    <div class="title">22 HTML Quizzes — Learn & Check</div>
+    <div class="profile-icon" id="profileIcon" onclick="toggleProfileDropdown()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-6.627 0-12 5.373-12 12h24c0-6.627-5.373-12-12-12z"/>
+      </svg>
+      <div class="profile-balance" id="profileBalance">$0.00</div>
+    </div>
+    <div class="profile-dropdown" id="profileDropdown">
+      <p id="profileUsername">Guest User</p>
+      <p id="profileEmail">Not logged in</p>
+      <p>Balance: <span class="balance" id="dropdownBalance">$0.00</span></p>
+      <p>Completed: <span id="completedCourses">0</span> quizzes</p>
+      <button class="btn ghost" style="width:100%; margin-top:10px;" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h2>Test Your HTML Knowledge</h2>
+      <p class="help">Complete all 22 questions to test your HTML knowledge. Get a score above 92% to earn a $0.15 reward!</p>
+      
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+      </div>
+      
+      <div class="question-counter" id="questionCounter">Question 1 of 22</div>
+      
+      <div class="q">
+        <h3 id="currentQuestion">1. What does HTML stand for?</h3>
+        <input type="text" id="answerInput" placeholder="Type your answer here..." autocomplete="off">
+        <p class="help" id="questionHelp">Press Enter to submit and move to next question</p>
+      </div>
+      
+      <div class="question-nav">
+        <button class="btn ghost" id="prevBtn" onclick="prevQuestion()">Previous</button>
+        <button class="btn primary" id="nextBtn" onclick="nextQuestion()">Next Question</button>
+      </div>
+
+      <!-- Added Submit Button -->
+      <div class="submit-container">
+        <button class="btn primary submit-btn" id="submitBtn" onclick="submitQuiz()">Submit All Answers</button>
+      </div>
+    </div>
+    
+    <div class="card hidden" id="resultsCard">
+      <h2>Quiz Results</h2>
+      <div class="result" id="scoreResult">Your score: 0%</div>
+      <div class="result ok hidden" id="rewardMessage">Congratulations! You've earned $0.15!</div>
+      <div class="result bad hidden" id="noRewardMessage">Score above 92% to earn rewards. Try again!</div>
+      <button class="btn primary" onclick="resetQuiz()">Try Again</button>
+    </div>
+  </div>
+
+  <div class="footer-fravico" onclick="alert('Frivaco Tech Centre - HTML Quiz Challenge')">
+    Frivaco Tech Centre
+  </div>
+
+  <script>
+    // Quiz questions and answers
+    const questions = [
+      { q: "What does HTML stand for?", a: "HyperText Markup Language" },
+      { q: "Which tag is used for the largest heading?", a: "<h1>" },
+      { q: "Which tag is used to create a hyperlink?", a: "<a>" },
+      { q: "Which tag is used to create an unordered list?", a: "<ul>" },
+      { q: "Which tag is used to create a line break?", a: "<br>" },
+      { q: "Which attribute is used to specify an image source?", a: "src" },
+      { q: "Which tag is used to define a table row?", a: "<tr>" },
+      { q: "Which tag is used to define a table header cell?", a: "<th>" },
+      { q: "Which tag is used to create a form?", a: "<form>" },
+      { q: "Which input type creates a checkbox?", a: "checkbox" },
+      { q: "Which tag is used to create a dropdown list?", a: "<select>" },
+      { q: "Which tag is used to define important text?", a: "<strong>" },
+      { q: "Which tag is used to define emphasized text?", a: "<em>" },
+      { q: "Which tag is used to embed an image?", a: "<img>" },
+      { q: "Which tag is used to create a paragraph?", a: "<p>" },
+      { q: "Which tag is used to define the document's body?", a: "<body>" },
+      { q: "Which tag is used to define the document's head?", a: "<head>" },
+      { q: "Which tag is used to define the title of the document?", a: "<title>" },
+      { q: "Which tag is used to create a horizontal rule?", a: "<hr>" },
+      { q: "Which tag is used to define a division or section?", a: "<div>" },
+      { q: "Which tag is used to define a span of inline content?", a: "<span>" },
+      { q: "Which character entity is used for a non-breaking space?", a: "&nbsp;" }
+    ];
+
+    // User data
+    let userData = JSON.parse(localStorage.getItem('fravicoTechUser')) || {
+      username: "Guest User",
+      email: "",
+      balance: 0.00,
+      completedCourses: 0,
+      totalEarnings: 0.00,
+      isLoggedIn: false,
+      lastLanguage: null,
+      quizAnswers: {},
+      certificates: {},
+      courseProgress: {}
+    };
+
+    // Quiz state
+    let currentQuestionIndex = 0;
+    let userAnswers = Array(questions.length).fill('');
+    let quizSubmitted = false;
+
+    // DOM elements
+    const currentQuestionEl = document.getElementById('currentQuestion');
+    const answerInput = document.getElementById('answerInput');
+    const questionCounter = document.getElementById('questionCounter');
+    const progressBar = document.getElementById('progressBar');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const resultsCard = document.getElementById('resultsCard');
+    const scoreResult = document.getElementById('scoreResult');
+    const rewardMessage = document.getElementById('rewardMessage');
+    const noRewardMessage = document.getElementById('noRewardMessage');
+    const profileIcon = document.getElementById('profileIcon');
+    const profileDropdown = document.getElementById('profileDropdown');
+    const profileBalance = document.getElementById('profileBalance');
+    const dropdownBalance = document.getElementById('dropdownBalance');
+    const profileUsername = document.getElementById('profileUsername');
+    const profileEmail = document.getElementById('profileEmail');
+    const completedCourses = document.getElementById('completedCourses');
+
+    // Initialize quiz
+    function initQuiz() {
+      // Check if user is logged in
+      if (!userData.isLoggedIn) {
+        showLoginModal();
+        return;
+      }
+      
+      updateProfileInfo();
+      showQuestion(currentQuestionIndex);
+      updateProgressBar();
+    }
+
+    // Show current question
+    function showQuestion(index) {
+      currentQuestionEl.textContent = `${index + 1}. ${questions[index].q}`;
+      answerInput.value = userAnswers[index];
+      questionCounter.textContent = `Question ${index + 1} of ${questions.length}`;
+      
+      // Update navigation buttons
+      prevBtn.disabled = index === 0;
+      nextBtn.disabled = index === questions.length - 1;
+      
+      // Focus on input
+      answerInput.focus();
+    }
+
+    // Update progress bar
+    function updateProgressBar() {
+      const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+      progressBar.style.width = `${progress}%`;
+    }
+
+    // Navigate to next question
+    function nextQuestion() {
+      if (currentQuestionIndex < questions.length - 1) {
+        userAnswers[currentQuestionIndex] = answerInput.value;
+        currentQuestionIndex++;
+        showQuestion(currentQuestionIndex);
+        updateProgressBar();
+      }
+    }
+
+    // Navigate to previous question
+    function prevQuestion() {
+      if (currentQuestionIndex > 0) {
+        userAnswers[currentQuestionIndex] = answerInput.value;
+        currentQuestionIndex--;
+        showQuestion(currentQuestionIndex);
+        updateProgressBar();
+      }
+    }
+
+    // Submit quiz and calculate results
+    function submitQuiz() {
+      // Save the current answer before submitting
+      userAnswers[currentQuestionIndex] = answerInput.value;
+      
+      let correctCount = 0;
+      
+      questions.forEach((question, index) => {
+        const userAnswer = userAnswers[index].trim().toLowerCase();
+        const correctAnswer = question.a.toLowerCase();
+        
+        if (userAnswer === correctAnswer) {
+          correctCount++;
+        }
+      });
+      
+      // Calculate score
+      const score = (correctCount / questions.length) * 100;
+      scoreResult.textContent = `Your score: ${score.toFixed(1)}%`;
+      resultsCard.classList.remove('hidden');
+      
+      // Update user data
+      userData.completedCourses++;
+      
+      // Check for reward
+      if (score > 92) {
+        userData.balance += 0.15;
+        userData.totalEarnings += 0.15;
+        rewardMessage.classList.remove('hidden');
+        noRewardMessage.classList.add('hidden');
+      } else {
+        rewardMessage.classList.add('hidden');
+        noRewardMessage.classList.remove('hidden');
+      }
+      
+      // Save user data
+      localStorage.setItem('fravicoTechUser', JSON.stringify(userData));
+      
+      // Update profile info
+      updateProfileInfo();
+      
+      quizSubmitted = true;
+      
+      // Scroll to results
+      resultsCard.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Reset quiz
+    function resetQuiz() {
+      currentQuestionIndex = 0;
+      userAnswers = Array(questions.length).fill('');
+      quizSubmitted = false;
+      resultsCard.classList.add('hidden');
+      rewardMessage.classList.add('hidden');
+      noRewardMessage.classList.add('hidden');
+      showQuestion(currentQuestionIndex);
+      updateProgressBar();
+      
+      // Scroll back to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Update profile information
+    function updateProfileInfo() {
+      profileBalance.textContent = `$${userData.balance.toFixed(2)}`;
+      dropdownBalance.textContent = `$${userData.balance.toFixed(2)}`;
+      profileUsername.textContent = userData.username;
+      profileEmail.textContent = userData.isLoggedIn ? userData.email : "Not logged in";
+      completedCourses.textContent = userData.completedCourses;
+    }
+
+    // Toggle profile dropdown
+    function toggleProfileDropdown() {
+      profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Close profile dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+      if (!profileIcon.contains(event.target) && !profileDropdown.contains(event.target)) {
+        profileDropdown.style.display = 'none';
+      }
+    });
+
+    // Login functions
+    function showLoginModal() {
+      document.getElementById('loginModal').style.display = 'flex';
+    }
+
+    function showSignupModal() {
+      document.getElementById('signupModal').style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    function showSignup() {
+      closeModal('loginModal');
+      showSignupModal();
+    }
+
+    function showLogin() {
+      closeModal('signupModal');
+      showLoginModal();
+    }
+
+    function login() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      
+      if (!email || !password) {
+        alert('Please enter both email and password');
+        return;
+      }
+      
+      // For demo purposes, we'll just set a default user
+      userData = {
+        username: "User",
+        email: email,
+        balance: userData.balance || 0.00,
+        completedCourses: userData.completedCourses || 0,
+        totalEarnings: userData.totalEarnings || 0.00,
+        isLoggedIn: true,
+        lastLanguage: userData.lastLanguage || null,
+        quizAnswers: userData.quizAnswers || {},
+        certificates: userData.certificates || {},
+        courseProgress: userData.courseProgress || {}
+      };
+      
+      localStorage.setItem('fravicoTechUser', JSON.stringify(userData));
+      updateProfileInfo();
+      closeModal('loginModal');
+      alert('Login successful!');
+      
+      // Initialize quiz after login
+      initQuiz();
+    }
+
+    function signup() {
+      const username = document.getElementById('signupUsername').value;
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
+      
+      if (!username || !email || !password) {
+        alert('Please fill all fields');
+        return;
+      }
+      
+      userData = {
+        username: username,
+        email: email,
+        balance: 0.00,
+        completedCourses: 0,
+        totalEarnings: 0.00,
+        isLoggedIn: true,
+        lastLanguage: null,
+        quizAnswers: {},
+        certificates: {},
+        courseProgress: {}
+      };
+      
+      localStorage.setItem('fravicoTechUser', JSON.stringify(userData));
+      updateProfileInfo();
+      closeModal('signupModal');
+      alert('Account created successfully!');
+      
+      // Initialize quiz after signup
+      initQuiz();
+    }
+
+    function logout() {
+      userData.isLoggedIn = false;
+      localStorage.setItem('fravicoTechUser', JSON.stringify(userData));
+      updateProfileInfo();
+      profileDropdown.style.display = 'none';
+      alert('Logged out successfully');
+      showLoginModal();
+    }
+
+    // Event listeners
+    answerInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        userAnswers[currentQuestionIndex] = this.value;
+        if (currentQuestionIndex < questions.length - 1) {
+          nextQuestion();
+        }
+      }
+    });
+
+    answerInput.addEventListener('input', function() {
+      userAnswers[currentQuestionIndex] = this.value;
+    });
+
+    // Initialize
+    initQuiz();
+  </script>
+</body>
+</html>

@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Code Quiz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            transition: background-color 0.5s, color 0.5s;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .balance {
+            background: linear-gradient(to right, #27ae60, #2ecc71);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(to right, #3498db, #2980b9);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .profile-icon:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Golden Reward Bar */
+        .reward-bar {
+            background: linear-gradient(90deg, #ffd700, #ffec8b, #ffd700);
+            color: #8b7500;
+            text-align: center;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            border: 1px solid #ffd700;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3); }
+            50% { box-shadow: 0 4px 15px rgba(255, 215, 0, 0.6); }
+            100% { box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3); }
+        }
+        
+        .reward-bar i {
+            margin-right: 8px;
+            color: #8b7500;
+        }
+        
+        .theme-toggle {
+            padding: 12px 24px;
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+        
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .quiz-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(52, 152, 219, 0.1);
+        }
+        
+        .question {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            line-height: 1.4;
+            padding: 15px;
+            border-left: 5px solid #3498db;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .code-hint {
+            font-size: 1rem;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+        
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .score-container {
+            text-align: center;
+            margin-top: 30px;
+            padding: 40px 20px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        
+        .score-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .score-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #2c3e50;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .reward-message {
+            font-size: 1.3rem;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #ffeaa7, #fab1a0);
+            color: #2d3436;
+            font-weight: 600;
+        }
+        
+        .score-message {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #7f8c8d;
+        }
+        
+        .restart-btn {
+            padding: 12px 30px;
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .profile-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .profile-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        .profile-content h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3498db;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .close-btn {
+            padding: 10px 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        /* Dark theme */
+        .dark-theme {
+            background: linear-gradient(135deg, #2c3e50, #1a2530);
+            color: #ecf0f1;
+        }
+        
+        .dark-theme .container {
+            background: rgba(44, 62, 80, 0.95);
+        }
+        
+        .dark-theme header {
+            border-bottom: 2px solid #34495e;
+        }
+        
+        .dark-theme h1 {
+            color: #ecf0f1;
+        }
+        
+        .dark-theme .quiz-container,
+        .dark-theme .score-container {
+            background: rgba(44, 62, 80, 0.9);
+        }
+        
+        .dark-theme .question,
+        .dark-theme .progress {
+            color: #ecf0f1;
+        }
+        
+        .dark-theme .answer-input {
+            background-color: #34495e;
+            border-color: #4a6572;
+            color: #ecf0f1;
+        }
+        
+        .dark-theme .answer-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+        }
+        
+        .dark-theme .score-title,
+        .dark-theme .score-value,
+        .dark-theme .score-message {
+            color: #ecf0f1;
+        }
+        
+        .dark-theme .profile-content {
+            background: #2c3e50;
+            color: #ecf0f1;
+        }
+        
+        .dark-theme .profile-content h2 {
+            color: #ecf0f1;
+        }
+        
+        .dark-theme .reward-bar {
+            background: linear-gradient(90deg, #daa520, #f0e68c, #daa520);
+            color: #fffacd;
+            border: 1px solid #daa520;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .question {
+                font-size: 1.2rem;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .quiz-container {
+                padding: 20px;
+            }
+            
+            .score-value {
+                font-size: 2.5rem;
+            }
+            
+            .user-info {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .reward-bar {
+                font-size: 0.9rem;
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <div class="container">
+        <header>
+            <h1>Python Code Quiz</h1>
+            <div class="user-info">
+                <div class="balance" id="userBalance">$0.00</div>
+                <div class="profile-icon" id="profileIcon">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Golden Reward Bar -->
+        <div class="reward-bar">
+            <i class="fas fa-award"></i>Earn $0.20 reward when you score 96% or higher!
+        </div>
+        
+        <button class="theme-toggle" id="themeToggle">Switch to Dark Theme</button>
+        
+        <div class="quiz-container" id="quizContainer">
+            <div class="progress" id="progress">Question 1 of 36</div>
+            <div class="question" id="question"></div>
+            <div class="code-hint" id="codeHint">Enter your code answer below. Pay attention to syntax and casing.</div>
+            <input type="text" class="answer-input" id="answerInput" placeholder="Type your code answer here..." autocomplete="off">
+            <button class="submit-btn" id="submitBtn">Submit Answer</button>
+        </div>
+        
+        <div class="score-container" id="scoreContainer">
+            <div class="score-title">Your Python Code Knowledge Score</div>
+            <div class="score-value" id="scoreValue">0%</div>
+            <div class="reward-message" id="rewardMessage"></div>
+            <div class="score-message" id="scoreMessage"></div>
+            <button class="restart-btn" id="restartBtn">Take Quiz Again</button>
+        </div>
+    </div>
+
+    <div class="profile-modal" id="profileModal">
+        <div class="profile-content">
+            <h2>Your Profile</h2>
+            <div class="profile-stats">
+                <div class="stat">
+                    <div class="stat-value" id="totalEarnings">$0.00</div>
+                    <div class="stat-label">Total Earnings</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="quizzesTaken">0</div>
+                    <div class="stat-label">Quizzes Taken</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="highScore">0%</div>
+                    <div class="stat-label">High Score</div>
+                </div>
+            </div>
+            <button class="close-btn" id="closeProfile">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Quiz data - 36 Python questions with answers (at least 17 require code input)
+        const quizData = [
+            // Code questions (17+)
+            {
+                question: "Write a function definition to calculate the square of a number.",
+                answer: "def square(x): return x*x"
+            },
+            {
+                question: "Write a list comprehension to get all even numbers from 0 to 10.",
+                answer: "[x for x in range(11) if x % 2 == 0]"
+            },
+            {
+                question: "Write the code to create a lambda function that adds 10 to a number.",
+                answer: "lambda x: x + 10"
+            },
+            {
+                question: "Write the code to open a file named 'data.txt' in read mode.",
+                answer: "open('data.txt', 'r')"
+            },
+            {
+                question: "Write a for loop to iterate through a list called 'fruits' and print each item.",
+                answer: "for fruit in fruits: print(fruit)"
+            },
+            {
+                question: "Write the code to import the math module and use the sqrt function.",
+                answer: "import math; math.sqrt(16)"
+            },
+            {
+                question: "Write a while loop that counts from 1 to 5.",
+                answer: "i = 1; while i <= 5: print(i); i += 1"
+            },
+            {
+                question: "Write the code to create a dictionary with keys 'name' and 'age'.",
+                answer: "{'name': 'John', 'age': 30}"
+            },
+            {
+                question: "Write a try-except block to handle a ZeroDivisionError.",
+                answer: "try: x = 1/0; except ZeroDivisionError: print('Cannot divide by zero')"
+            },
+            {
+                question: "Write the code to create a class called 'Person' with an __init__ method.",
+                answer: "class Person: def __init__(self, name): self.name = name"
+            },
+            {
+                question: "Write the code to reverse a string using slicing.",
+                answer: "s[::-1]"
+            },
+            {
+                question: "Write a list comprehension to convert all strings in a list to uppercase.",
+                answer: "[s.upper() for s in string_list]"
+            },
+            {
+                question: "Write the code to sort a list of numbers in descending order.",
+                answer: "sorted(numbers, reverse=True)"
+            },
+            {
+                question: "Write the code to check if a variable is an integer using isinstance().",
+                answer: "isinstance(var, int)"
+            },
+            {
+                question: "Write the code to create a generator function that yields numbers from 0 to n.",
+                answer: "def gen(n): for i in range(n): yield i"
+            },
+            {
+                question: "Write the code to use the map function to square all numbers in a list.",
+                answer: "list(map(lambda x: x*x, numbers))"
+            },
+            {
+                question: "Write the code to filter even numbers from a list using the filter function.",
+                answer: "list(filter(lambda x: x % 2 == 0, numbers))"
+            },
+            {
+                question: "Write the code to create a set from a list with duplicate values.",
+                answer: "set(duplicate_list)"
+            },
+            {
+                question: "Write the code to use a context manager to open and read a file.",
+                answer: "with open('file.txt', 'r') as f: content = f.read()"
+            },
+            {
+                question: "Write the code to create a decorator that logs function calls.",
+                answer: "def logger(func): def wrapper(*args, **kwargs): print('Calling function'); return func(*args, **kwargs); return wrapper"
+            },
+            // Conceptual questions (the rest)
+            {
+                question: "What keyword is used to define a function in Python?",
+                answer: "def"
+            },
+            {
+                question: "Which data structure in Python is mutable and stores key-value pairs?",
+                answer: "dictionary"
+            },
+            {
+                question: "What built-in function returns the number of items in a container?",
+                answer: "len"
+            },
+            {
+                question: "Which statement is used to exit a loop prematurely in Python?",
+                answer: "break"
+            },
+            {
+                question: "What is the name of the Python package installer?",
+                answer: "pip"
+            },
+            {
+                question: "Which operator is used for exponentiation in Python?",
+                answer: "**"
+            },
+            {
+                question: "What is the name of the method used to add an element to the end of a list?",
+                answer: "append"
+            },
+            {
+                question: "Which Python data type is immutable and ordered?",
+                answer: "tuple"
+            },
+            {
+                question: "What keyword is used to handle exceptions in Python?",
+                answer: "try"
+            },
+            {
+                question: "Which module in Python provides support for regular expressions?",
+                answer: "re"
+            },
+            {
+                question: "What function is used to read input from the user in Python 3?",
+                answer: "input"
+            },
+            {
+                question: "Which method returns a list of all attributes and methods of an object?",
+                answer: "dir"
+            },
+            {
+                question: "What is the name of the Python built-in module for mathematical operations?",
+                answer: "math"
+            },
+            {
+                question: "Which operator is used for floor division in Python?",
+                answer: "//"
+            },
+            {
+                question: "What is the term for converting an object into a string representation?",
+                answer: "serialization"
+            },
+            {
+                question: "Which Python framework is commonly used for web development?",
+                answer: "Django"
+            },
+            {
+                question: "What method is used to remove and return the last element of a list?",
+                answer: "pop"
+            }
+        ];
+
+        // DOM elements
+        const themeToggle = document.getElementById('themeToggle');
+        const quizContainer = document.getElementById('quizContainer');
+        const scoreContainer = document.getElementById('scoreContainer');
+        const progressElement = document.getElementById('progress');
+        const questionElement = document.getElementById('question');
+        const codeHint = document.getElementById('codeHint');
+        const answerInput = document.getElementById('answerInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const scoreValue = document.getElementById('scoreValue');
+        const rewardMessage = document.getElementById('rewardMessage');
+        const scoreMessage = document.getElementById('scoreMessage');
+        const restartBtn = document.getElementById('restartBtn');
+        const userBalance = document.getElementById('userBalance');
+        const profileIcon = document.getElementById('profileIcon');
+        const profileModal = document.getElementById('profileModal');
+        const totalEarnings = document.getElementById('totalEarnings');
+        const quizzesTaken = document.getElementById('quizzesTaken');
+        const highScore = document.getElementById('highScore');
+        const closeProfile = document.getElementById('closeProfile');
+        
+        // User data
+        let userData = {
+            balance: 0,
+            totalEarnings: 0,
+            quizzesTaken: 0,
+            highScore: 0
+        };
+        
+        // Quiz state variables
+        let currentQuestion = 0;
+        let score = 0;
+        
+        // Initialize quiz
+        function loadQuestion() {
+            // Update progress
+            progressElement.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+            
+            // Load question
+            questionElement.textContent = quizData[currentQuestion].question;
+            
+            // Clear input
+            answerInput.value = '';
+            
+            // Focus on input
+            answerInput.focus();
+        }
+        
+        // Handle answer submission
+        function submitAnswer() {
+            const userAnswer = answerInput.value.trim();
+            
+            if (userAnswer === '') {
+                alert('Please enter an answer');
+                return;
+            }
+            
+            // Check if answer is correct (case insensitive for conceptual questions, exact for code)
+            const correctAnswer = quizData[currentQuestion].answer;
+            let isCorrect = false;
+            
+            // For code questions, we need more exact matching
+            if (currentQuestion < 20) { // First 20 are code questions
+                // Normalize whitespace for code comparison
+                const normalizedUserAnswer = userAnswer.replace(/\s+/g, ' ').trim();
+                const normalizedCorrectAnswer = correctAnswer.replace(/\s+/g, ' ').trim();
+                isCorrect = normalizedUserAnswer === normalizedCorrectAnswer;
+            } else {
+                // For conceptual questions, case insensitive
+                isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
+            }
+            
+            if (isCorrect) {
+                score++;
+            }
+            
+            // Move to next question
+            currentQuestion++;
+            
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                // Quiz completed
+                showFinalScore();
+            }
+        }
+        
+        // Show final score
+        function showFinalScore() {
+            quizContainer.style.display = 'none';
+            scoreContainer.style.display = 'block';
+            
+            // Calculate percentage
+            const percentage = Math.round((score / quizData.length) * 100);
+            scoreValue.textContent = `${percentage}%`;
+            
+            // Update user data
+            userData.quizzesTaken++;
+            
+            if (percentage > userData.highScore) {
+                userData.highScore = percentage;
+                highScore.textContent = `${percentage}%`;
+            }
+            
+            // Check for reward
+            if (percentage >= 96) {
+                userData.balance += 0.2;
+                userData.totalEarnings += 0.2;
+                userBalance.textContent = `$${userData.balance.toFixed(2)}`;
+                totalEarnings.textContent = `$${userData.totalEarnings.toFixed(2)}`;
+                rewardMessage.textContent = `Congratulations! You earned $0.20 for scoring ${percentage}%!`;
+            } else {
+                rewardMessage.textContent = `Score ${percentage}% or higher to earn $0.20!`;
+            }
+            
+            // Set message based on score
+            if (percentage >= 90) {
+                scoreMessage.textContent = "Excellent! You're a Python expert!";
+            } else if (percentage >= 70) {
+                scoreMessage.textContent = "Great job! You have strong Python knowledge.";
+            } else if (percentage >= 50) {
+                scoreMessage.textContent = "Good effort! Keep learning Python.";
+            } else {
+                scoreMessage.textContent = "Keep practicing! Python gets easier with time.";
+            }
+        }
+        
+        // Restart quiz
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            quizContainer.style.display = 'block';
+            scoreContainer.style.display = 'none';
+            loadQuestion();
+        }
+        
+        // Toggle theme
+        function toggleTheme() {
+            const body = document.body;
+            if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                themeToggle.textContent = 'Switch to Light Theme';
+            } else {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                themeToggle.textContent = 'Switch to Dark Theme';
+            }
+        }
+        
+        // Show profile modal
+        function showProfile() {
+            profileModal.style.display = 'flex';
+        }
+        
+        // Close profile modal
+        function closeProfileModal() {
+            profileModal.style.display = 'none';
+        }
+        
+        // Event listeners
+        themeToggle.addEventListener('click', toggleTheme);
+        submitBtn.addEventListener('click', submitAnswer);
+        restartBtn.addEventListener('click', restartQuiz);
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitAnswer();
+            }
+        });
+        profileIcon.addEventListener('click', showProfile);
+        closeProfile.addEventListener('click', closeProfileModal);
+        
+        // Close modal if clicked outside
+        window.addEventListener('click', function(e) {
+            if (e.target === profileModal) {
+                closeProfileModal();
+            }
+        });
+        
+        // Initialize user data display
+        userBalance.textContent = `$${userData.balance.toFixed(2)}`;
+        totalEarnings.textContent = `$${userData.totalEarnings.toFixed(2)}`;
+        quizzesTaken.textContent = userData.quizzesTaken;
+        highScore.textContent = `${userData.highScore}%`;
+        
+        // Start quiz
+        loadQuestion();
+    </script>
+</body>
+</html>
