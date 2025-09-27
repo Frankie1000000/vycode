@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Advanced Python Topics</title>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:0; }
+    header { background:#333; color:#fff; padding:1rem; text-align:center; }
+    section { margin:20px; }
+    details { background:#fff; margin:10px 0; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+    summary { font-size:1.2rem; font-weight:bold; cursor:pointer; }
+    pre { background:#272822; color:#f8f8f2; padding:10px; border-radius:5px; overflow:auto; }
+    button { background:#0078d7; color:#fff; padding:8px 12px; margin-top:5px; border:none; border-radius:5px; cursor:pointer; }
+    button:hover { background:#005a9e; }
+    #output { background:#111; color:#0f0; padding:10px; border-radius:5px; margin-top:10px; min-height:50px; }
+    footer { background:#333; color:#fff; text-align:center; padding:1rem; margin-top:20px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Advanced Python Topics</h1>
+  </header>
+
+  <section>
+    <!-- Concurrency & Parallelism -->
+    <details>
+      <summary>Concurrency & Parallelism</summary>
+      <p>
+        <b>Concurrency</b> is about dealing with multiple tasks at once (like interleaving).
+        <b>Parallelism</b> is about running multiple tasks literally at the same time
+        (on multiple cores).
+      </p>
+      <p>
+        Python supports concurrency with <code>threading</code> and <code>asyncio</code>,
+        and parallelism with <code>multiprocessing</code>.
+      </p>
+      <pre id="code1">import threading
+
+def worker(n):
+    print(f"Worker {n} is running")
+
+threads = []
+for i in range(3):
+    t = threading.Thread(target=worker, args=(i,))
+    threads.append(t)
+    t.start()
+
+for t in threads:
+    t.join()
+
+print("All threads finished")</pre>
+      <button onclick="runCode('code1')">Run</button>
+    </details>
+
+    <!-- AsyncIO -->
+    <details>
+      <summary>AsyncIO</summary>
+      <p>
+        <code>asyncio</code> allows asynchronous programming using <code>async</code> and
+        <code>await</code>. Instead of blocking, tasks can pause and resume efficiently.
+      </p>
+      <pre id="code2">import asyncio
+
+async def say_hello():
+    await asyncio.sleep(1)
+    print("Hello after 1 second")
+
+async def main():
+    await asyncio.gather(say_hello(), say_hello())
+
+asyncio.run(main())</pre>
+      <button onclick="runCode('code2')">Run</button>
+    </details>
+
+    <!-- Testing -->
+    <details>
+      <summary>Testing (unittest, pytest)</summary>
+      <p>
+        Testing ensures code behaves as expected.
+        <b>unittest</b> is Python’s built-in framework.
+        <b>pytest</b> is a popular external library for simple tests.
+      </p>
+      <pre id="code3">import unittest
+
+def add(a, b):
+    return a + b
+
+class TestAdd(unittest.TestCase):
+    def test_add(self):
+        self.assertEqual(add(2,3), 5)
+
+suite = unittest.TestLoader().loadTestsFromTestCase(TestAdd)
+unittest.TextTestRunner().run(suite)</pre>
+      <button onclick="runCode('code3')">Run</button>
+    </details>
+
+    <!-- Packaging -->
+    <details>
+      <summary>Packaging</summary>
+      <p>
+        Packaging lets you distribute Python projects. A typical package has:
+        <code>__init__.py</code>, <code>setup.py</code>, and modules.
+      </p>
+      <pre id="code4"># Example: simple package structure
+# mypackage/
+#   __init__.py
+#   mathutils.py
+
+# mathutils.py
+def square(x):
+    return x * x
+
+print("Square of 4:", square(4))</pre>
+      <button onclick="runCode('code4')">Run</button>
+    </details>
+
+    <!-- API Development -->
+    <details>
+      <summary>API Development</summary>
+      <p>
+        Python APIs are often built with frameworks like <b>Flask</b> or <b>FastAPI</b>.
+        Below is a minimal Flask-like example (simplified here).
+      </p>
+      <pre id="code5">from http.server import BaseHTTPRequestHandler, HTTPServer
+
+class HelloHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-type","text/plain")
+        self.end_headers()
+        self.wfile.write(b"Hello API")
+
+print("Run: navigate to http://localhost:8000")
+# Uncomment to run a simple server:
+# HTTPServer(("",8000), HelloHandler).serve_forever()</pre>
+      <button onclick="runCode('code5')">Run</button>
+    </details>
+
+    <div id="output"></div>
+  </section>
+
+  <footer>
+    © 2023 Python Learning Portal | Browse all topics
+  </footer>
+
+  <script>
+    let pyodideReady = loadPyodide();
+
+    async function runCode(codeId) {
+      const output = document.getElementById("output");
+      output.innerText = "Running...";
+      let pyodide = await pyodideReady;
+      try {
+        let code = document.getElementById(codeId).innerText;
+        let result = await pyodide.runPythonAsync(code);
+        if (result !== undefined) output.innerText = result;
+        else output.innerText = "Code executed successfully.";
+      } catch (err) {
+        output.innerText = "Error: " + err;
+      }
+    }
+  </script>
+</body>
+</html>
