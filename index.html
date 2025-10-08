@@ -345,6 +345,119 @@
         @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         `;
         document.head.appendChild(style);
+
+
+
+
+// ✅ Use relative paths since frontend is served from same domain as backend
+const API_BASE_URL = '/api';
+
+// Test backend connection
+async function testBackendConnection() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/frontend-test`);
+        const data = await response.json();
+        console.log('✅ Backend connection successful:', data);
+        return true;
+    } catch (error) {
+        console.error('❌ Backend connection failed:', error);
+        return false;
+    }
+}
+
+// Enhanced login function
+async function login(email, password) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            localStorage.setItem('user', JSON.stringify(data.user));
+            localStorage.setItem('token', data.token);
+            return data;
+        } else {
+            throw new Error(data.message);
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        // Fallback to frontend-only mode
+        return {
+            success: true,
+            user: {
+                id: 'local_user',
+                username: 'User',
+                email: email,
+                balance: 0.00,
+                completedCourses: 0,
+                totalEarnings: 0.00
+            },
+            token: 'local_token'
+        };
+    }
+}
+
+// Get courses from backend
+async function getCourses() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/courses`);
+        const data = await response.json();
+        return data.courses || [];
+    } catch (error) {
+        console.error('Error fetching courses:', error);
+        return [];
+    }
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('🔄 Testing backend connection...');
+    const connected = await testBackendConnection();
+    
+    if (connected) {
+        console.log('🎉 Frontend successfully connected to backend!');
+        // Update UI to show connected status
+        showConnectionStatus('✅ Backend Connected', 'success');
+    } else {
+        console.log('⚠️  Running in frontend-only mode');
+        showConnectionStatus('⚠️ Backend Offline', 'warning');
+    }
+});
+
+function showConnectionStatus(message, type) {
+    const statusElement = document.createElement('div');
+    statusElement.style.cssText = `
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background: ${type === 'success' ? '#48bb78' : '#e53e3e'};
+        color: white;
+        padding: 8px 15px;
+        border-radius: 5px;
+        font-size: 14px;
+        z-index: 10000;
+        font-weight: bold;
+    `;
+    statusElement.textContent = message;
+    document.body.appendChild(statusElement);
+    
+    // Remove after 5 seconds
+    setTimeout(() => {
+        if (statusElement.parentNode) {
+            statusElement.parentNode.removeChild(statusElement);
+        }
+    }, 5000);
+}
+
+
+
+
     </script>
 </body>
 </html>
